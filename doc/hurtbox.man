@@ -1,7 +1,7 @@
 .TH HELLO 1 "6/17/2016" "(C) William Emerison Six" "William Emerison Six"
 .
 .SH NAME
-fighting \- Fighting game
+hurtbox \- Extensible fighting game
 .
 .SH SYNOPSIS
 .B synopsis
