@@ -1,9 +1,10 @@
 AC_INIT([hurtbox], [0.0.1],       [William Emerison Six <billsix@gmail.com>], [hurtbox])
-AC_CONFIG_SRCDIR([src/main.cpp])
+AC_CONFIG_SRCDIR([src/main.c])
 AC_CONFIG_HEADER([config.h])
 AC_CHECK_HEADER([stdio.h])
 AC_REVISION([: 0.0.1 $])
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([subdir-objects])
+AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_INSTALL
 AC_CONFIG_FILES([Makefile doc/Makefile src/Makefile])
