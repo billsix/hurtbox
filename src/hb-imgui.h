@@ -14,6 +14,7 @@ extern "C" {
   void imgui_process_events(SDL_Event *event);
   SDL_bool imgui_wants_event();
   void imgui_shutdown();
+  void drawIMGUI(); 
 #ifdef __cplusplus
 }
 #endif

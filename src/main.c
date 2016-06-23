@@ -11,13 +11,25 @@
 #if HAVE_CONFIG_H
 #include <config.h>
 #endif
+ // TODO -- fix this -- this is dumb to include SDL differently
+#ifdef WIN32
+#include <windows.h>
+#include <stdlib.h>
+#include <string.h>
+#include <tchar.h>
+#include "SDL.h"
+#else
 #include "SDL2/SDL.h"
+#endif
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <stdio.h>
 #include "main.h"
 #include "hb-imgui.h"
 
+SDL_Window *window;
+SDL_Renderer *renderer;
+SDL_GLContext glcontext;
 
 SDL_bool quitMainLoop = SDL_FALSE;
 int returnCode = 0;
@@ -53,6 +65,7 @@ int main(int argc, char** argv)
       return -1;
     }
 
+
   // Setup window
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
   SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
@@ -61,6 +74,7 @@ int main(int argc, char** argv)
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
   SDL_DisplayMode current;
   SDL_GetCurrentDisplayMode(0, &current);
+
   // TODO -- error out if creation fails
   window = SDL_CreateWindow("HurtBox",
                             SDL_WINDOWPOS_CENTERED,
@@ -70,24 +84,16 @@ int main(int argc, char** argv)
                             SDL_WINDOW_OPENGL|SDL_WINDOW_RESIZABLE);
   glcontext = SDL_GL_CreateContext(window);
 
-  // Setup ImGui binding
   imgui_init();
-  // Load Fonts
-  // (there is a default font, this is only if you want to change it. see extra_fonts/README.txt for more details)
-  //ImGuiIO& io = ImGui::GetIO();
-  //io.Fonts->AddFontDefault();
-  //io.Fonts->AddFontFromFileTTF("../../extra_fonts/Cousine-Regular.ttf", 15.0f);
-  //io.Fonts->AddFontFromFileTTF("../../extra_fonts/DroidSans.ttf", 16.0f);
-  //io.Fonts->AddFontFromFileTTF("../../extra_fonts/ProggyClean.ttf", 13.0f);
-  //io.Fonts->AddFontFromFileTTF("../../extra_fonts/ProggyTiny.ttf", 10.0f);
-  //io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
 
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  //gluPerspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
 
   // Main loop
   SDL_bool done = SDL_FALSE;
   while (!done)
     {
-
       SDL_Event event;
       while (SDL_PollEvent(&event))
         {
@@ -110,14 +116,14 @@ int main(int argc, char** argv)
 
       glClearColor(0,0,0,1);
       glClear(GL_COLOR_BUFFER_BIT);
-      drawScene();
-      extern void drawIMGUI();
-      drawIMGUI();
+	  drawScene();
+	  drawIMGUI();
       SDL_GL_SwapWindow(window);
+	  //SDL_Delay(5000);
     }
 
   // Cleanup
-  imgui_shutdown();
+  //imgui_shutdown();
   SDL_GL_DeleteContext(glcontext);
   SDL_DestroyWindow(window);
   SDL_Quit();
@@ -125,3 +131,13 @@ int main(int argc, char** argv)
   return 0;
 }
 
+// TODO -- this is really a thing?
+#ifdef WIN32
+int WinMain(HINSTANCE hInstance,
+	HINSTANCE hPrevInstance,
+	LPSTR lpCmdLine,
+	int nCmdShow)
+{
+	main(0, NULL);
+}
+#endif

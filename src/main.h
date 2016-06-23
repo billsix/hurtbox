@@ -1,6 +1,12 @@
 const int SCREEN_WIDTH  = 1000;
 const int SCREEN_HEIGHT = 1000;
 
-SDL_Window *window;
-SDL_Renderer *renderer;
-SDL_GLContext glcontext;
+#ifdef __cplusplus
+extern "C" {
+#endif
+	extern SDL_Window *window;
+	extern SDL_Renderer *renderer;
+	extern SDL_GLContext glcontext;
+#ifdef __cplusplus
+}
+#endif

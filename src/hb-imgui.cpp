@@ -36,7 +36,13 @@
 */
 #include "../contrib/imgui/imgui.h"
 #include "../contrib/imgui/examples/sdl_opengl_example/imgui_impl_sdl.h"
+// TODO -- fix this -- this is dumb to include SDL differently
+#ifdef WIN32
+#include <windows.h>
+#include "SDL.h"
+#else
 #include "SDL2/SDL.h"
+#endif
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include "main.h"
@@ -84,7 +90,16 @@ void drawIMGUI()
 
 void imgui_init()
 {
-  ImGui_ImplSdl_Init(window);
+	ImGui_ImplSdl_Init(window);
+	// Load Fonts
+	// (there is a default font, this is only if you want to change it. see extra_fonts/README.txt for more details)
+	//ImGuiIO& io = ImGui::GetIO();
+	//io.Fonts->AddFontDefault();
+	//io.Fonts->AddFontFromFileTTF("../../extra_fonts/Cousine-Regular.ttf", 15.0f);
+	//io.Fonts->AddFontFromFileTTF("../../extra_fonts/DroidSans.ttf", 16.0f);
+	//io.Fonts->AddFontFromFileTTF("../../extra_fonts/ProggyClean.ttf", 13.0f);
+	//io.Fonts->AddFontFromFileTTF("../../extra_fonts/ProggyTiny.ttf", 10.0f);
+	//io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
 }
 
 void imgui_process_events(SDL_Event *event)
