@@ -1,7 +1,7 @@
 bin_PROGRAMS = hurtbox
-AM_CPPFLAGS = -I../contrib/imgui/ \
-	-I../contrib/imgui/examples/sdl_opengl_example/ \
-	$(shell sdl2-config --cflags)
+AM_CPPFLAGS = \
+	-I../contrib/imgui/ \
+	-I../contrib/imgui/examples/sdl_opengl_example/
 hurtbox_SOURCES = \
 	main.c \
 	hb-imgui.cpp \
