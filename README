@@ -9,6 +9,7 @@ Building-
     Linux -
       Prereqs - Use your package manager to install the following
         sdl2
+        sdl2 development libraries
         gcc
         g++
         automake
@@ -24,6 +25,7 @@ Building-
     OS X -
       Prereqs - I used macports to install the following
         sdl2
+        sdl2 development libraries
         gcc
         g++
         automake
