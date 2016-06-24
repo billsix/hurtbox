@@ -17,12 +17,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <tchar.h>
-#include "SDL.h"
-#else
-#include "SDL2/SDL.h"
 #endif
+#include "SDL.h"
+#if defined(__APPLE__)
+#include <OpenGL/gl.h>
+#include <OpenGL/glu.h>
+#else
 #include <GL/gl.h>
 #include <GL/glu.h>
+#endif
 #include <stdio.h>
 #include "main.h"
 #include "hb-imgui.h"

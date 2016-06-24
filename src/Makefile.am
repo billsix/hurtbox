@@ -11,3 +11,4 @@ hurtbox_SOURCES = \
 	../contrib/imgui/imgui_internal.h \
 	../contrib/imgui/examples/sdl_opengl_example/imgui_impl_sdl.cpp
 hurtbox_LDADD = -lGL
+
