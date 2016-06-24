@@ -1,0 +1,46 @@
+HurtBox
+
+Building-
+  Download a git client.
+  In the current directory, run "git submodule init" and then "git submodule update".
+  This will download the remaining necessary source code from the "Dear IMGUI" project. 
+
+  Installation instructions for popular platforms -
+    Linux -
+      Prereqs - Use your package manager to install the following
+        sdl2
+        gcc
+        g++
+        automake
+        autoconf
+      To build -
+        $ ./autogen.sh
+        $ ./configure --prefix=$MY_INSTALL_DIR
+        $ make
+        $ make install
+      Verified builds
+        Ubuntu 16.04
+                         
+    OS X -
+      Prereqs - I used macports to install the following
+        sdl2
+        gcc
+        g++
+        automake
+        autoconf
+      To build -
+        $ ./autogen.sh
+        $ ./configure --prefix=$MY_INSTALL_DIR
+        $ make
+        $ make install
+  
+    Windows 10
+      Prereqs - Visual Studio 15 (I have Community Edition)
+      To build
+        The SDL source code has been included, intended for building on Windows.
+        Firstly, open the Visual Studio solution for SDL, and build it both in debug
+        mode and in Release Mode.
+        Then, open the "HurtBox.sln" in the current directory, and build it.
+        After, copy all of the files in SDL's build in the corresponding HurtBox
+        build directory.  (TODO -- I need to figure out why those libraries are
+        not statically-linking or why those libraries are not being pulled in)
