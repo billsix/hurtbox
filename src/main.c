@@ -42,6 +42,13 @@ struct camera camera = { .x = 0.0,
                          .rotationX = 0.0,
                          .rotationY = 0.0};
 
+// test data
+float wall1Color[3] = {1.0,1.0,1.0};
+float wall2Color[3] = {0.0,1.0,1.0};
+float wall3Color[3] = {0.0,0.0,1.0};
+float wall4Color[3] = {1.0,0.0,1.0};
+
+
 int main(int argc, char** argv)
 {
   if(initSDL()){
@@ -162,7 +169,7 @@ void drawScene()
 
   {
     glPushMatrix();
-    glColor3f(1.0,1.0,1.0);
+    glColor3fv(wall1Color);
     glBegin(GL_QUADS);
     glVertex3f(-20.0, 0.0, -20.0);
     glVertex3f(20.0, 0.0, -20.0);
@@ -174,7 +181,7 @@ void drawScene()
   {
     glPushMatrix();
     glRotatef(90, 0.0f, 1.0f, 0.0f);
-    glColor3f(0.0,1.0,1.0);
+    glColor3fv(wall2Color);
     glBegin(GL_QUADS);
     glVertex3f(-20.0, 0.0, -20.0);
     glVertex3f(20.0, 0.0, -20.0);
@@ -186,7 +193,7 @@ void drawScene()
   {
     glPushMatrix();
     glRotatef(180, 0.0f, 1.0f, 0.0f);
-    glColor3f(0.0,0.0,1.0);
+    glColor3fv(wall3Color);
     glBegin(GL_QUADS);
     glVertex3f(-20.0, 0.0, -20.0);
     glVertex3f(20.0, 0.0, -20.0);
@@ -198,7 +205,7 @@ void drawScene()
   {
     glPushMatrix();
     glRotatef(270.0, 0.0f, 1.0f, 0.0f);
-    glColor3f(0.0,1.0,0.0);
+    glColor3fv(wall4Color);
     glBegin(GL_QUADS);
     glVertex3f(-20.0, 0.0, -20.0);
     glVertex3f(20.0, 0.0, -20.0);

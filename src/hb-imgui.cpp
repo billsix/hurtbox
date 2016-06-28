@@ -53,7 +53,7 @@
 
 bool  show_test_window = true;
 bool  show_another_window = false;
-
+bool show_wall_color_chooser = true;
 
 void drawIMGUI()
 {
@@ -85,6 +85,21 @@ void drawIMGUI()
       ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiSetCond_FirstUseEver);
       ImGui::ShowTestWindow(&show_test_window);
     }
+
+
+  if (show_wall_color_chooser)
+    {
+      ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiSetCond_FirstUseEver);
+      ImGui::SetNextWindowSize(ImVec2(550,680), ImGuiSetCond_FirstUseEver);
+
+      ImGui::Begin("Wall Color Changer", &show_another_window);
+      ImGui::ColorEdit3("Wall1", wall1Color);
+      ImGui::ColorEdit3("Wall2", wall2Color);
+      ImGui::ColorEdit3("Wall3", wall3Color);
+      ImGui::ColorEdit3("Wall4", wall4Color);
+      ImGui::End();
+    }
+
 
   // Rendering
   glViewport(0, 0, (int)ImGui::GetIO().DisplaySize.x, (int)ImGui::GetIO().DisplaySize.y);

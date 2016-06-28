@@ -16,6 +16,12 @@ extern "C" {
   void drawScene();
   extern void handleKey(SDL_Keycode *sym);
   extern void handleWindowEvent(SDL_Event *event);
+
+  // test data
+  extern float wall1Color[3];
+  extern float wall2Color[3];
+  extern float wall3Color[3];
+  extern float wall4Color[3];
 #ifdef __cplusplus
 }
 #endif
