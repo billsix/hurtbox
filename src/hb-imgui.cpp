@@ -37,7 +37,7 @@
 #include "../contrib/imgui/imgui.h"
 #include "../contrib/imgui/examples/sdl_opengl_example/imgui_impl_sdl.h"
 // TODO -- fix this -- this is dumb to include SDL differently
-#ifdef WIN32
+#ifdef _WINDOWS
 #include <windows.h>
 #endif
 #include "SDL.h"

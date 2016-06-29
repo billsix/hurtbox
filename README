@@ -40,9 +40,5 @@ Building-
       Prereqs - Visual Studio 15 (I have Community Edition)
       To build
         The SDL source code has been included, intended for building on Windows.
-        Firstly, open the Visual Studio solution for SDL, and build it both in debug
-        mode and in Release Mode.
-        Then, open the "HurtBox.sln" in the current directory, and build it.
-        After, copy all of the files in SDL's build in the corresponding HurtBox
-        build directory.  (TODO -- I need to figure out why those libraries are
-        not statically-linking or why those libraries are not being pulled in)
+        Firstly, open the Visual Studio solution for SDL.sln, and build it.
+        Then, open the "HurtBox.sln" and build it.
