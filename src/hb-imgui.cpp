@@ -51,9 +51,9 @@
 #include "main.h"
 #include "hb-imgui.h"
 
-bool  show_test_window = true;
+bool  show_test_window = false;
 bool  show_another_window = false;
-bool show_wall_color_chooser = true;
+bool show_wall_color_chooser = false;
 
 void drawIMGUI()
 {
@@ -92,7 +92,7 @@ void drawIMGUI()
       ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiSetCond_FirstUseEver);
       ImGui::SetNextWindowSize(ImVec2(550,680), ImGuiSetCond_FirstUseEver);
 
-      ImGui::Begin("Wall Color Changer", &show_another_window);
+      ImGui::Begin("Wall Color Changer", &show_wall_color_chooser);
       ImGui::ColorEdit3("Wall1", wall1Color);
       ImGui::ColorEdit3("Wall2", wall2Color);
       ImGui::ColorEdit3("Wall3", wall3Color);
@@ -100,7 +100,39 @@ void drawIMGUI()
       ImGui::End();
     }
 
+  const bool show_app_main_menu_bar = true;
+  
+  if(show_app_main_menu_bar){
+    if (ImGui::BeginMainMenuBar())
+      {
+        if (ImGui::BeginMenu("Hurtbox"))
+          {
+            {
+              if (ImGui::MenuItem("Show Wall Color Chooser")) {
+                show_wall_color_chooser = true;
+              }
+              if (ImGui::MenuItem("Show Test Window")) {
+                show_test_window = true;
+              }
 
+            }
+            ImGui::EndMenu();
+          }
+
+        // if (ImGui::BeginMenu("Edit"))
+        //   {
+        //     if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
+        //     if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
+        //     ImGui::Separator();
+        //     if (ImGui::MenuItem("Cut", "CTRL+X")) {}
+        //     if (ImGui::MenuItem("Copy", "CTRL+C")) {}
+        //     if (ImGui::MenuItem("Paste", "CTRL+V")) {}
+        //     ImGui::EndMenu();
+        //   }
+        ImGui::EndMainMenuBar();
+      }
+  }
+    
   // Rendering
   glViewport(0, 0, (int)ImGui::GetIO().DisplaySize.x, (int)ImGui::GetIO().DisplaySize.y);
   ImGui::Render();

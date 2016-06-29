@@ -4,6 +4,7 @@ AM_CPPFLAGS = \
 	-I../contrib/imgui/examples/sdl_opengl_example/
 hurtbox_SOURCES = \
 	main.c \
+	controller.c \
 	hb-imgui.cpp \
 	../contrib/imgui/imgui.cpp \
 	../contrib/imgui/imgui_demo.cpp \

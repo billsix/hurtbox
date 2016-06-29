@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -128,6 +128,7 @@
     <ClCompile Include="contrib\imgui\imgui_demo.cpp" />
     <ClCompile Include="contrib\imgui\imgui_draw.cpp" />
     <ClCompile Include="src\hb-imgui.cpp" />
+    <ClCompile Include="src\controller.c" />
     <ClCompile Include="src\main.c" />
   </ItemGroup>
   <ItemGroup>
@@ -158,6 +159,7 @@
     <ClInclude Include="contrib\imgui\stb_textedit.h" />
     <ClInclude Include="contrib\imgui\stb_truetype.h" />
     <ClInclude Include="src\hb-imgui.h" />
+    <ClInclude Include="src\controller.h" />
     <ClInclude Include="src\main.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
