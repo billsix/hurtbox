@@ -11,7 +11,7 @@
 #if HAVE_CONFIG_H
 #include <config.h>
 #endif
-#ifdef WIN32
+#ifdef _WINDOWS
 #include <windows.h>
 #include <stdlib.h>
 #include <string.h>
