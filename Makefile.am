@@ -1,2 +1,2 @@
-EXTRA_DIST = configure doc/hello.man
+EXTRA_DIST = configure doc/hurtbox.man
 SUBDIRS = doc src

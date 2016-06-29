@@ -14,7 +14,7 @@ case "$target_os" in
     darwin*)
              LDFLAGS="-framework OpenGL $LDFLAGS"
              ;;
-          *) LDFLAGS="-lGLU $LDFLAGS"
+          *) LIBS="-lGLU $LIBS"
              ;;
 esac
 
