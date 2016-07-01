@@ -60,6 +60,8 @@ int main(int argc, char** argv)
   imgui_init();
 
 
+  printf("%d\n", SDL_GameControllerAddMappingsFromFile("gamecontrollerdb.txt"));
+
 
   printf("%d controllers\n", SDL_NumJoysticks());
   SDL_GameController *controller = NULL;
