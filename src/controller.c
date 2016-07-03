@@ -98,8 +98,8 @@ void controller_update_camera()
   camera.x -= ( GLfloat ) sin( camera.rotationY * DEGREES_TO_RADIANS ) * left_axis.vertical;
   camera.z -= ( GLfloat ) cos( camera.rotationY * DEGREES_TO_RADIANS ) * left_axis.vertical;
 
-  camera.x -= ( GLfloat ) sin( 90 + camera.rotationY * DEGREES_TO_RADIANS ) * left_axis.horizontal;
-  camera.z -= ( GLfloat ) cos( 90 +camera.rotationY * DEGREES_TO_RADIANS ) * left_axis.horizontal;
+  camera.x -= ( GLfloat ) cos(camera.rotationY * DEGREES_TO_RADIANS ) * left_axis.horizontal;
+  camera.z += ( GLfloat ) sin(camera.rotationY * DEGREES_TO_RADIANS) * left_axis.horizontal;
 
   camera.rotationX += right_axis.vertical;
   camera.rotationY += right_axis.horizontal;

@@ -195,7 +195,7 @@ void initGL()
   {
     int w, h;
     SDL_GetWindowSize(window,&w,&h);
-    gluPerspective(45.0f, (GLfloat)w / (GLfloat)h, 0.1f, 100.0f);
+    gluPerspective(45.0f, (GLfloat)w / (GLfloat)h, 0.1f, 1000.0f);
   }
 }
 
