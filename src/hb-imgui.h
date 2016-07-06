@@ -1,3 +1,5 @@
+#ifndef HB_IMGUI_H
+#define HB_IMGUI_H 1
 /*
  * William Emerison Six
  *
@@ -6,15 +8,27 @@
  * Distributed under LGPL 2.1 or Apache 2.0
  */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-  void drawIMGUI();
-  void imgui_init();
-  void imgui_process_events(SDL_Event *event);
-  SDL_bool imgui_wants_event();
-  void imgui_shutdown();
-  void drawIMGUI(); 
-#ifdef __cplusplus
-}
+#include "common.h"
+
+BEGIN_C_DECLS
+void
+drawIMGUI();
+
+void
+imgui_init();
+
+void
+imgui_process_events(SDL_Event *event);
+
+SDL_bool
+imgui_wants_event();
+
+void
+imgui_shutdown();
+
+void
+drawIMGUI(); 
+
+END_C_DECLS
+
 #endif

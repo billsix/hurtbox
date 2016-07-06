@@ -6,25 +6,7 @@
  * Distributed under LGPL 2.1 or Apache 2.0
  */
 
-
-
-#if HAVE_CONFIG_H
-#include <config.h>
-#endif
-#ifdef _WINDOWS
-#include <windows.h>
-#include <stdlib.h>
-#include <string.h>
-#include <tchar.h>
-#endif
-#include "SDL.h"
-#if defined(__APPLE__)
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
-#else
-#include <GL/gl.h>
-#include <GL/glu.h>
-#endif
+#include "common.h"
 #include <stdio.h>
 #include "main.h"
 #include "hb-imgui.h"
