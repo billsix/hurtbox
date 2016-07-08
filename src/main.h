@@ -20,8 +20,23 @@ struct camera{
   GLfloat x, y, z;
   GLfloat rotationX, rotationY;
 };
-extern struct camera camera;
 
+struct axis{
+  float horizontal;
+  float vertical;
+};
+
+struct scene_callbacks{
+  void (*handle_controller_button_event) (SDL_ControllerButtonEvent e);
+  void (*handle_controller_axis_motion) (SDL_ControllerAxisEvent e);
+  void (*handle_key)(SDL_Keycode *sym);
+  void (*draw_scene)();
+
+};
+
+extern struct camera camera;
+extern struct axis left_axis;
+extern struct axis right_axis;
 
 // test data
 extern float wall1Color[3];

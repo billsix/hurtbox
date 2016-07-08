@@ -44,7 +44,8 @@ bool  show_test_window = false;
 bool  show_another_window = false;
 bool show_wall_color_chooser = false;
 
-void drawIMGUI()
+void
+drawIMGUI()
 {
   ImGui_ImplSdl_NewFrame(window);
 
@@ -127,7 +128,8 @@ void drawIMGUI()
   ImGui::Render();
 }
 
-void imgui_init()
+void
+imgui_init()
 {
 	ImGui_ImplSdl_Init(window);
 	// Load Fonts
@@ -141,19 +143,22 @@ void imgui_init()
 	//io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
 }
 
-void imgui_process_events(SDL_Event *event)
+void
+imgui_process_events(SDL_Event *event)
 {
   ImGui_ImplSdl_ProcessEvent(event);
 }
 
-SDL_bool imgui_wants_event()
+SDL_bool
+imgui_wants_event()
 {
   return (ImGui::GetIO().WantCaptureMouse || ImGui::GetIO().WantTextInput)
     ? SDL_TRUE
     : SDL_FALSE;
 }
 
-void imgui_shutdown()
+void
+imgui_shutdown()
 {
   ImGui_ImplSdl_Shutdown();
 }

@@ -10,7 +10,8 @@
 #include <stdio.h>
 #include "main.h"
 #include "hb-imgui.h"
-#include "controller.h"
+
+#include "mainscene.h"
 
 SDL_Window *window;
 SDL_Renderer *renderer;
@@ -18,22 +19,28 @@ SDL_GLContext glcontext;
 
 SDL_bool quitMainLoop = SDL_FALSE;
 
-struct camera camera = { .x = 0.0,
-                         .y = 5.0,
-                         .z = 0.0,
-                         .rotationX = 0.0,
-                         .rotationY = 0.0};
 
-// test data
-float wall1Color[3] = {1.0,1.0,1.0};
-float wall2Color[3] = {0.0,1.0,1.0};
-float wall3Color[3] = {0.0,0.0,1.0};
-float wall4Color[3] = {1.0,0.0,1.0};
+// TODO -- make a data structure to reprsent the full controller,
+// along with multiple controllers
+struct axis left_axis = { .horizontal = 0.0,
+                          .vertical = 0.0};
+
+struct axis right_axis = { .horizontal = 0.0,
+                           .vertical = 0.0};
 
 
-int main(int argc, char** argv)
+// function pointers to handle events on a per-scene basis
+struct scene_callbacks current_scene = {
+  .handle_controller_button_event = &main_scene_controller_handle_button,
+  .handle_controller_axis_motion = &main_scene_controller_handle_axis,
+  .handle_key = &main_scene_handle_key,
+  .draw_scene = &main_scene_draw_scene
+};
+
+
+int
+main(int argc, char** argv)
 {
-  int returnCode = 0;
   // TODO - test initilizing individual items, and set flags
   // based off of what is available.
   // for instance, on my Funtoo system, HAPTIC is not enabled,
@@ -42,8 +49,7 @@ int main(int argc, char** argv)
   if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
     {
       printf("Error: %s\n", SDL_GetError());
-      returnCode = 1;
-      return returnCode; // sure I could have just returned 1.
+      return 1;
     }
 
   // Initialize SDL Attributes
@@ -65,8 +71,7 @@ int main(int argc, char** argv)
                                         720,
                                         SDL_WINDOW_OPENGL|SDL_WINDOW_RESIZABLE))){
     printf("Could not create window: %s\n", SDL_GetError());
-    returnCode = 1;
-    return returnCode; // sure I could have just returned 1.
+    return 1;
   }
 
   glcontext = SDL_GL_CreateContext(window);
@@ -85,7 +90,8 @@ int main(int argc, char** argv)
     glEnable( GL_DEPTH_TEST );
     glDepthFunc( GL_LEQUAL );
     glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
-    
+
+    // set initial project matrix
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     {
@@ -126,8 +132,8 @@ int main(int argc, char** argv)
   }
   
   // The event loop.  Keep on truckin'.
-SDL_bool done = SDL_FALSE;
-    while (!done)
+  SDL_bool done = SDL_FALSE;
+  while (!done)
     {
       // put a SDL Event on the stack so that SDL can be polled
       SDL_Event event;
@@ -152,20 +158,18 @@ SDL_bool done = SDL_FALSE;
             {
             case SDL_CONTROLLERBUTTONDOWN:
               {
-                const SDL_ControllerButtonEvent sdlEvent =  event.cbutton;
-                // TODO -- do something
+                (*current_scene.handle_controller_button_event)(event.cbutton);
                 break;
               }
             case SDL_CONTROLLERBUTTONUP:
               {
-                const SDL_ControllerButtonEvent sdlEvent =  event.cbutton;
-                // TODO -- do something
+                (*current_scene.handle_controller_button_event)(event.cbutton);
                 break;
               }
               
             case SDL_CONTROLLERAXISMOTION:
               {
-                controller_handle_axis(event.caxis);
+                (*current_scene.handle_controller_axis_motion)(event.caxis);
                 break;
               }
               
@@ -179,121 +183,42 @@ SDL_bool done = SDL_FALSE;
             case SDL_MOUSEBUTTONDOWN:
               break;
             case SDL_KEYDOWN:
-              handleKey(&event.key.keysym.sym);
+              (*current_scene.handle_key)(&event.key.keysym.sym);
               break;
             case SDL_WINDOWEVENT:
               handleWindowEvent(&event);
               break;
             }
         }
-      controller_update_camera();
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-      drawScene();
+      (*current_scene.draw_scene)(&event.key.keysym.sym);
       drawIMGUI();
       SDL_GL_SwapWindow(window);
     }
 
   // Cleanup
   imgui_shutdown();
- cleanSDL:
   SDL_GL_DeleteContext(glcontext);
   SDL_DestroyWindow(window);
   SDL_Quit();
   
-  return returnCode;
+  return 0;
 }
 
-// TODO -- this is really a thing?
 #ifdef WIN32
-int WinMain(HINSTANCE hInstance,
-	HINSTANCE hPrevInstance,
-	LPSTR lpCmdLine,
-	int nCmdShow)
+int
+WinMain(HINSTANCE hInstance,
+            HINSTANCE hPrevInstance,
+            LPSTR lpCmdLine,
+            int nCmdShow)
 {
-	main(0, NULL);
+  main(0, NULL);
 }
 #endif
 
-void drawScene()
-{
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
-  
-  glRotatef(camera.rotationX, 1.0f, 0.0f, 0.0f);
-  glRotatef(360.0f - camera.rotationY, 0.0f, 1.0f, 0.0f);
-  glTranslated(-camera.x, -camera.y, -camera.z);
 
-  {
-    glPushMatrix();
-    glColor3fv(wall1Color);
-    glBegin(GL_QUADS);
-    glVertex3f(-40.0, 0.0, -40.0);
-    glVertex3f(40.0, 0.0, -40.0);
-    glVertex3f(40.0, 30.0, -40.0);
-    glVertex3f(-40.0, 30.0, -40.0);
-    glEnd();
-    glPopMatrix();
-  }
-  {
-    glPushMatrix();
-    glRotatef(90, 0.0f, 1.0f, 0.0f);
-    glColor3fv(wall2Color);
-    glBegin(GL_QUADS);
-    glVertex3f(-40.0, 0.0, -40.0);
-    glVertex3f(40.0, 0.0, -40.0);
-    glVertex3f(40.0, 30.0, -40.0);
-    glVertex3f(-40.0, 30.0, -40.0);
-    glEnd();
-    glPopMatrix();
-  }
-  {
-    glPushMatrix();
-    glRotatef(180, 0.0f, 1.0f, 0.0f);
-    glColor3fv(wall3Color);
-    glBegin(GL_QUADS);
-    glVertex3f(-40.0, 0.0, -40.0);
-    glVertex3f(40.0, 0.0, -40.0);
-    glVertex3f(40.0, 30.0, -40.0);
-    glVertex3f(-40.0, 30.0, -40.0);
-    glEnd();
-    glPopMatrix();
-  }
-  {
-    glPushMatrix();
-    glRotatef(270.0, 0.0f, 1.0f, 0.0f);
-    glColor3fv(wall4Color);
-    glBegin(GL_QUADS);
-    glVertex3f(-40.0, 0.0, -40.0);
-    glVertex3f(40.0, 0.0, -40.0);
-    glVertex3f(40.0, 30.0, -40.0);
-    glVertex3f(-40.0, 30.0, -40.0);
-    glEnd();
-    glPopMatrix();
-  }
-}
 
-void handleKey(SDL_Keycode *sym){
-  switch(*sym){
-  case SDLK_UP:
-    camera.x -= ( GLfloat ) sin( camera.rotationY * DEGREES_TO_RADIANS );
-    camera.z -= ( GLfloat ) cos( camera.rotationY * DEGREES_TO_RADIANS );
-    break;
-  case SDLK_DOWN:
-    camera.x += ( GLfloat ) sin( camera.rotationY * DEGREES_TO_RADIANS );
-    camera.z += ( GLfloat ) cos( camera.rotationY * DEGREES_TO_RADIANS );
-    break;
-  case SDLK_LEFT:
-    camera.rotationY += 2.0;
-    break;
-  case SDLK_RIGHT:
-    camera.rotationY -= 2.0;
-    break;
-  default:
-    break;
-  }
-}
-
-void handleWindowEvent(SDL_Event *event){
+void
+handleWindowEvent(SDL_Event *event){
   switch (event->window.event){
   case SDL_WINDOWEVENT_RESIZED:
     glMatrixMode(GL_PROJECTION);
