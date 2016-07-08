@@ -34,20 +34,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
 */
-#include "../contrib/imgui/imgui.h"
-#include "../contrib/imgui/examples/sdl_opengl_example/imgui_impl_sdl.h"
-// TODO -- fix this -- this is dumb to include SDL differently
-#ifdef _WINDOWS
-#include <windows.h>
-#endif
-#include "SDL.h"
-#if defined(__APPLE__)
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
-#else
-#include <GL/gl.h>
-#include <GL/glu.h>
-#endif
+#include "imgui.h"
+#include "imgui_impl_sdl.h"
+#include "common.h"
 #include "main.h"
 #include "hb-imgui.h"
 
