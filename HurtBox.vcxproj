@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -128,8 +128,8 @@
     <ClCompile Include="contrib\imgui\imgui_demo.cpp" />
     <ClCompile Include="contrib\imgui\imgui_draw.cpp" />
     <ClCompile Include="src\hb-imgui.cpp" />
-    <ClCompile Include="src\controller.c" />
     <ClCompile Include="src\main.c" />
+    <ClCompile Include="src\mainscene.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="contrib\imgui\examples\allegro5_example\imgui_impl_a5.h" />
