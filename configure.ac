@@ -14,8 +14,6 @@ case "$target_os" in
     darwin*)
              LDFLAGS="-framework OpenGL $LDFLAGS"
              ;;
-          *) LIBS="-lGLU $LIBS"
-             ;;
 esac
 
 dnl Check for SDL

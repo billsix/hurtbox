@@ -23,36 +23,51 @@ float wall3Color[3] = {0.0,0.0,1.0};
 float wall4Color[3] = {1.0,0.0,1.0};
 
 
+
 void
 main_scene_draw_scene()
 {
   // update camera from the controller
   {
-    camera.x -= ( GLfloat ) sin( camera.rotationY * DEGREES_TO_RADIANS ) * left_axis.vertical;
-    camera.z -= ( GLfloat ) cos( camera.rotationY * DEGREES_TO_RADIANS ) * left_axis.vertical;
-    
-    camera.x -= ( GLfloat ) cos(camera.rotationY * DEGREES_TO_RADIANS ) * left_axis.horizontal;
-    camera.z += ( GLfloat ) sin(camera.rotationY * DEGREES_TO_RADIANS) * left_axis.horizontal;
-    
+    camera.x -= ( GLdouble ) sin( camera.rotationY) * left_axis.vertical;
+    camera.z -= ( GLdouble ) cos( camera.rotationY) * left_axis.vertical;
+
+    camera.x -= ( GLdouble ) cos(camera.rotationY) * left_axis.horizontal;
+    camera.z += ( GLdouble ) sin(camera.rotationY) * left_axis.horizontal;
+
     camera.rotationX += right_axis.vertical;
     camera.rotationY += right_axis.horizontal;
-    
+
   }
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
+  GLdouble cameraMatrix[16];
+  mat4_identity(cameraMatrix);
+
   // translate from world coordinates to camera coordinates
   {
-    glRotatef(camera.rotationX, 1.0f, 0.0f, 0.0f);
-    glRotatef(360.0f - camera.rotationY, 0.0f, 1.0f, 0.0f);
-    glTranslated(-camera.x, -camera.y, -camera.z);
+    mat4_rotateX(cameraMatrix,
+                camera.rotationX,
+                cameraMatrix);
+    mat4_rotateY(cameraMatrix,
+                -camera.rotationY,
+                cameraMatrix);
+    double neg_camera[] = {-camera.x,-camera.y,-camera.z};
+    mat4_translate(cameraMatrix,
+                   neg_camera,
+                   cameraMatrix);
   }
 
-  // draw the four walls
+  double current_matrix[16];
+  //draw the four walls
   {
-    glPushMatrix();
+    mat4_multiply(projection_matrix,
+                  cameraMatrix,
+                  current_matrix);
+
+    glLoadMatrixd(current_matrix);
+
     glColor3fv(wall1Color);
     glBegin(GL_QUADS);
     glVertex3f(-40.0, 0.0, -40.0);
@@ -60,11 +75,10 @@ main_scene_draw_scene()
     glVertex3f(40.0, 30.0, -40.0);
     glVertex3f(-40.0, 30.0, -40.0);
     glEnd();
-    glPopMatrix();
   }
   {
-    glPushMatrix();
-    glRotatef(90, 0.0f, 1.0f, 0.0f);
+    mat4_rotateY(current_matrix, M_PI/2.0, current_matrix);
+    glLoadMatrixd(current_matrix);
     glColor3fv(wall2Color);
     glBegin(GL_QUADS);
     glVertex3f(-40.0, 0.0, -40.0);
@@ -72,11 +86,10 @@ main_scene_draw_scene()
     glVertex3f(40.0, 30.0, -40.0);
     glVertex3f(-40.0, 30.0, -40.0);
     glEnd();
-    glPopMatrix();
   }
   {
-    glPushMatrix();
-    glRotatef(180, 0.0f, 1.0f, 0.0f);
+    mat4_rotateY(current_matrix, M_PI/2.0, current_matrix);
+    glLoadMatrixd(current_matrix);
     glColor3fv(wall3Color);
     glBegin(GL_QUADS);
     glVertex3f(-40.0, 0.0, -40.0);
@@ -84,11 +97,10 @@ main_scene_draw_scene()
     glVertex3f(40.0, 30.0, -40.0);
     glVertex3f(-40.0, 30.0, -40.0);
     glEnd();
-    glPopMatrix();
   }
   {
-    glPushMatrix();
-    glRotatef(270.0, 0.0f, 1.0f, 0.0f);
+    mat4_rotateY(current_matrix, M_PI/2.0, current_matrix);
+    glLoadMatrixd(current_matrix);
     glColor3fv(wall4Color);
     glBegin(GL_QUADS);
     glVertex3f(-40.0, 0.0, -40.0);
@@ -96,7 +108,6 @@ main_scene_draw_scene()
     glVertex3f(40.0, 30.0, -40.0);
     glVertex3f(-40.0, 30.0, -40.0);
     glEnd();
-    glPopMatrix();
   }
 }
 
@@ -122,7 +133,7 @@ main_scene_controller_handle_axis(SDL_ControllerAxisEvent controllerAxisEvent){
       left_axis.horizontal = 0.0;
     }
     else{
-      left_axis.horizontal = -((float)value / (float)range) * 2.0;
+      left_axis.horizontal = -((double)value / (double)range);
     }
   }
   else if(axis == 1){
@@ -132,7 +143,7 @@ main_scene_controller_handle_axis(SDL_ControllerAxisEvent controllerAxisEvent){
       left_axis.vertical = 0.0;
     }
     else{
-      left_axis.vertical = -((float)value / (float)range) * 2.0;
+      left_axis.vertical = -((double)value / (double)range) ;
     }
   }
   else if(axis == 2){
@@ -142,7 +153,7 @@ main_scene_controller_handle_axis(SDL_ControllerAxisEvent controllerAxisEvent){
       right_axis.horizontal = 0.0;
     }
     else{
-      right_axis.horizontal = -((float)value / (float)range) * 2.0;
+      right_axis.horizontal = -((double)value / (double)range) * 0.1;
     }
   }
   else if(axis == 3){
@@ -152,7 +163,7 @@ main_scene_controller_handle_axis(SDL_ControllerAxisEvent controllerAxisEvent){
       right_axis.vertical = 0.0;
     }
     else{
-      right_axis.vertical = -((float)value / (float)range) * 2.0;
+      right_axis.vertical = -((double)value / (double)range) * 0.1;
     }
   }
 }
@@ -161,18 +172,18 @@ void
 main_scene_handle_key(SDL_Keycode *sym){
   switch(*sym){
   case SDLK_UP:
-    camera.x -= ( GLfloat ) sin( camera.rotationY * DEGREES_TO_RADIANS );
-    camera.z -= ( GLfloat ) cos( camera.rotationY * DEGREES_TO_RADIANS );
+    camera.x -= ( GLdouble ) sin( camera.rotationY);
+    camera.z -= ( GLdouble ) cos( camera.rotationY);
     break;
   case SDLK_DOWN:
-    camera.x += ( GLfloat ) sin( camera.rotationY * DEGREES_TO_RADIANS );
-    camera.z += ( GLfloat ) cos( camera.rotationY * DEGREES_TO_RADIANS );
+    camera.x += ( GLdouble ) sin( camera.rotationY);
+    camera.z += ( GLdouble ) cos( camera.rotationY);
     break;
   case SDLK_LEFT:
-    camera.rotationY += 2.0;
+    camera.rotationY += ( GLdouble )0.1;
     break;
   case SDLK_RIGHT:
-    camera.rotationY -= 2.0;
+    camera.rotationY -= ( GLdouble )0.1;
     break;
   default:
     break;

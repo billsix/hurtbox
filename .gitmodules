@@ -2,3 +2,7 @@
 	path = contrib/imgui
 	url = https://github.com/ocornut/imgui.git
         dirty = ignore
+[submodule "contrib/gl-matrix.c"]
+	path = contrib/gl-matrix.c
+	url = https://github.com/coreh/gl-matrix.c.git
+        dirty = ignore

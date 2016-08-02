@@ -12,18 +12,21 @@
 
 BEGIN_C_DECLS
 
-#define DEGREES_TO_RADIANS  0.0174532925f
 extern SDL_Window *window;
 extern SDL_Renderer *renderer;
 extern SDL_GLContext glcontext;
 struct camera{
-  GLfloat x, y, z;
-  GLfloat rotationX, rotationY;
+  GLdouble x, y, z;
+  GLdouble rotationX, rotationY;
 };
 
+extern GLdouble projection_matrix[16];
+extern GLdouble modelview_matrix[16];
+
+
 struct axis{
-  float horizontal;
-  float vertical;
+  double horizontal;
+  double vertical;
 };
 
 struct scene_callbacks{

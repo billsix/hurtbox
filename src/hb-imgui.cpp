@@ -83,6 +83,7 @@ drawIMGUI()
       ImGui::SetNextWindowSize(ImVec2(550,680), ImGuiSetCond_FirstUseEver);
 
       ImGui::Begin("Wall Color Changer", &show_wall_color_chooser);
+
       ImGui::ColorEdit3("Wall1", wall1Color);
       ImGui::ColorEdit3("Wall2", wall2Color);
       ImGui::ColorEdit3("Wall3", wall3Color);

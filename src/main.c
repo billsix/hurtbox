@@ -10,12 +10,17 @@
 #include <stdio.h>
 #include "main.h"
 #include "hb-imgui.h"
+#include "gl-matrix.h"
 
 #include "mainscene.h"
 
 SDL_Window *window;
 SDL_Renderer *renderer;
 SDL_GLContext glcontext;
+
+
+GLdouble projection_matrix[16];
+GLdouble modelview_matrix[16];
 
 SDL_bool quitMainLoop = SDL_FALSE;
 
@@ -63,7 +68,7 @@ main(int argc, char** argv)
     SDL_DisplayMode current;
     SDL_GetCurrentDisplayMode(0, &current);
   }
-  
+
   if(NULL == (window = SDL_CreateWindow("HurtBox",
                                         SDL_WINDOWPOS_CENTERED,
                                         SDL_WINDOWPOS_CENTERED,
@@ -76,14 +81,18 @@ main(int argc, char** argv)
 
   glcontext = SDL_GL_CreateContext(window);
   /* Note to self.  SDL's docs tell me that
-   *   Windows users new to OpenGL should note that, for historical reasons, 
-   *   GL functions added after OpenGL version 1.1 are not available by 
-   *   default. Those functions must be loaded at run-time, either with 
-   *   an OpenGL extension-handling library or with SDL_GL_GetProcAddress() 
-   */ 
-  
+   *   Windows users new to OpenGL should note that, for historical reasons,
+   *   GL functions added after OpenGL version 1.1 are not available by
+   *   default. Those functions must be loaded at run-time, either with
+   *   an OpenGL extension-handling library or with SDL_GL_GetProcAddress()
+   */
+
   // initialize OpenGL
   {
+
+    mat4_identity(projection_matrix);
+    mat4_identity(modelview_matrix);
+
     glClearColor(0,0,0,1);
     glShadeModel( GL_SMOOTH );
     glClearDepth( 1.0f );
@@ -91,15 +100,12 @@ main(int argc, char** argv)
     glDepthFunc( GL_LEQUAL );
     glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
 
-    // set initial project matrix
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
     {
       int w, h;
       SDL_GetWindowSize(window,&w,&h);
-      gluPerspective(45.0f, (GLfloat)w / (GLfloat)h, 0.1f, 1000.0f);
+      mat4_perspective(45.0f, (GLdouble)w / (GLdouble)h, 0.1f, 1000.0f,projection_matrix);
     }
-    
+
   }
 
   // initialize IMGUI.  Not currently sure what it does.  But I know I need
@@ -113,8 +119,8 @@ main(int argc, char** argv)
     //   and figure out how Visual Studio handles similar things (do they have
     //   a "make install"?)
     printf("%d\n", SDL_GameControllerAddMappingsFromFile("gamecontrollerdb.txt"));
-    
-    
+
+
     printf("%d controllers\n", SDL_NumJoysticks());
     SDL_GameController *controller = NULL;
     for (int i = 0; i < SDL_NumJoysticks(); ++i) {
@@ -130,7 +136,7 @@ main(int argc, char** argv)
       }
     }
   }
-  
+
   // The event loop.  Keep on truckin'.
   SDL_bool done = SDL_FALSE;
   while (!done)
@@ -153,7 +159,7 @@ main(int argc, char** argv)
            * exclusively handle it.  However, joysticks will not control
            * IMGUI controls, and should be handled firstly.
            */
-          
+
           switch(event.type)
             {
             case SDL_CONTROLLERBUTTONDOWN:
@@ -166,13 +172,13 @@ main(int argc, char** argv)
                 (*current_scene.handle_controller_button_event)(event.cbutton);
                 break;
               }
-              
+
             case SDL_CONTROLLERAXISMOTION:
               {
                 (*current_scene.handle_controller_axis_motion)(event.caxis);
                 break;
               }
-              
+
             }
           // if IMGUI has focus, let it take the mouse and keyboard event
           if(imgui_wants_event()){
@@ -200,7 +206,7 @@ main(int argc, char** argv)
   SDL_GL_DeleteContext(glcontext);
   SDL_DestroyWindow(window);
   SDL_Quit();
-  
+
   return 0;
 }
 
@@ -221,11 +227,9 @@ void
 handleWindowEvent(SDL_Event *event){
   switch (event->window.event){
   case SDL_WINDOWEVENT_RESIZED:
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
     {
       int w = event->window.data1, h = event->window.data2;
-      gluPerspective(45.0f, (GLfloat)w / (GLfloat)h, 0.1f, 100.0f);
+      mat4_perspective(45.0f, (GLdouble)w / (GLdouble)h, 0.1f, 1000.0f,projection_matrix);
     }
     break;
   }
