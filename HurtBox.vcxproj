@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -74,7 +74,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir)\contrib\imgui\examples\sdl_opengl_example;$(SolutionDir)\contrib\imgui;$(SolutionDir)\contrib\SDL2-2.0.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\contrib\gl-matrix.c;$(SolutionDir)\contrib\imgui\examples\sdl_opengl_example;$(SolutionDir)\contrib\imgui;$(SolutionDir)\contrib\SDL2-2.0.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <TargetMachine>MachineX86</TargetMachine>
@@ -90,7 +90,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>$(SolutionDir)\contrib\imgui;$(SolutionDir)\contrib\imgui\examples\sdl_opengl_example;$(SolutionDir)\contrib\SDL2-2.0.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\contrib\gl-matrix.c;$(SolutionDir)\contrib\imgui;$(SolutionDir)\contrib\imgui\examples\sdl_opengl_example;$(SolutionDir)\contrib\SDL2-2.0.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <TargetMachine>MachineX86</TargetMachine>
@@ -105,7 +105,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PreprocessorDefinitions>WIN64;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\contrib\imgui\examples\sdl_opengl_example;$(SolutionDir)\contrib\imgui;$(SolutionDir)\contrib\SDL2-2.0.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\contrib\gl-matrix.c;$(SolutionDir)\contrib\imgui\examples\sdl_opengl_example;$(SolutionDir)\contrib\imgui;$(SolutionDir)\contrib\SDL2-2.0.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)\contrib\SDL2-2.0.4\VisualC\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -114,7 +114,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\contrib\imgui\examples\sdl_opengl_example;$(SolutionDir)\contrib\imgui;$(SolutionDir)\contrib\SDL2-2.0.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\contrib\gl-matrix.c;$(SolutionDir)\contrib\imgui\examples\sdl_opengl_example;$(SolutionDir)\contrib\imgui;$(SolutionDir)\contrib\SDL2-2.0.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN64;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -123,6 +123,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="contrib\gl-matrix.c\mat3.c" />
+    <ClCompile Include="contrib\gl-matrix.c\mat4.c" />
+    <ClCompile Include="contrib\gl-matrix.c\quat.c" />
+    <ClCompile Include="contrib\gl-matrix.c\str.c" />
+    <ClCompile Include="contrib\gl-matrix.c\vec3.c" />
     <ClCompile Include="contrib\imgui\examples\sdl_opengl_example\imgui_impl_sdl.cpp" />
     <ClCompile Include="contrib\imgui\imgui.cpp" />
     <ClCompile Include="contrib\imgui\imgui_demo.cpp" />
@@ -132,6 +137,7 @@
     <ClCompile Include="src\mainscene.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="contrib\gl-matrix.c\gl-matrix.h" />
     <ClInclude Include="contrib\imgui\examples\allegro5_example\imgui_impl_a5.h" />
     <ClInclude Include="contrib\imgui\examples\apple_example\imguiex-ios\AppDelegate.h" />
     <ClInclude Include="contrib\imgui\examples\apple_example\imguiex-ios\debug_hud.h" />
@@ -159,7 +165,6 @@
     <ClInclude Include="contrib\imgui\stb_textedit.h" />
     <ClInclude Include="contrib\imgui\stb_truetype.h" />
     <ClInclude Include="src\hb-imgui.h" />
-    <ClInclude Include="src\controller.h" />
     <ClInclude Include="src\main.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

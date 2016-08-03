@@ -36,6 +36,21 @@
     <ClCompile Include="src\mainscene.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="contrib\gl-matrix.c\mat3.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="contrib\gl-matrix.c\mat4.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="contrib\gl-matrix.c\quat.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="contrib\gl-matrix.c\str.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="contrib\gl-matrix.c\vec3.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="contrib\imgui\imconfig.h">
@@ -122,7 +137,7 @@
     <ClInclude Include="src\main.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\controller.h">
+    <ClInclude Include="contrib\gl-matrix.c\gl-matrix.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
