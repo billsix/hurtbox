@@ -30,6 +30,7 @@ struct axis{
 };
 
 struct scene_callbacks{
+  void (*init_scene)();
   void (*handle_controller_button_event) (SDL_ControllerButtonEvent e);
   void (*handle_controller_axis_motion) (SDL_ControllerAxisEvent e);
   void (*handle_key)(SDL_Keycode *sym);

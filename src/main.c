@@ -36,6 +36,7 @@ struct axis right_axis = { .horizontal = 0.0,
 
 // function pointers to handle events on a per-scene basis
 struct scene_callbacks current_scene = {
+  .init_scene = main_scene_init_scene,
   .handle_controller_button_event = &main_scene_controller_handle_button,
   .handle_controller_axis_motion = &main_scene_controller_handle_axis,
   .handle_key = &main_scene_handle_key,
@@ -136,6 +137,8 @@ main(int argc, char** argv)
       }
     }
   }
+
+  (*current_scene.init_scene)();
 
   // The event loop.  Keep on truckin'.
   SDL_bool done = SDL_FALSE;

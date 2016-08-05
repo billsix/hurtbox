@@ -25,7 +25,10 @@
 #if defined(__APPLE__)
 #include <OpenGL/gl.h>
 #else
+#define GL_GLEXT_PROTOTYPES 1 // not sure why I need to do this
 #include <GL/gl.h>
+#include <GL/glext.h>
+#include <GL/glcorearb.h>
 #endif
 
 #endif

@@ -84,10 +84,10 @@ drawIMGUI()
 
       ImGui::Begin("Wall Color Changer", &show_wall_color_chooser);
 
-      ImGui::ColorEdit3("Wall1", wall1Color);
-      ImGui::ColorEdit3("Wall2", wall2Color);
-      ImGui::ColorEdit3("Wall3", wall3Color);
-      ImGui::ColorEdit3("Wall4", wall4Color);
+      // ImGui::ColorEdit3("Wall1", wall1Color);
+      // ImGui::ColorEdit3("Wall2", wall2Color);
+      // ImGui::ColorEdit3("Wall3", wall3Color);
+      // ImGui::ColorEdit3("Wall4", wall4Color);
       ImGui::End();
     }
 

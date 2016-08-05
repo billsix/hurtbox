@@ -17,16 +17,140 @@ struct camera camera = { .x = 0.0,
                          .rotationY = 0.0};
 
 // test data
-float wall1Color[3] = {1.0,1.0,1.0};
-float wall2Color[3] = {0.0,1.0,1.0};
-float wall3Color[3] = {0.0,0.0,1.0};
-float wall4Color[3] = {1.0,0.0,1.0};
+float wall1Colors[] = {1.0,1.0,1.0};
+/* float wall2Color[3] = {0.0,1.0,1.0}; */
+/* float wall3Color[3] = {0.0,0.0,1.0}; */
+/* float wall4Color[3] = {1.0,0.0,1.0}; */
+
+
+double wallVertices[] =
+  {-40.0, 0.0, -40.0,
+   40.0, 0.0, -40.0,
+   40.0, 30.0, -40.0,
+   -40.0, 30.0, -40.0};
+
+
+static GLuint vertexbuffer;
+
+
+const GLchar * const vertex_shader =
+  "#version 450 core \
+in vec4 vPosition; \
+in vec4 vColor; \
+ \
+out vec4 color; \
+ \
+uniform mat4 mvpMatrix; \
+ \
+void \
+main(){ \
+  color = vColor; \
+  gl_Position = mvpMatrix * vPosition; \
+}";
+
+
+const GLchar * const fShader =
+  "#version 450 core \
+int vec4 fcolor; \
+out vec4 color; \
+ \
+void main(){ \
+  color = fcolor; \
+}";
+
+
+GLuint ProgramID;
+
+void
+main_scene_init_scene()
+{
+
+  GLuint VertexArrayID;
+  glGenVertexArrays(1, &VertexArrayID);
+  glBindVertexArray(VertexArrayID);
+
+  // This will identify our vertex buffer
+  // Generate 1 buffer, put the resulting identifier in vertexbuffer
+  glGenBuffers(1, &vertexbuffer);
+  // The following commands will talk about our 'vertexbuffer' buffer
+  glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+  // Give our vertices to OpenGL.
+  glBufferData(GL_ARRAY_BUFFER, sizeof(wallVertices), wallVertices, GL_STATIC_DRAW);
+
+
+  GLint Result = GL_FALSE;
+  int InfoLogLength;
+  {
+    // Create the shaders
+    GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
+    GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
+    // Compile Vertex Shader
+    glShaderSource(VertexShaderID, 1, &vertex_shader , NULL);
+    glCompileShader(VertexShaderID);
+
+    // Check Vertex Shader
+    glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
+    glGetShaderiv(VertexShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+    if ( InfoLogLength > 0 ){
+      /* std::vector<char> VertexShaderErrorMessage(InfoLogLength+1); */
+      /* glGetShaderInfoLog(VertexShaderID, InfoLogLength, NULL, &VertexShaderErrorMessage[0]); */
+      /* printf("%s\n", &VertexShaderErrorMessage[0]); */
+    }
+
+
+
+    // Compile Fragment Shader
+    printf("Compiling shader : %s\n", fShader);
+    glShaderSource(FragmentShaderID, 1, &fShader , NULL);
+    glCompileShader(FragmentShaderID);
+
+    // Check Fragment Shader
+    glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &Result);
+    glGetShaderiv(FragmentShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+    if ( InfoLogLength > 0 ){
+      /* std::vector<char> FragmentShaderErrorMessage(InfoLogLength+1); */
+      /* glGetShaderInfoLog(FragmentShaderID, InfoLogLength, NULL, &FragmentShaderErrorMessage[0]); */
+      /* printf("%s\n", &FragmentShaderErrorMessage[0]); */
+    }
+
+
+
+    // Link the program
+    printf("Linking program\n");
+    ProgramID = glCreateProgram();
+    glAttachShader(ProgramID, VertexShaderID);
+    glAttachShader(ProgramID, FragmentShaderID);
+    glLinkProgram(ProgramID);
+
+    // Check the program
+    glGetProgramiv(ProgramID, GL_LINK_STATUS, &Result);
+    glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+    if ( InfoLogLength > 0 ){
+      /* std::vector<char> ProgramErrorMessage(InfoLogLength+1); */
+      /* glGetProgramInfoLog(ProgramID, InfoLogLength, NULL, &ProgramErrorMessage[0]); */
+      /* printf("%s\n", &ProgramErrorMessage[0]); */
+    }
+
+
+    glDetachShader(ProgramID, VertexShaderID);
+    glDetachShader(ProgramID, FragmentShaderID);
+
+    glDeleteShader(VertexShaderID);
+    glDeleteShader(FragmentShaderID);
+
+    //return ProgramID;
+  }
+
+}
+
 
 
 
 void
 main_scene_draw_scene()
 {
+
+
   // update camera from the controller
   {
     camera.x -= ( GLdouble ) sin( camera.rotationY) * left_axis.vertical;
@@ -68,47 +192,21 @@ main_scene_draw_scene()
 
     glLoadMatrixd(current_matrix);
 
-    glColor3fv(wall1Color);
-    glBegin(GL_QUADS);
-    glVertex3f(-40.0, 0.0, -40.0);
-    glVertex3f(40.0, 0.0, -40.0);
-    glVertex3f(40.0, 30.0, -40.0);
-    glVertex3f(-40.0, 30.0, -40.0);
-    glEnd();
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+    glVertexAttribPointer(
+                          0,   // attribute 0. No particular reason for 0, but must match the layout in the shader.
+                          3,                  // size
+                          GL_DOUBLE,           // type
+                          GL_FALSE,           // normalized?
+                          0,                  // stride
+                          (void*)0            // array buffer offset
+                          );
+    // Draw the triangle !
+    glDrawArrays(GL_QUADS, 0, 4); // Starting from vertex 0
+    glDisableVertexAttribArray(0);
   }
-  {
-    mat4_rotateY(current_matrix, M_PI/2.0, current_matrix);
-    glLoadMatrixd(current_matrix);
-    glColor3fv(wall2Color);
-    glBegin(GL_QUADS);
-    glVertex3f(-40.0, 0.0, -40.0);
-    glVertex3f(40.0, 0.0, -40.0);
-    glVertex3f(40.0, 30.0, -40.0);
-    glVertex3f(-40.0, 30.0, -40.0);
-    glEnd();
-  }
-  {
-    mat4_rotateY(current_matrix, M_PI/2.0, current_matrix);
-    glLoadMatrixd(current_matrix);
-    glColor3fv(wall3Color);
-    glBegin(GL_QUADS);
-    glVertex3f(-40.0, 0.0, -40.0);
-    glVertex3f(40.0, 0.0, -40.0);
-    glVertex3f(40.0, 30.0, -40.0);
-    glVertex3f(-40.0, 30.0, -40.0);
-    glEnd();
-  }
-  {
-    mat4_rotateY(current_matrix, M_PI/2.0, current_matrix);
-    glLoadMatrixd(current_matrix);
-    glColor3fv(wall4Color);
-    glBegin(GL_QUADS);
-    glVertex3f(-40.0, 0.0, -40.0);
-    glVertex3f(40.0, 0.0, -40.0);
-    glVertex3f(40.0, 30.0, -40.0);
-    glVertex3f(-40.0, 30.0, -40.0);
-    glEnd();
-  }
+
 }
 
 

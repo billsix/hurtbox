@@ -13,6 +13,8 @@
 
 BEGIN_C_DECLS
 
+void
+main_scene_init_scene();
 
 void
 main_scene_controller_handle_axis(SDL_ControllerAxisEvent controllerAxisEvent);
