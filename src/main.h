@@ -16,17 +16,17 @@ extern SDL_Window *window;
 extern SDL_Renderer *renderer;
 extern SDL_GLContext glcontext;
 struct camera{
-  GLdouble x, y, z;
-  GLdouble rotationX, rotationY;
+  GLfloat x, y, z;
+  GLfloat rotationX, rotationY;
 };
 
-extern GLdouble projection_matrix[16];
-extern GLdouble modelview_matrix[16];
+extern GLfloat projection_matrix[16];
+extern GLfloat modelview_matrix[16];
 
 
 struct axis{
-  double horizontal;
-  double vertical;
+  float horizontal;
+  float vertical;
 };
 
 struct scene_callbacks{

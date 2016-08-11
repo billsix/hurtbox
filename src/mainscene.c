@@ -23,7 +23,7 @@ float wall1Colors[] = {1.0,1.0,1.0};
 /* float wall4Color[3] = {1.0,0.0,1.0}; */
 
 
-double wallVertices[] =
+float wallVertices[] =
   {-40.0, 0.0, -40.0,
    40.0, 0.0, -40.0,
    40.0, 30.0, -40.0,
@@ -153,11 +153,11 @@ main_scene_draw_scene()
 
   // update camera from the controller
   {
-    camera.x -= ( GLdouble ) sin( camera.rotationY) * left_axis.vertical;
-    camera.z -= ( GLdouble ) cos( camera.rotationY) * left_axis.vertical;
+    camera.x -= ( GLfloat ) sin( camera.rotationY) * left_axis.vertical;
+    camera.z -= ( GLfloat ) cos( camera.rotationY) * left_axis.vertical;
 
-    camera.x -= ( GLdouble ) cos(camera.rotationY) * left_axis.horizontal;
-    camera.z += ( GLdouble ) sin(camera.rotationY) * left_axis.horizontal;
+    camera.x -= ( GLfloat ) cos(camera.rotationY) * left_axis.horizontal;
+    camera.z += ( GLfloat ) sin(camera.rotationY) * left_axis.horizontal;
 
     camera.rotationX += right_axis.vertical;
     camera.rotationY += right_axis.horizontal;
@@ -166,7 +166,7 @@ main_scene_draw_scene()
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  GLdouble cameraMatrix[16];
+  GLfloat cameraMatrix[16];
   mat4_identity(cameraMatrix);
 
   // translate from world coordinates to camera coordinates
@@ -177,27 +177,27 @@ main_scene_draw_scene()
     mat4_rotateY(cameraMatrix,
                 -camera.rotationY,
                 cameraMatrix);
-    double neg_camera[] = {-camera.x,-camera.y,-camera.z};
+    float neg_camera[] = {-camera.x,-camera.y,-camera.z};
     mat4_translate(cameraMatrix,
                    neg_camera,
                    cameraMatrix);
   }
 
-  double current_matrix[16];
+  float current_matrix[16];
   //draw the four walls
   {
     mat4_multiply(projection_matrix,
                   cameraMatrix,
                   current_matrix);
 
-    glLoadMatrixd(current_matrix);
+    glLoadMatrixf(current_matrix);
 
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
     glVertexAttribPointer(
                           0,   // attribute 0. No particular reason for 0, but must match the layout in the shader.
                           3,                  // size
-                          GL_DOUBLE,           // type
+                          GL_FLOAT,           // type
                           GL_FALSE,           // normalized?
                           0,                  // stride
                           (void*)0            // array buffer offset
@@ -231,7 +231,7 @@ main_scene_controller_handle_axis(SDL_ControllerAxisEvent controllerAxisEvent){
       left_axis.horizontal = 0.0;
     }
     else{
-      left_axis.horizontal = -((double)value / (double)range);
+      left_axis.horizontal = -((float)value / (float)range);
     }
   }
   else if(axis == 1){
@@ -241,7 +241,7 @@ main_scene_controller_handle_axis(SDL_ControllerAxisEvent controllerAxisEvent){
       left_axis.vertical = 0.0;
     }
     else{
-      left_axis.vertical = -((double)value / (double)range) ;
+      left_axis.vertical = -((float)value / (float)range) ;
     }
   }
   else if(axis == 2){
@@ -251,7 +251,7 @@ main_scene_controller_handle_axis(SDL_ControllerAxisEvent controllerAxisEvent){
       right_axis.horizontal = 0.0;
     }
     else{
-      right_axis.horizontal = -((double)value / (double)range) * 0.1;
+      right_axis.horizontal = -((float)value / (float)range) * 0.1;
     }
   }
   else if(axis == 3){
@@ -261,7 +261,7 @@ main_scene_controller_handle_axis(SDL_ControllerAxisEvent controllerAxisEvent){
       right_axis.vertical = 0.0;
     }
     else{
-      right_axis.vertical = -((double)value / (double)range) * 0.1;
+      right_axis.vertical = -((float)value / (float)range) * 0.1;
     }
   }
 }
@@ -270,18 +270,18 @@ void
 main_scene_handle_key(SDL_Keycode *sym){
   switch(*sym){
   case SDLK_UP:
-    camera.x -= ( GLdouble ) sin( camera.rotationY);
-    camera.z -= ( GLdouble ) cos( camera.rotationY);
+    camera.x -= ( GLfloat ) sin( camera.rotationY);
+    camera.z -= ( GLfloat ) cos( camera.rotationY);
     break;
   case SDLK_DOWN:
-    camera.x += ( GLdouble ) sin( camera.rotationY);
-    camera.z += ( GLdouble ) cos( camera.rotationY);
+    camera.x += ( GLfloat ) sin( camera.rotationY);
+    camera.z += ( GLfloat ) cos( camera.rotationY);
     break;
   case SDLK_LEFT:
-    camera.rotationY += ( GLdouble )0.1;
+    camera.rotationY += ( GLfloat )0.1;
     break;
   case SDLK_RIGHT:
-    camera.rotationY -= ( GLdouble )0.1;
+    camera.rotationY -= ( GLfloat )0.1;
     break;
   default:
     break;

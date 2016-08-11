@@ -19,8 +19,8 @@ SDL_Renderer *renderer;
 SDL_GLContext glcontext;
 
 
-GLdouble projection_matrix[16];
-GLdouble modelview_matrix[16];
+GLfloat projection_matrix[16];
+GLfloat modelview_matrix[16];
 
 SDL_bool quitMainLoop = SDL_FALSE;
 
@@ -104,7 +104,7 @@ main(int argc, char** argv)
     {
       int w, h;
       SDL_GetWindowSize(window,&w,&h);
-      mat4_perspective(45.0f, (GLdouble)w / (GLdouble)h, 0.1f, 1000.0f,projection_matrix);
+      mat4_perspective(45.0f, (GLfloat)w / (GLfloat)h, 0.1f, 1000.0f,projection_matrix);
     }
 
   }
@@ -232,7 +232,7 @@ handleWindowEvent(SDL_Event *event){
   case SDL_WINDOWEVENT_RESIZED:
     {
       int w = event->window.data1, h = event->window.data2;
-      mat4_perspective(45.0f, (GLdouble)w / (GLdouble)h, 0.1f, 1000.0f,projection_matrix);
+      mat4_perspective(45.0f, (GLfloat)w / (GLfloat)h, 0.1f, 1000.0f,projection_matrix);
     }
     break;
   }
