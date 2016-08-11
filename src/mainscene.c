@@ -17,46 +17,79 @@ struct camera camera = { .x = 0.0,
                          .rotationY = 0.0};
 
 // test data
-float wall1Colors[] = {1.0,1.0,1.0};
-/* float wall2Color[3] = {0.0,1.0,1.0}; */
-/* float wall3Color[3] = {0.0,0.0,1.0}; */
-/* float wall4Color[3] = {1.0,0.0,1.0}; */
+float wallColors[] = {
+  1.0,1.0,1.0,
+  1.0,1.0,1.0,
+  1.0,1.0,1.0,
+  1.0,1.0,1.0,
+  0.0,1.0,1.0,
+  0.0,1.0,1.0,
+  0.0,1.0,1.0,
+  0.0,1.0,1.0,
+  0.0,0.0,1.0,
+  0.0,0.0,1.0,
+  0.0,0.0,1.0,
+  0.0,0.0,1.0,
+  1.0,0.0,1.0,
+  1.0,0.0,1.0,
+  1.0,0.0,1.0,
+  1.0,0.0,1.0
+};
+
 
 
 float wallVertices[] =
-  {-40.0, 0.0, -40.0,
-   40.0, 0.0, -40.0,
-   40.0, 30.0, -40.0,
-   -40.0, 30.0, -40.0};
+  {
+    -40.0, 0.0, -40.0,
+    40.0, 0.0, -40.0,
+    40.0, 30.0, -40.0,
+    -40.0, 30.0, -40.0,
+
+    -40.0, 0.0, 40.0,
+    -40.0, 30.0, 40.0,
+    40.0, 30.0, 40.0,
+    40.0, 0.0, 40.0,
+
+    -40.0, 0.0, -40.0,
+    -40.0, 30.0, -40.0,
+    -40.0, 30.0, 40.0,
+    -40.0, 0.0, 40.0,
+
+    40.0, 30.0, -40.0,
+    40.0, 0.0, -40.0,
+    40.0, 0.0, 40.0,
+    40.0, 30.0, 40.0,
+  };
 
 
 static GLuint vertexbuffer;
+static GLuint colorbuffer;
 
 
 const GLchar * const vertex_shader =
-  "#version 450 core \
-in vec4 vPosition; \
-in vec4 vColor; \
- \
-out vec4 color; \
- \
-uniform mat4 mvpMatrix; \
- \
-void \
-main(){ \
-  color = vColor; \
-  gl_Position = mvpMatrix * vPosition; \
-}";
+  "#version 450 core \n"
+  "in vec4 vPosition;   \n"
+  "in vec4 vColor; \n"
+  "\n"
+  "out vec4 VOcolor; \n"
+  "\n"
+  "uniform mat4 mvpMatrix; \n"
+  "\n"
+  "void \n"
+  "main(){ \n"
+  "VOcolor = vColor; \n"
+  "gl_Position = mvpMatrix * vPosition; \n"
+  "}";
 
 
 const GLchar * const fShader =
-  "#version 450 core \
-int vec4 fcolor; \
-out vec4 color; \
- \
-void main(){ \
-  color = fcolor; \
-}";
+  "#version 450 core \n"
+  "in vec4 VOcolor; \n"
+  "out vec4 color; \n"
+  "\n"
+  "void main(){ \n"
+  "color = VOcolor; \n"
+  "}";
 
 
 GLuint ProgramID;
@@ -69,21 +102,46 @@ main_scene_init_scene()
   glGenVertexArrays(1, &VertexArrayID);
   glBindVertexArray(VertexArrayID);
 
-  // This will identify our vertex buffer
-  // Generate 1 buffer, put the resulting identifier in vertexbuffer
-  glGenBuffers(1, &vertexbuffer);
-  // The following commands will talk about our 'vertexbuffer' buffer
-  glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-  // Give our vertices to OpenGL.
-  glBufferData(GL_ARRAY_BUFFER, sizeof(wallVertices), wallVertices, GL_STATIC_DRAW);
+
+  // populate vertex buffer
+  {
+    // This will identify our vertex buffer
+    // Generate 1 buffer, put the resulting identifier in vertexbuffer
+    glGenBuffers(1, &vertexbuffer);
+    // The following commands will talk about our 'vertexbuffer' buffer
+    glBindBuffer(GL_ARRAY_BUFFER,
+                 vertexbuffer);
+    // Give our vertices to OpenGL.
+    glBufferData(GL_ARRAY_BUFFER,
+                 sizeof(wallVertices),
+                 wallVertices,
+                 GL_STATIC_DRAW);
+  }
+
+  // populate color buffer
+  {
+    glGenBuffers(1, &colorbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER,
+                 colorbuffer);
+    glBufferData(GL_ARRAY_BUFFER,
+                 sizeof(wallColors),
+                 wallColors,
+                 GL_STATIC_DRAW);
+  }
 
 
+
+  
   GLint Result = GL_FALSE;
   int InfoLogLength;
   {
     // Create the shaders
     GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
     GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
+
+    printf("Compiling Vertex shader : %s\n", vertex_shader);
+    puts("");
+    
     // Compile Vertex Shader
     glShaderSource(VertexShaderID, 1, &vertex_shader , NULL);
     glCompileShader(VertexShaderID);
@@ -92,15 +150,19 @@ main_scene_init_scene()
     glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
     glGetShaderiv(VertexShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
     if ( InfoLogLength > 0 ){
-      /* std::vector<char> VertexShaderErrorMessage(InfoLogLength+1); */
-      /* glGetShaderInfoLog(VertexShaderID, InfoLogLength, NULL, &VertexShaderErrorMessage[0]); */
-      /* printf("%s\n", &VertexShaderErrorMessage[0]); */
+      char foo[InfoLogLength];
+      glGetShaderInfoLog(VertexShaderID,
+                         InfoLogLength+1,
+                         NULL,
+                         foo);
+      printf("Vertex Shader info %s\n", foo);
     }
 
 
 
     // Compile Fragment Shader
-    printf("Compiling shader : %s\n", fShader);
+    printf("Compiling Fragment shader : %s\n", fShader);
+    puts("");
     glShaderSource(FragmentShaderID, 1, &fShader , NULL);
     glCompileShader(FragmentShaderID);
 
@@ -108,9 +170,13 @@ main_scene_init_scene()
     glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &Result);
     glGetShaderiv(FragmentShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
     if ( InfoLogLength > 0 ){
-      /* std::vector<char> FragmentShaderErrorMessage(InfoLogLength+1); */
-      /* glGetShaderInfoLog(FragmentShaderID, InfoLogLength, NULL, &FragmentShaderErrorMessage[0]); */
-      /* printf("%s\n", &FragmentShaderErrorMessage[0]); */
+
+      char foo[InfoLogLength];
+      glGetShaderInfoLog(FragmentShaderID,
+                         InfoLogLength+1,
+                         NULL,
+                         foo);
+      printf("Fragment Shader Info %s\n", foo);
     }
 
 
@@ -126,9 +192,14 @@ main_scene_init_scene()
     glGetProgramiv(ProgramID, GL_LINK_STATUS, &Result);
     glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &InfoLogLength);
     if ( InfoLogLength > 0 ){
-      /* std::vector<char> ProgramErrorMessage(InfoLogLength+1); */
-      /* glGetProgramInfoLog(ProgramID, InfoLogLength, NULL, &ProgramErrorMessage[0]); */
-      /* printf("%s\n", &ProgramErrorMessage[0]); */
+      printf("log len %d %d\n", InfoLogLength, Result);
+      char foo[InfoLogLength];
+      glGetShaderInfoLog(ProgramID,
+                         InfoLogLength + 1,
+                         NULL,
+                         foo);
+      printf("Linking info %s\n", foo);
+
     }
 
 
@@ -149,7 +220,7 @@ main_scene_init_scene()
 void
 main_scene_draw_scene()
 {
-
+  glUseProgram(ProgramID);
 
   // update camera from the controller
   {
@@ -190,20 +261,47 @@ main_scene_draw_scene()
                   cameraMatrix,
                   current_matrix);
 
-    glLoadMatrixf(current_matrix);
+    GLint bar = glGetAttribLocation(ProgramID,
+                                    "vColor");
+    glUniformMatrix4fv(glGetUniformLocation(ProgramID,
+                                            "mvpMatrix"),
+                       1,
+                       GL_FALSE,
+                       current_matrix);
 
-    glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-    glVertexAttribPointer(
-                          0,   // attribute 0. No particular reason for 0, but must match the layout in the shader.
-                          3,                  // size
-                          GL_FLOAT,           // type
-                          GL_FALSE,           // normalized?
-                          0,                  // stride
-                          (void*)0            // array buffer offset
-                          );
+
+    // set the vertex data
+    {
+      glEnableVertexAttribArray(0);
+      glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+      glVertexAttribPointer(
+                            0,
+                            3,
+                            GL_FLOAT,
+                            GL_FALSE,
+                            0,
+                            (void*)0
+                            );
+    }
+
+    // set the color data
+    {
+      glEnableVertexAttribArray(1);
+      glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
+      glVertexAttribPointer(
+                            1,
+                            3,
+                            GL_FLOAT,
+                            GL_FALSE,
+                            0,
+                            (void*)0
+                            );
+    }
+
+
+
     // Draw the triangle !
-    glDrawArrays(GL_QUADS, 0, 4); // Starting from vertex 0
+    glDrawArrays(GL_QUADS, 0, ARRAY_SIZE(wallVertices)/3); // Starting from vertex 0
     glDisableVertexAttribArray(0);
   }
 
