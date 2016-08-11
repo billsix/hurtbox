@@ -131,7 +131,7 @@ main_scene_init_scene()
 
 
 
-  
+
   GLint Result = GL_FALSE;
   int InfoLogLength;
   {
@@ -141,7 +141,7 @@ main_scene_init_scene()
 
     printf("Compiling Vertex shader : %s\n", vertex_shader);
     puts("");
-    
+
     // Compile Vertex Shader
     glShaderSource(VertexShaderID, 1, &vertex_shader , NULL);
     glCompileShader(VertexShaderID);
@@ -261,8 +261,6 @@ main_scene_draw_scene()
                   cameraMatrix,
                   current_matrix);
 
-    GLint bar = glGetAttribLocation(ProgramID,
-                                    "vColor");
     glUniformMatrix4fv(glGetUniformLocation(ProgramID,
                                             "mvpMatrix"),
                        1,
@@ -272,7 +270,8 @@ main_scene_draw_scene()
 
     // set the vertex data
     {
-      glEnableVertexAttribArray(0);
+      glEnableVertexAttribArray(glGetAttribLocation(ProgramID,
+                                                    "vPosition"));
       glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
       glVertexAttribPointer(
                             0,
@@ -286,7 +285,8 @@ main_scene_draw_scene()
 
     // set the color data
     {
-      glEnableVertexAttribArray(1);
+      glEnableVertexAttribArray(glGetAttribLocation(ProgramID,
+                                                    "vColor"));
       glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
       glVertexAttribPointer(
                             1,
