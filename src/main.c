@@ -88,6 +88,8 @@ main(int argc, char** argv)
    *   an OpenGL extension-handling library or with SDL_GL_GetProcAddress()
    */
 
+  glewInit();
+
   // initialize OpenGL
   {
 

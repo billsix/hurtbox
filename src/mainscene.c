@@ -139,8 +139,8 @@ main_scene_init_scene()
     GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
     GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
-    printf("Compiling Vertex shader : %s\n", vertex_shader);
-    puts("");
+    //printf("Compiling Vertex shader : %s\n", vertex_shader);
+    //puts("");
 
     // Compile Vertex Shader
     glShaderSource(VertexShaderID, 1, &vertex_shader , NULL);
@@ -149,27 +149,27 @@ main_scene_init_scene()
     // Check Vertex Shader
     glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
     glGetShaderiv(VertexShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-    if ( InfoLogLength > 0 ){
+    /*if ( InfoLogLength > 0 ){
       char foo[InfoLogLength];
       glGetShaderInfoLog(VertexShaderID,
                          InfoLogLength+1,
                          NULL,
                          foo);
       printf("Vertex Shader info %s\n", foo);
-    }
+    }*/
 
 
 
     // Compile Fragment Shader
-    printf("Compiling Fragment shader : %s\n", fShader);
-    puts("");
+    //printf("Compiling Fragment shader : %s\n", fShader);
+    //puts("");
     glShaderSource(FragmentShaderID, 1, &fShader , NULL);
     glCompileShader(FragmentShaderID);
 
     // Check Fragment Shader
     glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &Result);
     glGetShaderiv(FragmentShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-    if ( InfoLogLength > 0 ){
+    /*if ( InfoLogLength > 0 ){
 
       char foo[InfoLogLength];
       glGetShaderInfoLog(FragmentShaderID,
@@ -177,12 +177,12 @@ main_scene_init_scene()
                          NULL,
                          foo);
       printf("Fragment Shader Info %s\n", foo);
-    }
+    }*/
 
 
 
     // Link the program
-    printf("Linking program\n");
+    //printf("Linking program\n");
     ProgramID = glCreateProgram();
     glAttachShader(ProgramID, VertexShaderID);
     glAttachShader(ProgramID, FragmentShaderID);
@@ -191,7 +191,7 @@ main_scene_init_scene()
     // Check the program
     glGetProgramiv(ProgramID, GL_LINK_STATUS, &Result);
     glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-    if ( InfoLogLength > 0 ){
+    /*if ( InfoLogLength > 0 ){
       printf("log len %d %d\n", InfoLogLength, Result);
       char foo[InfoLogLength];
       glGetShaderInfoLog(ProgramID,
@@ -200,7 +200,7 @@ main_scene_init_scene()
                          foo);
       printf("Linking info %s\n", foo);
 
-    }
+    }*/
 
 
     glDetachShader(ProgramID, VertexShaderID);

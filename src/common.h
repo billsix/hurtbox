@@ -4,6 +4,8 @@
 #define M_PI acos(-1.0)
 #include "gl-matrix.h"
 
+#define GLEW_STATIC 1
+
 #ifdef __cplusplus
 #define BEGIN_C_DECLS extern "C" {
 #define END_C_DECLS }
@@ -22,14 +24,8 @@
 #include <tchar.h>
 #endif
 #include "SDL.h"
-#if defined(__APPLE__)
-#include <OpenGL/gl.h>
-#else
-#define GL_GLEXT_PROTOTYPES 1 // not sure why I need to do this
-#include <GL/gl.h>
-#include <GL/glext.h>
-#include <GL/glcorearb.h>
-#endif
+//#define GL_GLEXT_PROTOTYPES 1 // not sure why I need to do this
+#include <glew.h>
 
 
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
