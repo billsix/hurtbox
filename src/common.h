@@ -25,7 +25,7 @@
 #endif
 #include "SDL.h"
 //#define GL_GLEXT_PROTOTYPES 1 // not sure why I need to do this
-#include <glew.h>
+#include <GL/glew.h>
 
 
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))

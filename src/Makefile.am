@@ -21,5 +21,5 @@ hurtbox_SOURCES = \
 	$(abs_top_srcdir)/contrib/imgui/examples/sdl_opengl_example/imgui_impl_sdl.cpp
 hurtboxdir = $(datarootdir)/$(PACKAGE)/
 hurtbox_DATA = gamecontrollerdb.txt
-hurtbox_LDADD = -lGL 
+hurtbox_LDADD = -lGL  -lGLEW
 
