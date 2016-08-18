@@ -67,7 +67,7 @@ static GLuint colorbuffer;
 
 
 const GLchar * const vertex_shader =
-  "#version 450 core \n"
+  "#version 150 core \n"
   "in vec4 vPosition;   \n"
   "in vec4 vColor; \n"
   "\n"
@@ -83,7 +83,7 @@ const GLchar * const vertex_shader =
 
 
 const GLchar * const fShader =
-  "#version 450 core \n"
+  "#version 150 core \n"
   "in vec4 VOcolor; \n"
   "out vec4 color; \n"
   "\n"
@@ -101,7 +101,6 @@ main_scene_init_scene()
   GLuint VertexArrayID;
   glGenVertexArrays(1, &VertexArrayID);
   glBindVertexArray(VertexArrayID);
-
 
   // populate vertex buffer
   {
@@ -139,8 +138,11 @@ main_scene_init_scene()
     GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
     GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
-    //printf("Compiling Vertex shader : %s\n", vertex_shader);
-    //puts("");
+
+    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+		   SDL_LOG_PRIORITY_INFO,
+		   "Compiling Vertex shader : %s\n",
+		   vertex_shader);
 
     // Compile Vertex Shader
     glShaderSource(VertexShaderID, 1, &vertex_shader , NULL);
@@ -149,40 +151,53 @@ main_scene_init_scene()
     // Check Vertex Shader
     glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
     glGetShaderiv(VertexShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-    /*if ( InfoLogLength > 0 ){
-      char foo[InfoLogLength];
+    if ( InfoLogLength > 0 ){
+      char *foo = (char*) malloc(InfoLogLength * sizeof(char));
       glGetShaderInfoLog(VertexShaderID,
-                         InfoLogLength+1,
+                         InfoLogLength,
                          NULL,
                          foo);
-      printf("Vertex Shader info %s\n", foo);
-    }*/
+      SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+		     SDL_LOG_PRIORITY_INFO,
+		     "Vertex Shader info %s\n",
+		     foo);
+      free(foo);
+    }
 
 
 
     // Compile Fragment Shader
-    //printf("Compiling Fragment shader : %s\n", fShader);
-    //puts("");
+    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+		   SDL_LOG_PRIORITY_INFO,
+		   "Compiling Fragment shader : %s\n",
+		   fShader);
     glShaderSource(FragmentShaderID, 1, &fShader , NULL);
     glCompileShader(FragmentShaderID);
 
     // Check Fragment Shader
     glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &Result);
     glGetShaderiv(FragmentShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-    /*if ( InfoLogLength > 0 ){
+    if ( InfoLogLength > 0 ){
 
-      char foo[InfoLogLength];
+      char *foo = (char*) malloc(InfoLogLength * sizeof(char));
       glGetShaderInfoLog(FragmentShaderID,
-                         InfoLogLength+1,
+                         InfoLogLength,
                          NULL,
                          foo);
-      printf("Fragment Shader Info %s\n", foo);
-    }*/
+      SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+		     SDL_LOG_PRIORITY_INFO,
+		     "Fragment Shader Info %s\n",
+		     foo);
+      free(foo);
+    }
 
 
 
     // Link the program
-    //printf("Linking program\n");
+    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+		   SDL_LOG_PRIORITY_INFO,
+		   "Linking program\n");
+
     ProgramID = glCreateProgram();
     glAttachShader(ProgramID, VertexShaderID);
     glAttachShader(ProgramID, FragmentShaderID);
@@ -191,16 +206,24 @@ main_scene_init_scene()
     // Check the program
     glGetProgramiv(ProgramID, GL_LINK_STATUS, &Result);
     glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-    /*if ( InfoLogLength > 0 ){
-      printf("log len %d %d\n", InfoLogLength, Result);
-      char foo[InfoLogLength];
+    if ( InfoLogLength > 0 ){
+      SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+		     SDL_LOG_PRIORITY_INFO,
+		     "log len %d %d\n",
+		     InfoLogLength,
+		     Result);
+      char *foo = (char*) malloc(InfoLogLength * sizeof(char));
       glGetShaderInfoLog(ProgramID,
-                         InfoLogLength + 1,
-                         NULL,
+			 InfoLogLength,
+			 NULL,
                          foo);
-      printf("Linking info %s\n", foo);
+      SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+		     SDL_LOG_PRIORITY_INFO,
+		     "Linking info %s\n",
+		     foo);
+      free(foo);
 
-    }*/
+    }
 
 
     glDetachShader(ProgramID, VertexShaderID);
@@ -209,7 +232,6 @@ main_scene_init_scene()
     glDeleteShader(VertexShaderID);
     glDeleteShader(FragmentShaderID);
 
-    //return ProgramID;
   }
 
 }

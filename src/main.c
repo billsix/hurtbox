@@ -54,7 +54,10 @@ main(int argc, char** argv)
   // Setup SDL
   if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
     {
-      printf("Error: %s\n", SDL_GetError());
+      SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+		     SDL_LOG_PRIORITY_ERROR,
+		     "Error: %s\n",
+		     SDL_GetError());
       return 1;
     }
 
@@ -63,7 +66,9 @@ main(int argc, char** argv)
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 
     SDL_DisplayMode current;
@@ -76,7 +81,10 @@ main(int argc, char** argv)
                                         1280,
                                         720,
                                         SDL_WINDOW_OPENGL|SDL_WINDOW_RESIZABLE))){
-    printf("Could not create window: %s\n", SDL_GetError());
+    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+		   SDL_LOG_PRIORITY_ERROR,
+		   "Could not create window: %s\n",
+		   SDL_GetError());
     return 1;
   }
 
@@ -88,6 +96,7 @@ main(int argc, char** argv)
    *   an OpenGL extension-handling library or with SDL_GL_GetProcAddress()
    */
 
+  glewExperimental = GL_TRUE;
   glewInit();
 
   // initialize OpenGL
@@ -113,7 +122,7 @@ main(int argc, char** argv)
 
   // initialize IMGUI.  Not currently sure what it does.  But I know I need
   // to it
-  imgui_init();
+  //imgui_init();
 
   // initialize controllers
   // TODO -- create a data structure to handle the controllers
@@ -121,10 +130,16 @@ main(int argc, char** argv)
     // TODO -- Use automake to put this file in the installation directory
     //   and figure out how Visual Studio handles similar things (do they have
     //   a "make install"?)
-    printf("%d\n", SDL_GameControllerAddMappingsFromFile("gamecontrollerdb.txt"));
+    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+		   SDL_LOG_PRIORITY_INFO,
+		   "%d\n",
+		   SDL_GameControllerAddMappingsFromFile("gamecontrollerdb.txt"));
 
 
-    printf("%d controllers\n", SDL_NumJoysticks());
+    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+		   SDL_LOG_PRIORITY_INFO,
+		   "%d controllers\n",
+		   SDL_NumJoysticks());
     SDL_GameController *controller = NULL;
     for (int i = 0; i < SDL_NumJoysticks(); ++i) {
       if (SDL_IsGameController(i)) {
@@ -134,7 +149,11 @@ main(int argc, char** argv)
           int instanceID = SDL_JoystickInstanceID( joy );
           break;
         } else {
-          fprintf(stderr, "Could not open gamecontroller %i: %s\n", i, SDL_GetError());
+	  SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+			 SDL_LOG_PRIORITY_INFO,
+			 "Could not open gamecontroller %i: %s\n",
+			 i,
+			 SDL_GetError());
         }
       }
     }
@@ -151,7 +170,7 @@ main(int argc, char** argv)
       while (SDL_PollEvent(&event))
         {
           // from the IMGUI demo, I surmise that I need to do this first
-          imgui_process_events(&event);
+          //imgui_process_events(&event);
 
           // to quote the illustrious Arnetta the Mood Setta, "I quit this bitch"
           if (event.type == SDL_QUIT){
@@ -186,9 +205,9 @@ main(int argc, char** argv)
 
             }
           // if IMGUI has focus, let it take the mouse and keyboard event
-          if(imgui_wants_event()){
-            continue;
-          }
+          //if(imgui_wants_event()){
+          //  continue;
+          //}
           switch(event.type)
             {
             case SDL_MOUSEBUTTONDOWN:
@@ -202,12 +221,12 @@ main(int argc, char** argv)
             }
         }
       (*current_scene.draw_scene)(&event.key.keysym.sym);
-      drawIMGUI();
+      //drawIMGUI();
       SDL_GL_SwapWindow(window);
     }
 
   // Cleanup
-  imgui_shutdown();
+  //imgui_shutdown();
   SDL_GL_DeleteContext(glcontext);
   SDL_DestroyWindow(window);
   SDL_Quit();
