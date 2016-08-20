@@ -1,9 +1,13 @@
 HurtBox
 
 Building-
-  Download a git client.
-  In the current directory, run "git submodule init" and then "git submodule update".
-  This will download the remaining necessary source code from the "Dear IMGUI" project. 
+  Download a git client.  On Windows, the GitHub plugin for Visual Studio works
+  well enough.
+
+  If using git on the command line on linux/windows/osx,
+  in the current directory, run "git submodule init" and then "git submodule update".
+  This will download the remaining necessary source code from the "Dear IMGUI" project.
+  Using GitHub plugin for Windows, the plugin will take care of the submodules.
 
   Installation instructions for popular platforms -
     Linux -
@@ -14,6 +18,7 @@ Building-
         g++
         automake
         autoconf
+        glew
       To build -
         $ ./autogen.sh
         $ ./configure --prefix=$MY_INSTALL_DIR
@@ -21,6 +26,7 @@ Building-
         $ make install
       Verified builds
         Ubuntu 16.04
+        Funtoo
                          
     OS X -
       Prereqs - I used macports to install the following
@@ -30,6 +36,9 @@ Building-
         g++
         automake
         autoconf
+        glew (if using MacPorts' glew, you may need to specify the CFLAGS
+          and CPPFLAGS to have the correct include directory for use
+          at ``configure'' time.
       To build -
         $ ./autogen.sh
         $ ./configure --prefix=$MY_INSTALL_DIR
@@ -39,6 +48,11 @@ Building-
     Windows 10
       Prereqs - Visual Studio 15 (I have Community Edition)
       To build
-        The SDL source code has been included, intended for building on Windows.
+        Both the SDL source code and the GLEW source code has been included,
+        intended for building on Windows exclusively.
         Firstly, open the Visual Studio solution for SDL.sln, and build it.
+        Secondly, do the same for GLEW.  I updated the VC12 solution to
+        be used in VS Community 15.
         Then, open the "HurtBox.sln" and build it.
+        Make sure that you build it with the correct profiles (i.e., if you
+        build SDL and GLEW in debug mode for x86_64, do the same for HurtBox)
