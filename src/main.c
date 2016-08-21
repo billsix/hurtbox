@@ -123,7 +123,7 @@ main(int argc, char** argv)
 
   // initialize IMGUI.  Not currently sure what it does.  But I know I need
   // to it
-  //imgui_init();
+  imgui_init();
 
   // initialize controllers
   // TODO -- create a data structure to handle the controllers
@@ -171,7 +171,7 @@ main(int argc, char** argv)
       while (SDL_PollEvent(&event))
         {
           // from the IMGUI demo, I surmise that I need to do this first
-          //imgui_process_events(&event);
+          imgui_process_events(&event);
 
           // to quote the illustrious Arnetta the Mood Setta, "I quit this bitch"
           if (event.type == SDL_QUIT){
@@ -206,9 +206,9 @@ main(int argc, char** argv)
 
             }
           // if IMGUI has focus, let it take the mouse and keyboard event
-          //if(imgui_wants_event()){
-          //  continue;
-          //}
+          if(imgui_wants_event()){
+            continue;
+          }
           switch(event.type)
             {
             case SDL_MOUSEBUTTONDOWN:
@@ -222,12 +222,12 @@ main(int argc, char** argv)
             }
         }
       (*current_scene.draw_scene)(&event.key.keysym.sym);
-      //drawIMGUI();
+      drawIMGUI();
       SDL_GL_SwapWindow(window);
     }
 
   // Cleanup
-  //imgui_shutdown();
+  imgui_shutdown();
   SDL_GL_DeleteContext(glcontext);
   SDL_DestroyWindow(window);
   SDL_Quit();

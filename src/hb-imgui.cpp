@@ -35,7 +35,7 @@
  * SOFTWARE.
 */
 #include "imgui.h"
-#include "imgui_impl_sdl.h"
+#include "imgui_impl_sdl_gl3.h"
 #include "common.h"
 #include "main.h"
 #include "hb-imgui.h"
@@ -47,7 +47,7 @@ bool show_wall_color_chooser = false;
 void
 drawIMGUI()
 {
-  ImGui_ImplSdl_NewFrame(window);
+	ImGui_ImplSdlGL3_NewFrame(window);
 
   // 1. Show a simple window
   // Tip: if we don't call ImGui::Begin()/ImGui::End() the widgets appears in a window automatically called "Debug"
@@ -132,7 +132,7 @@ drawIMGUI()
 void
 imgui_init()
 {
-	ImGui_ImplSdl_Init(window);
+	ImGui_ImplSdlGL3_Init(window);
 	// Load Fonts
 	// (there is a default font, this is only if you want to change it. see extra_fonts/README.txt for more details)
 	//ImGuiIO& io = ImGui::GetIO();
@@ -147,7 +147,7 @@ imgui_init()
 void
 imgui_process_events(SDL_Event *event)
 {
-  ImGui_ImplSdl_ProcessEvent(event);
+  ImGui_ImplSdlGL3_ProcessEvent(event);
 }
 
 SDL_bool
@@ -161,5 +161,5 @@ imgui_wants_event()
 void
 imgui_shutdown()
 {
-  ImGui_ImplSdl_Shutdown();
+  ImGui_ImplSdlGL3_Shutdown();
 }

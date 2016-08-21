@@ -99,3 +99,4 @@ contrib/imgui/imgui_draw.o
 /Release/HurtBox.log
 /Release/HurtBox.exe
 /Debug/HurtBox.Build.CppClean.log
+/Release/HurtBox.Build.CppClean.log
