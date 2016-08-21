@@ -39,7 +39,6 @@ struct scene_callbacks current_scene = {
   .init_scene = main_scene_init_scene,
   .handle_controller_button_event = &main_scene_controller_handle_button,
   .handle_controller_axis_motion = &main_scene_controller_handle_axis,
-  .handle_key = &main_scene_handle_key,
   .draw_scene = &main_scene_draw_scene
 };
 
@@ -213,15 +212,14 @@ main(int argc, char** argv)
             {
             case SDL_MOUSEBUTTONDOWN:
               break;
-            case SDL_KEYDOWN:
-              (*current_scene.handle_key)(&event.key.keysym.sym);
-              break;
             case SDL_WINDOWEVENT:
               handleWindowEvent(&event);
               break;
             }
         }
-      (*current_scene.draw_scene)(&event.key.keysym.sym);
+
+	  const Uint8 *state = SDL_GetKeyboardState(NULL);
+      (*current_scene.draw_scene)(state);
       drawIMGUI();
       SDL_GL_SwapWindow(window);
     }

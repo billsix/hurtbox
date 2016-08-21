@@ -240,7 +240,7 @@ main_scene_init_scene()
 
 
 void
-main_scene_draw_scene()
+main_scene_draw_scene(const Uint8 *state)
 {
   glUseProgram(ProgramID);
 
@@ -256,6 +256,25 @@ main_scene_draw_scene()
     camera.rotationY += right_axis.horizontal;
 
   }
+
+  // update camera from the keyboard
+  {
+	  if (state[SDL_SCANCODE_RIGHT]) {
+		  camera.rotationY -= (GLfloat)0.1;
+	  }
+	  if (state[SDL_SCANCODE_LEFT]) {
+		  camera.rotationY += (GLfloat)0.1;
+	  }
+	  if (state[SDL_SCANCODE_UP]) {
+		  camera.x -= (GLfloat)sin(camera.rotationY);
+		  camera.z -= (GLfloat)cos(camera.rotationY);
+	  }
+	  if (state[SDL_SCANCODE_DOWN]) {
+		  camera.x += (GLfloat)sin(camera.rotationY);
+		  camera.z += (GLfloat)cos(camera.rotationY);
+	  }
+  }
+
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -383,27 +402,5 @@ main_scene_controller_handle_axis(SDL_ControllerAxisEvent controllerAxisEvent){
     else{
       right_axis.vertical = -((float)value / (float)range) * 0.1;
     }
-  }
-}
-
-void
-main_scene_handle_key(SDL_Keycode *sym){
-  switch(*sym){
-  case SDLK_UP:
-    camera.x -= ( GLfloat ) sin( camera.rotationY);
-    camera.z -= ( GLfloat ) cos( camera.rotationY);
-    break;
-  case SDLK_DOWN:
-    camera.x += ( GLfloat ) sin( camera.rotationY);
-    camera.z += ( GLfloat ) cos( camera.rotationY);
-    break;
-  case SDLK_LEFT:
-    camera.rotationY += ( GLfloat )0.1;
-    break;
-  case SDLK_RIGHT:
-    camera.rotationY -= ( GLfloat )0.1;
-    break;
-  default:
-    break;
   }
 }

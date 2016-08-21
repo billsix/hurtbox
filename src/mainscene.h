@@ -23,10 +23,7 @@ void
 main_scene_controller_handle_button (SDL_ControllerButtonEvent sdlEvent);
 
 void
-main_scene_handle_key(SDL_Keycode *sym);
-
-void
-main_scene_draw_scene();
+main_scene_draw_scene(const Uint8 *state);
 
 
 END_C_DECLS
