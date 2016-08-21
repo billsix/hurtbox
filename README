@@ -50,7 +50,8 @@ Building-
       To build
         Both the SDL source code and the GLEW source code has been included,
         intended for building on Windows exclusively.
-        Firstly, open the Visual Studio solution for SDL.sln, and build it.
+        Firstly, open the Visual Studio solution for SDL.sln, and build it,
+	including the SDL_main project.
         Secondly, do the same for GLEW.  I updated the VC12 solution to
         be used in VS Community 15.
         Then, open the "HurtBox.sln" and build it.

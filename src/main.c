@@ -235,17 +235,6 @@ main(int argc, char** argv)
   return 0;
 }
 
-#ifdef WIN32
-int
-WinMain(HINSTANCE hInstance,
-            HINSTANCE hPrevInstance,
-            LPSTR lpCmdLine,
-            int nCmdShow)
-{
-  main(0, NULL);
-}
-#endif
-
 
 
 void

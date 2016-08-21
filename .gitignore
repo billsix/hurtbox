@@ -100,3 +100,9 @@ contrib/imgui/imgui_draw.o
 /Release/HurtBox.exe
 /Debug/HurtBox.Build.CppClean.log
 /Release/HurtBox.Build.CppClean.log
+/contrib/SDL2-2.0.4/VisualC/x64/Release/SDL2main.lib
+/contrib/SDL2-2.0.4/VisualC/x64/Debug/SDL2main.lib
+/contrib/SDL2-2.0.4/VisualC/Win32/Release/SDL2main.lib
+/contrib/SDL2-2.0.4/VisualC/SDLmain/x64/Release/SDLmain.log
+/contrib/SDL2-2.0.4/VisualC/SDLmain/x64/Debug/SDLmain.log
+/contrib/SDL2-2.0.4/VisualC/SDLmain/Win32/Release/SDLmain.log
