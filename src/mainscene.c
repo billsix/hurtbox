@@ -260,10 +260,10 @@ main_scene_draw_scene(const Uint8 *state)
   // update camera from the keyboard
   {
 	  if (state[SDL_SCANCODE_RIGHT]) {
-		  camera.rotationY -= (GLfloat)0.1;
+		  camera.rotationY -= (GLfloat)0.03;
 	  }
 	  if (state[SDL_SCANCODE_LEFT]) {
-		  camera.rotationY += (GLfloat)0.1;
+		  camera.rotationY += (GLfloat)0.03;
 	  }
 	  if (state[SDL_SCANCODE_UP]) {
 		  camera.x -= (GLfloat)sin(camera.rotationY);
