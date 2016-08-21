@@ -61,16 +61,11 @@ main(int argc, char** argv)
       return 1;
     }
 
-  // Initialize SDL Attributes
+  // Start Initializing SDL Attributes
   {
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-    //SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
-    //SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
-
     SDL_DisplayMode current;
     SDL_GetCurrentDisplayMode(0, &current);
   }
@@ -89,15 +84,21 @@ main(int argc, char** argv)
   }
 
   glcontext = SDL_GL_CreateContext(window);
-  /* Note to self.  SDL's docs tell me that
-   *   Windows users new to OpenGL should note that, for historical reasons,
-   *   GL functions added after OpenGL version 1.1 are not available by
-   *   default. Those functions must be loaded at run-time, either with
-   *   an OpenGL extension-handling library or with SDL_GL_GetProcAddress()
-   */
 
-  //glewExperimental = GL_TRUE;
+  // Finish Initializing SDL Attributes
+  {
+	  SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
+	  SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+	  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+	  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+  }
+
+  glewExperimental = GL_TRUE;
   glewInit();
+
+
+  // for some reason, uncommenting the following line would cause a segfault, at least on Windows 10
+  //SDL_GL_MakeCurrent(glcontext, window);
 
   // initialize OpenGL
   {
