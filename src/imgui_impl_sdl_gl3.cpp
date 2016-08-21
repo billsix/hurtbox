@@ -12,6 +12,7 @@
 // SDL,GL3W
 #include <SDL.h>
 #include <SDL_syswm.h>
+#define GLEW_STATIC 1
 #include <GL/glew.h>
 
 // Data
