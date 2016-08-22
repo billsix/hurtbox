@@ -60,11 +60,15 @@ main(int argc, char** argv)
       return 1;
     }
 
-  // Start Initializing SDL Attributes
+  // Initialize SDL Attributes
   {
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
     SDL_DisplayMode current;
     SDL_GetCurrentDisplayMode(0, &current);
   }
@@ -84,20 +88,19 @@ main(int argc, char** argv)
 
   glcontext = SDL_GL_CreateContext(window);
 
-  // Finish Initializing SDL Attributes
-  {
-	  SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
-	  SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-	  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-	  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
-  }
 
   glewExperimental = GL_TRUE;
   glewInit();
 
 
-  // for some reason, uncommenting the following line would cause a segfault, at least on Windows 10
-  //SDL_GL_MakeCurrent(glcontext, window);
+  SDL_GL_MakeCurrent(glcontext, window);
+
+  // log opengl version
+  SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+                 SDL_LOG_PRIORITY_INFO,
+                 "OpenGL version loaded: %s\n",
+                 glGetString(GL_VERSION));
+
 
   // initialize OpenGL
   {
@@ -106,11 +109,9 @@ main(int argc, char** argv)
     mat4_identity(modelview_matrix);
 
     glClearColor(0,0,0,1);
-    glShadeModel( GL_SMOOTH );
     glClearDepth( 1.0f );
     glEnable( GL_DEPTH_TEST );
     glDepthFunc( GL_LEQUAL );
-    glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
 
     {
       int w, h;
