@@ -16,41 +16,12 @@ struct camera camera = { .x = 0.0,
                          .rotationX = 0.0,
                          .rotationY = 0.0};
 
-// test data
-float wallColors[] = {
-  1.0,1.0,1.0,
-  1.0,1.0,1.0,
-  1.0,1.0,1.0,
+static enum VAO_IDS{WALLS,NumVAOS};
+static enum Buffer_IDS{Position, Color, NumBuffers};
+static enum Attribute_IDS{ vPosition = 0, vColor = 1};
 
-  1.0,1.0,1.0,
-  1.0,1.0,1.0,
-  1.0,1.0,1.0,
-
-  0.0,1.0,1.0,
-  0.0,1.0,1.0,
-  0.0,1.0,1.0,
-
-  0.0,1.0,1.0,
-  0.0,1.0,1.0,
-  0.0,1.0,1.0,
-
-  0.0,0.0,1.0,
-  0.0,0.0,1.0,
-  0.0,0.0,1.0,
-
-  0.0,0.0,1.0,
-  0.0,0.0,1.0,
-  0.0,0.0,1.0,
-
-  1.0,0.0,1.0,
-  1.0,0.0,1.0,
-  1.0,0.0,1.0,
-
-  1.0,0.0,1.0,
-  1.0,0.0,1.0,
-  1.0,0.0,1.0
-};
-
+static GLuint VAOs[NumVAOS];//VertexArrayID;
+static GLuint Buffers[NumBuffers];
 
 
 float wallVertices[] =
@@ -88,218 +59,129 @@ float wallVertices[] =
     40.0, 30.0, -40.0
   };
 
+float wallColors[] = {
+	1.0,1.0,1.0,
+	1.0,1.0,1.0,
+	1.0,1.0,1.0,
 
-static GLuint vertexbuffer;
-static GLuint colorbuffer;
+	1.0,1.0,1.0,
+	1.0,1.0,1.0,
+	1.0,1.0,1.0,
+
+	0.0,1.0,1.0,
+	0.0,1.0,1.0,
+	0.0,1.0,1.0,
+
+	0.0,1.0,1.0,
+	0.0,1.0,1.0,
+	0.0,1.0,1.0,
+
+	0.0,0.0,1.0,
+	0.0,0.0,1.0,
+	0.0,0.0,1.0,
+
+	0.0,0.0,1.0,
+	0.0,0.0,1.0,
+	0.0,0.0,1.0,
+
+	1.0,0.0,1.0,
+	1.0,0.0,1.0,
+	1.0,0.0,1.0,
+
+	1.0,0.0,1.0,
+	1.0,0.0,1.0,
+	1.0,0.0,1.0
+};
+
+
 
 
 const GLchar * const vertex_shader =
-  "#version 150 core \n"
-  "in vec4 vPosition;   \n"
-  "in vec4 vColor; \n"
-  "\n"
-  "out vec4 VOcolor; \n"
-  "\n"
-  "uniform mat4 mvpMatrix; \n"
-  "\n"
-  "void \n"
-  "main(){ \n"
-  "VOcolor = vColor; \n"
-  "gl_Position = mvpMatrix * vPosition; \n"
+  "#version 330 core                           \n"
+  "layout (location = 0) in vec3 vPosition;    \n"
+  "layout (location = 1) in vec3 vColor;       \n"
+  "                                            \n"
+  "out vec4 VOcolor;                           \n"
+  "                                            \n"
+  "uniform mat4 mvpMatrix;                     \n"
+  "                                            \n"
+  "void                                        \n"
+  "main(){                                     \n"
+  "   VOcolor.xyz = vColor;                    \n"
+  "   VOcolor.w = 1.0;                         \n"
+  "   vec4 pos;                                \n"
+  "   pos.xyz = vPosition;                     \n"
+  "   pos.w = 1.0;                             \n"
+  "   gl_Position = mvpMatrix * pos;           \n"
   "}";
 
 
 const GLchar * const fShader =
-  "#version 150 core \n"
-  "in vec4 VOcolor; \n"
-  "out vec4 color; \n"
-  "\n"
-  "void main(){ \n"
-  "color = VOcolor; \n"
+  "#version 330 core                          \n"
+  "in vec4 VOcolor;                           \n"
+  "out vec4 color;                            \n"
+  "                                           \n"
+  "void main(){                               \n"
+  "   color = VOcolor;                        \n"
   "}";
 
 
-GLuint ProgramID;
+
+GLuint wallsProgramID;
 
 void
 main_scene_init_scene()
 {
 
-  GLuint VertexArrayID;
-  glGenVertexArrays(1, &VertexArrayID);
+  glGenVertexArrays(NumVAOS, VAOs);
   GL_DEBUG_ASSERT();
-  glBindVertexArray(VertexArrayID);
+  glBindVertexArray(VAOs[WALLS]);
   GL_DEBUG_ASSERT();
 
-  // populate vertex buffer
+  // populate the buffers
+  glGenBuffers(NumBuffers, Buffers);
   {
-    // This will identify our vertex buffer
-    // Generate 1 buffer, put the resulting identifier in vertexbuffer
-    glGenBuffers(1, &vertexbuffer);
-    GL_DEBUG_ASSERT();
-    // The following commands will talk about our 'vertexbuffer' buffer
-    glBindBuffer(GL_ARRAY_BUFFER,
-                 vertexbuffer);
-    GL_DEBUG_ASSERT();
-    // Give our vertices to OpenGL.
-    glBufferData(GL_ARRAY_BUFFER,
-                 sizeof(wallVertices),
-                 wallVertices,
-                 GL_STATIC_DRAW);
-    GL_DEBUG_ASSERT();
+	  // populate vertex buffer
+	  {
+		  // This will identify our vertex buffer
+		  // Generate 1 buffer, put the resulting identifier in vertexbuffer
+		  GL_DEBUG_ASSERT();
+		  // The following commands will talk about our 'vertexbuffer' buffer
+		  glBindBuffer(GL_ARRAY_BUFFER, Buffers[Position]);
+		  GL_DEBUG_ASSERT();
+		  // Give our vertices to OpenGL.
+		  glBufferData(GL_ARRAY_BUFFER,
+			  sizeof(wallVertices),
+			  wallVertices,
+			  GL_STATIC_DRAW);
+		  GL_DEBUG_ASSERT();
+	  }
+
+	  // populate color buffer
+	  {
+		  GL_DEBUG_ASSERT();
+		  glBindBuffer(GL_ARRAY_BUFFER, Buffers[Color]);
+		  GL_DEBUG_ASSERT();
+		  glBufferData(GL_ARRAY_BUFFER,
+			  sizeof(wallColors),
+			  wallColors,
+			  GL_STATIC_DRAW);
+		  GL_DEBUG_ASSERT();
+	  }
   }
 
-  // populate color buffer
-  {
-    glGenBuffers(1, &colorbuffer);
-    GL_DEBUG_ASSERT();
-    glBindBuffer(GL_ARRAY_BUFFER,
-                 colorbuffer);
-    GL_DEBUG_ASSERT();
-    glBufferData(GL_ARRAY_BUFFER,
-                 sizeof(wallColors),
-                 wallColors,
-                 GL_STATIC_DRAW);
-    GL_DEBUG_ASSERT();
-  }
-
-
-
-
-  GLint Result = GL_FALSE;
-  int InfoLogLength;
-  {
-    // Create the shaders
-    GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
-    GL_DEBUG_ASSERT();
-    GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
-    GL_DEBUG_ASSERT();
-
-
-    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-		   SDL_LOG_PRIORITY_INFO,
-		   "Compiling Vertex shader : %s\n",
-		   vertex_shader);
-
-    // Compile Vertex Shader
-    glShaderSource(VertexShaderID, 1, &vertex_shader , NULL);
-    GL_DEBUG_ASSERT();
-    glCompileShader(VertexShaderID);
-    GL_DEBUG_ASSERT();
-
-    // Check Vertex Shader
-    glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
-    GL_DEBUG_ASSERT();
-    glGetShaderiv(VertexShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-    GL_DEBUG_ASSERT();
-    if ( InfoLogLength > 0 ){
-      char *foo = (char*) malloc(InfoLogLength * sizeof(char));
-      glGetShaderInfoLog(VertexShaderID,
-                         InfoLogLength,
-                         NULL,
-                         foo);
-      GL_DEBUG_ASSERT();
-      SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-		     SDL_LOG_PRIORITY_INFO,
-		     "Vertex Shader info %s\n",
-		     foo);
-      free(foo);
-    }
-
-
-
-    // Compile Fragment Shader
-    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-		   SDL_LOG_PRIORITY_INFO,
-		   "Compiling Fragment shader : %s\n",
-		   fShader);
-    glShaderSource(FragmentShaderID, 1, &fShader , NULL);
-    GL_DEBUG_ASSERT();
-    glCompileShader(FragmentShaderID);
-    GL_DEBUG_ASSERT();
-
-    // Check Fragment Shader
-    glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &Result);
-    GL_DEBUG_ASSERT();
-    glGetShaderiv(FragmentShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-    GL_DEBUG_ASSERT();
-    if ( InfoLogLength > 0 ){
-
-      char *foo = (char*) malloc(InfoLogLength * sizeof(char));
-      glGetShaderInfoLog(FragmentShaderID,
-                         InfoLogLength,
-                         NULL,
-                         foo);
-      GL_DEBUG_ASSERT();
-      SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-		     SDL_LOG_PRIORITY_INFO,
-		     "Fragment Shader Info %s\n",
-		     foo);
-      free(foo);
-    }
-
-
-
-    // Link the program
-    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-		   SDL_LOG_PRIORITY_INFO,
-		   "Linking program\n");
-
-    ProgramID = glCreateProgram();
-    glAttachShader(ProgramID, VertexShaderID);
-    GL_DEBUG_ASSERT();
-    glAttachShader(ProgramID, FragmentShaderID);
-    GL_DEBUG_ASSERT();
-    glLinkProgram(ProgramID);
-    GL_DEBUG_ASSERT();
-
-    // Check the program
-    glGetProgramiv(ProgramID, GL_LINK_STATUS, &Result);
-    GL_DEBUG_ASSERT();
-    glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-    GL_DEBUG_ASSERT();
-    if ( InfoLogLength > 0 ){
-      SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-		     SDL_LOG_PRIORITY_INFO,
-		     "log len %d %d\n",
-		     InfoLogLength,
-		     Result);
-      char *foo = (char*) malloc(InfoLogLength * sizeof(char));
-      glGetShaderInfoLog(ProgramID,
-			 InfoLogLength,
-			 NULL,
-                         foo);
-      GL_DEBUG_ASSERT();
-      SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-		     SDL_LOG_PRIORITY_INFO,
-		     "Linking info %s\n",
-		     foo);
-      free(foo);
-
-    }
-
-
-    glDetachShader(ProgramID, VertexShaderID);
-    GL_DEBUG_ASSERT();
-    glDetachShader(ProgramID, FragmentShaderID);
-    GL_DEBUG_ASSERT();
-
-    glDeleteShader(VertexShaderID);
-    GL_DEBUG_ASSERT();
-    glDeleteShader(FragmentShaderID);
-    GL_DEBUG_ASSERT();
-
-  }
+  GLuint load_shaders();
+  wallsProgramID = load_shaders();
 
 }
 
 
-
+const GLuint numVertices = ARRAY_SIZE(wallVertices) / 3;
 
 void
 main_scene_draw_scene(const Uint8 *state)
 {
-  glUseProgram(ProgramID);
+  glUseProgram(wallsProgramID);
   GL_DEBUG_ASSERT();
 
   // update camera from the controller
@@ -361,7 +243,7 @@ main_scene_draw_scene(const Uint8 *state)
                   cameraMatrix,
                   current_matrix);
 
-    glUniformMatrix4fv(glGetUniformLocation(ProgramID,
+    glUniformMatrix4fv(glGetUniformLocation(wallsProgramID,
                                             "mvpMatrix"),
                        1,
                        GL_FALSE,
@@ -371,11 +253,10 @@ main_scene_draw_scene(const Uint8 *state)
 
     // set the vertex data
     {
-      glEnableVertexAttribArray(glGetAttribLocation(ProgramID,
-                                                    "vPosition"));
-      glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+      glEnableVertexAttribArray(vPosition);
+      glBindBuffer(GL_ARRAY_BUFFER, Buffers[Position]);
       glVertexAttribPointer(
-                            0,
+                            vPosition,
                             3,
                             GL_FLOAT,
                             GL_FALSE,
@@ -387,13 +268,12 @@ main_scene_draw_scene(const Uint8 *state)
 
     // set the color data
     {
-      glEnableVertexAttribArray(glGetAttribLocation(ProgramID,
-                                                    "vColor"));
+      glEnableVertexAttribArray(vColor);
       GL_DEBUG_ASSERT();
-      glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
+      glBindBuffer(GL_ARRAY_BUFFER, Buffers[Color]);
       GL_DEBUG_ASSERT();
       glVertexAttribPointer(
-                            1,
+                            vColor,
                             3,
                             GL_FLOAT,
                             GL_FALSE,
@@ -408,11 +288,11 @@ main_scene_draw_scene(const Uint8 *state)
     // Draw the triangle !
     glDrawArrays(GL_TRIANGLES,
                  0,
-                 ARRAY_SIZE(wallVertices)/3);
+                 numVertices);
     GL_DEBUG_ASSERT();
-    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(vPosition);
     GL_DEBUG_ASSERT();
-    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(vColor);
     GL_DEBUG_ASSERT();
   }
 
@@ -474,3 +354,133 @@ main_scene_controller_handle_axis(SDL_ControllerAxisEvent controllerAxisEvent){
     }
   }
 }
+
+static GLuint load_shaders()
+{
+	GLuint programID;
+	GLint Result = GL_FALSE;
+	int InfoLogLength;
+	// Create the shaders
+	GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
+	GL_DEBUG_ASSERT();
+	GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
+	GL_DEBUG_ASSERT();
+
+
+	SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+		SDL_LOG_PRIORITY_INFO,
+		"Compiling Vertex shader : %s\n",
+		vertex_shader);
+
+	// Compile Vertex Shader
+	glShaderSource(VertexShaderID, 1, &vertex_shader, NULL);
+	GL_DEBUG_ASSERT();
+	glCompileShader(VertexShaderID);
+	GL_DEBUG_ASSERT();
+
+	// Check Vertex Shader
+	glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
+	GL_DEBUG_ASSERT();
+	glGetShaderiv(VertexShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+	GL_DEBUG_ASSERT();
+	if (InfoLogLength > 0) {
+		char *foo = (char*)malloc(InfoLogLength * sizeof(char));
+		glGetShaderInfoLog(VertexShaderID,
+			InfoLogLength,
+			NULL,
+			foo);
+		GL_DEBUG_ASSERT();
+		SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+			SDL_LOG_PRIORITY_INFO,
+			"Vertex Shader info %s\n",
+			foo);
+		free(foo);
+	}
+
+
+
+	// Compile Fragment Shader
+	SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+		SDL_LOG_PRIORITY_INFO,
+		"Compiling Fragment shader : %s\n",
+		fShader);
+	glShaderSource(FragmentShaderID, 1, &fShader, NULL);
+	GL_DEBUG_ASSERT();
+	glCompileShader(FragmentShaderID);
+	GL_DEBUG_ASSERT();
+
+	// Check Fragment Shader
+	glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &Result);
+	GL_DEBUG_ASSERT();
+	glGetShaderiv(FragmentShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+	GL_DEBUG_ASSERT();
+	if (InfoLogLength > 0) {
+
+		char *foo = (char*)malloc(InfoLogLength * sizeof(char));
+		glGetShaderInfoLog(FragmentShaderID,
+			InfoLogLength,
+			NULL,
+			foo);
+		GL_DEBUG_ASSERT();
+		SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+			SDL_LOG_PRIORITY_INFO,
+			"Fragment Shader Info %s\n",
+			foo);
+		free(foo);
+	}
+
+
+
+	// Link the program
+	SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+		SDL_LOG_PRIORITY_INFO,
+		"Linking program\n");
+
+	programID = glCreateProgram();
+	glAttachShader(programID, VertexShaderID);
+	GL_DEBUG_ASSERT();
+	glAttachShader(programID, FragmentShaderID);
+	GL_DEBUG_ASSERT();
+	glLinkProgram(programID);
+	GL_DEBUG_ASSERT();
+
+	// Check the program
+	glGetProgramiv(programID, GL_LINK_STATUS, &Result);
+	GL_DEBUG_ASSERT();
+	glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+	GL_DEBUG_ASSERT();
+	if (InfoLogLength > 0) {
+		SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+			SDL_LOG_PRIORITY_INFO,
+			"log len %d %d\n",
+			InfoLogLength,
+			Result);
+		char *foo = (char*)malloc(InfoLogLength * sizeof(char));
+		glGetProgramInfoLog(programID,
+			InfoLogLength,
+			NULL,
+			foo);
+		GL_DEBUG_ASSERT();
+		SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+			SDL_LOG_PRIORITY_INFO,
+			"Linking info %s\n",
+			foo);
+		free(foo);
+
+	}
+
+
+	glDetachShader(programID, VertexShaderID);
+	GL_DEBUG_ASSERT();
+	glDetachShader(programID, FragmentShaderID);
+	GL_DEBUG_ASSERT();
+
+	glDeleteShader(VertexShaderID);
+	GL_DEBUG_ASSERT();
+	glDeleteShader(FragmentShaderID);
+	GL_DEBUG_ASSERT();
+
+
+	return programID;
+}
+

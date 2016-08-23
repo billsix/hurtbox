@@ -96,8 +96,9 @@ main(int argc, char** argv)
   glewInit();
 
 
+#ifndef _WINDOWS
   SDL_GL_MakeCurrent(glcontext, window);
-
+#endif
   // log opengl version
   SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
                  SDL_LOG_PRIORITY_INFO,
