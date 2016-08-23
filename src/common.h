@@ -24,10 +24,23 @@
 #include <tchar.h>
 #endif
 #include "SDL.h"
-//#define GL_GLEXT_PROTOTYPES 1 // not sure why I need to do this
 #include <GL/glew.h>
+#include <assert.h>
 
 
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
 
+
+// Uncomment the following flag to debug OpenGL calls
+//#define DEBUG 1
+
+#ifdef DEBUG
+#define GL_DEBUG_ASSERT() assert(glGetError() == GL_NO_ERROR)
+#else
+#define GL_DEBUG_ASSERT() (void)0
 #endif
+
+
+
+#endif
+
