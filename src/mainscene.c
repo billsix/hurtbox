@@ -16,9 +16,9 @@ struct camera camera = { .x = 0.0,
                          .rotationX = 0.0,
                          .rotationY = 0.0};
 
-static enum VAO_IDS{WALLS,NumVAOS};
-static enum Buffer_IDS{Position, Color, NumBuffers};
-static enum Attribute_IDS{ vPosition = 0, vColor = 1};
+enum VAO_IDS{WALLS,NumVAOS};
+enum Buffer_IDS{Position, Color, NumBuffers};
+enum Attribute_IDS{ vPosition = 0, vColor = 1};
 
 static GLuint VAOs[NumVAOS];//VertexArrayID;
 static GLuint Buffers[NumBuffers];
@@ -306,8 +306,8 @@ main_scene_init_scene()
 
 const GLuint numVertices = ARRAY_SIZE(wallVertices) / 3;
 
-                                                    void
-                                                    main_scene_draw_scene(const Uint8 *state)
+void
+main_scene_draw_scene(const Uint8 *state)
 {
   glUseProgram(wallsProgramID);
   GL_DEBUG_ASSERT();
