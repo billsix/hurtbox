@@ -60,37 +60,37 @@ float wallVertices[] =
   };
 
 float wallColors[] = {
-	1.0,1.0,1.0,
-	1.0,1.0,1.0,
-	1.0,1.0,1.0,
+  1.0,1.0,1.0,
+  1.0,1.0,1.0,
+  1.0,1.0,1.0,
 
-	1.0,1.0,1.0,
-	1.0,1.0,1.0,
-	1.0,1.0,1.0,
+  1.0,1.0,1.0,
+  1.0,1.0,1.0,
+  1.0,1.0,1.0,
 
-	0.0,1.0,1.0,
-	0.0,1.0,1.0,
-	0.0,1.0,1.0,
+  0.0,1.0,1.0,
+  0.0,1.0,1.0,
+  0.0,1.0,1.0,
 
-	0.0,1.0,1.0,
-	0.0,1.0,1.0,
-	0.0,1.0,1.0,
+  0.0,1.0,1.0,
+  0.0,1.0,1.0,
+  0.0,1.0,1.0,
 
-	0.0,0.0,1.0,
-	0.0,0.0,1.0,
-	0.0,0.0,1.0,
+  0.0,0.0,1.0,
+  0.0,0.0,1.0,
+  0.0,0.0,1.0,
 
-	0.0,0.0,1.0,
-	0.0,0.0,1.0,
-	0.0,0.0,1.0,
+  0.0,0.0,1.0,
+  0.0,0.0,1.0,
+  0.0,0.0,1.0,
 
-	1.0,0.0,1.0,
-	1.0,0.0,1.0,
-	1.0,0.0,1.0,
+  1.0,0.0,1.0,
+  1.0,0.0,1.0,
+  1.0,0.0,1.0,
 
-	1.0,0.0,1.0,
-	1.0,0.0,1.0,
-	1.0,0.0,1.0
+  1.0,0.0,1.0,
+  1.0,0.0,1.0,
+  1.0,0.0,1.0
 };
 
 
@@ -126,6 +126,136 @@ const GLchar * const fShader =
   "}";
 
 
+static GLuint load_shaders()
+{
+  GLuint programID;
+  GLint Result = GL_FALSE;
+  int InfoLogLength;
+  // Create the shaders
+  GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
+  GL_DEBUG_ASSERT();
+  GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
+  GL_DEBUG_ASSERT();
+
+
+  SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+                 SDL_LOG_PRIORITY_INFO,
+                 "Compiling Vertex shader : %s\n",
+                 vertex_shader);
+
+  // Compile Vertex Shader
+  glShaderSource(VertexShaderID, 1, &vertex_shader, NULL);
+  GL_DEBUG_ASSERT();
+  glCompileShader(VertexShaderID);
+  GL_DEBUG_ASSERT();
+
+  // Check Vertex Shader
+  glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
+  GL_DEBUG_ASSERT();
+  glGetShaderiv(VertexShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+  GL_DEBUG_ASSERT();
+  if (InfoLogLength > 0) {
+    char *foo = (char*)malloc(InfoLogLength * sizeof(char));
+    glGetShaderInfoLog(VertexShaderID,
+                       InfoLogLength,
+                       NULL,
+                       foo);
+    GL_DEBUG_ASSERT();
+    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+                   SDL_LOG_PRIORITY_INFO,
+                   "Vertex Shader info %s\n",
+                   foo);
+    free(foo);
+  }
+
+
+
+  // Compile Fragment Shader
+  SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+                 SDL_LOG_PRIORITY_INFO,
+                 "Compiling Fragment shader : %s\n",
+                 fShader);
+  glShaderSource(FragmentShaderID, 1, &fShader, NULL);
+  GL_DEBUG_ASSERT();
+  glCompileShader(FragmentShaderID);
+  GL_DEBUG_ASSERT();
+
+  // Check Fragment Shader
+  glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &Result);
+  GL_DEBUG_ASSERT();
+  glGetShaderiv(FragmentShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+  GL_DEBUG_ASSERT();
+  if (InfoLogLength > 0) {
+
+    char *foo = (char*)malloc(InfoLogLength * sizeof(char));
+    glGetShaderInfoLog(FragmentShaderID,
+                       InfoLogLength,
+                       NULL,
+                       foo);
+    GL_DEBUG_ASSERT();
+    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+                   SDL_LOG_PRIORITY_INFO,
+                   "Fragment Shader Info %s\n",
+                   foo);
+    free(foo);
+  }
+
+
+
+  // Link the program
+  SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+                 SDL_LOG_PRIORITY_INFO,
+                 "Linking program\n");
+
+  programID = glCreateProgram();
+  glAttachShader(programID, VertexShaderID);
+  GL_DEBUG_ASSERT();
+  glAttachShader(programID, FragmentShaderID);
+  GL_DEBUG_ASSERT();
+  glLinkProgram(programID);
+  GL_DEBUG_ASSERT();
+
+  // Check the program
+  glGetProgramiv(programID, GL_LINK_STATUS, &Result);
+  GL_DEBUG_ASSERT();
+  glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+  GL_DEBUG_ASSERT();
+  if (InfoLogLength > 0) {
+    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+                   SDL_LOG_PRIORITY_INFO,
+                   "log len %d %d\n",
+                   InfoLogLength,
+                   Result);
+    char *foo = (char*)malloc(InfoLogLength * sizeof(char));
+    glGetProgramInfoLog(programID,
+			InfoLogLength,
+			NULL,
+			foo);
+    GL_DEBUG_ASSERT();
+    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+                   SDL_LOG_PRIORITY_INFO,
+                   "Linking info %s\n",
+                   foo);
+    free(foo);
+
+  }
+
+
+  glDetachShader(programID, VertexShaderID);
+  GL_DEBUG_ASSERT();
+  glDetachShader(programID, FragmentShaderID);
+  GL_DEBUG_ASSERT();
+
+  glDeleteShader(VertexShaderID);
+  GL_DEBUG_ASSERT();
+  glDeleteShader(FragmentShaderID);
+  GL_DEBUG_ASSERT();
+
+
+  return programID;
+}
+
+
 
 GLuint wallsProgramID;
 
@@ -141,45 +271,43 @@ main_scene_init_scene()
   // populate the buffers
   glGenBuffers(NumBuffers, Buffers);
   {
-	  // populate vertex buffer
-	  {
-		  // This will identify our vertex buffer
-		  // Generate 1 buffer, put the resulting identifier in vertexbuffer
-		  GL_DEBUG_ASSERT();
-		  // The following commands will talk about our 'vertexbuffer' buffer
-		  glBindBuffer(GL_ARRAY_BUFFER, Buffers[Position]);
-		  GL_DEBUG_ASSERT();
-		  // Give our vertices to OpenGL.
-		  glBufferData(GL_ARRAY_BUFFER,
-			  sizeof(wallVertices),
-			  wallVertices,
-			  GL_STATIC_DRAW);
-		  GL_DEBUG_ASSERT();
-	  }
+    // populate vertex buffer
+    {
+      // This will identify our vertex buffer
+      // Generate 1 buffer, put the resulting identifier in vertexbuffer
+      GL_DEBUG_ASSERT();
+      // The following commands will talk about our 'vertexbuffer' buffer
+      glBindBuffer(GL_ARRAY_BUFFER, Buffers[Position]);
+      GL_DEBUG_ASSERT();
+      // Give our vertices to OpenGL.
+      glBufferData(GL_ARRAY_BUFFER,
+                   sizeof(wallVertices),
+                   wallVertices,
+                   GL_STATIC_DRAW);
+      GL_DEBUG_ASSERT();
+    }
 
-	  // populate color buffer
-	  {
-		  GL_DEBUG_ASSERT();
-		  glBindBuffer(GL_ARRAY_BUFFER, Buffers[Color]);
-		  GL_DEBUG_ASSERT();
-		  glBufferData(GL_ARRAY_BUFFER,
-			  sizeof(wallColors),
-			  wallColors,
-			  GL_STATIC_DRAW);
-		  GL_DEBUG_ASSERT();
-	  }
+    // populate color buffer
+    {
+      GL_DEBUG_ASSERT();
+      glBindBuffer(GL_ARRAY_BUFFER, Buffers[Color]);
+      GL_DEBUG_ASSERT();
+      glBufferData(GL_ARRAY_BUFFER,
+                   sizeof(wallColors),
+                   wallColors,
+                   GL_STATIC_DRAW);
+      GL_DEBUG_ASSERT();
+    }
   }
 
-  GLuint load_shaders();
   wallsProgramID = load_shaders();
-
 }
 
 
 const GLuint numVertices = ARRAY_SIZE(wallVertices) / 3;
 
-void
-main_scene_draw_scene(const Uint8 *state)
+                                                    void
+                                                    main_scene_draw_scene(const Uint8 *state)
 {
   glUseProgram(wallsProgramID);
   GL_DEBUG_ASSERT();
@@ -199,20 +327,20 @@ main_scene_draw_scene(const Uint8 *state)
 
   // update camera from the keyboard
   {
-	  if (state[SDL_SCANCODE_RIGHT]) {
-		  camera.rotationY -= (GLfloat)0.03;
-	  }
-	  if (state[SDL_SCANCODE_LEFT]) {
-		  camera.rotationY += (GLfloat)0.03;
-	  }
-	  if (state[SDL_SCANCODE_UP]) {
-		  camera.x -= (GLfloat)sin(camera.rotationY);
-		  camera.z -= (GLfloat)cos(camera.rotationY);
-	  }
-	  if (state[SDL_SCANCODE_DOWN]) {
-		  camera.x += (GLfloat)sin(camera.rotationY);
-		  camera.z += (GLfloat)cos(camera.rotationY);
-	  }
+    if (state[SDL_SCANCODE_RIGHT]) {
+      camera.rotationY -= (GLfloat)0.03;
+    }
+    if (state[SDL_SCANCODE_LEFT]) {
+      camera.rotationY += (GLfloat)0.03;
+    }
+    if (state[SDL_SCANCODE_UP]) {
+      camera.x -= (GLfloat)sin(camera.rotationY);
+      camera.z -= (GLfloat)cos(camera.rotationY);
+    }
+    if (state[SDL_SCANCODE_DOWN]) {
+      camera.x += (GLfloat)sin(camera.rotationY);
+      camera.z += (GLfloat)cos(camera.rotationY);
+    }
   }
 
 
@@ -225,11 +353,11 @@ main_scene_draw_scene(const Uint8 *state)
   // translate from world coordinates to camera coordinates
   {
     mat4_rotateX(cameraMatrix,
-                camera.rotationX,
-                cameraMatrix);
+                 camera.rotationX,
+                 cameraMatrix);
     mat4_rotateY(cameraMatrix,
-                -camera.rotationY,
-                cameraMatrix);
+                 -camera.rotationY,
+                 cameraMatrix);
     float neg_camera[] = {-camera.x,-camera.y,-camera.z};
     mat4_translate(cameraMatrix,
                    neg_camera,
@@ -355,132 +483,4 @@ main_scene_controller_handle_axis(SDL_ControllerAxisEvent controllerAxisEvent){
   }
 }
 
-static GLuint load_shaders()
-{
-	GLuint programID;
-	GLint Result = GL_FALSE;
-	int InfoLogLength;
-	// Create the shaders
-	GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
-	GL_DEBUG_ASSERT();
-	GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
-	GL_DEBUG_ASSERT();
-
-
-	SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-		SDL_LOG_PRIORITY_INFO,
-		"Compiling Vertex shader : %s\n",
-		vertex_shader);
-
-	// Compile Vertex Shader
-	glShaderSource(VertexShaderID, 1, &vertex_shader, NULL);
-	GL_DEBUG_ASSERT();
-	glCompileShader(VertexShaderID);
-	GL_DEBUG_ASSERT();
-
-	// Check Vertex Shader
-	glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
-	GL_DEBUG_ASSERT();
-	glGetShaderiv(VertexShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	GL_DEBUG_ASSERT();
-	if (InfoLogLength > 0) {
-		char *foo = (char*)malloc(InfoLogLength * sizeof(char));
-		glGetShaderInfoLog(VertexShaderID,
-			InfoLogLength,
-			NULL,
-			foo);
-		GL_DEBUG_ASSERT();
-		SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-			SDL_LOG_PRIORITY_INFO,
-			"Vertex Shader info %s\n",
-			foo);
-		free(foo);
-	}
-
-
-
-	// Compile Fragment Shader
-	SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-		SDL_LOG_PRIORITY_INFO,
-		"Compiling Fragment shader : %s\n",
-		fShader);
-	glShaderSource(FragmentShaderID, 1, &fShader, NULL);
-	GL_DEBUG_ASSERT();
-	glCompileShader(FragmentShaderID);
-	GL_DEBUG_ASSERT();
-
-	// Check Fragment Shader
-	glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &Result);
-	GL_DEBUG_ASSERT();
-	glGetShaderiv(FragmentShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	GL_DEBUG_ASSERT();
-	if (InfoLogLength > 0) {
-
-		char *foo = (char*)malloc(InfoLogLength * sizeof(char));
-		glGetShaderInfoLog(FragmentShaderID,
-			InfoLogLength,
-			NULL,
-			foo);
-		GL_DEBUG_ASSERT();
-		SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-			SDL_LOG_PRIORITY_INFO,
-			"Fragment Shader Info %s\n",
-			foo);
-		free(foo);
-	}
-
-
-
-	// Link the program
-	SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-		SDL_LOG_PRIORITY_INFO,
-		"Linking program\n");
-
-	programID = glCreateProgram();
-	glAttachShader(programID, VertexShaderID);
-	GL_DEBUG_ASSERT();
-	glAttachShader(programID, FragmentShaderID);
-	GL_DEBUG_ASSERT();
-	glLinkProgram(programID);
-	GL_DEBUG_ASSERT();
-
-	// Check the program
-	glGetProgramiv(programID, GL_LINK_STATUS, &Result);
-	GL_DEBUG_ASSERT();
-	glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	GL_DEBUG_ASSERT();
-	if (InfoLogLength > 0) {
-		SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-			SDL_LOG_PRIORITY_INFO,
-			"log len %d %d\n",
-			InfoLogLength,
-			Result);
-		char *foo = (char*)malloc(InfoLogLength * sizeof(char));
-		glGetProgramInfoLog(programID,
-			InfoLogLength,
-			NULL,
-			foo);
-		GL_DEBUG_ASSERT();
-		SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-			SDL_LOG_PRIORITY_INFO,
-			"Linking info %s\n",
-			foo);
-		free(foo);
-
-	}
-
-
-	glDetachShader(programID, VertexShaderID);
-	GL_DEBUG_ASSERT();
-	glDetachShader(programID, FragmentShaderID);
-	GL_DEBUG_ASSERT();
-
-	glDeleteShader(VertexShaderID);
-	GL_DEBUG_ASSERT();
-	glDeleteShader(FragmentShaderID);
-	GL_DEBUG_ASSERT();
-
-
-	return programID;
-}
 
