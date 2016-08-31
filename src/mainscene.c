@@ -7,6 +7,7 @@
  */
 
 #include "common.h"
+#include "shader.h"
 #include "main.h"
 
 
@@ -116,7 +117,7 @@ const GLchar * vertex_shader =
   "}";
 
 
-const GLchar * fShader =
+const GLchar * fragment_shader =
   "#version 330 core                          \n"
   "in vec4 VOcolor;                           \n"
   "out vec4 color;                            \n"
@@ -126,134 +127,6 @@ const GLchar * fShader =
   "}";
 
 
-static GLuint load_shaders()
-{
-  GLuint programID;
-  GLint Result = GL_FALSE;
-  int InfoLogLength;
-  // Create the shaders
-  GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
-  GL_DEBUG_ASSERT();
-  GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
-  GL_DEBUG_ASSERT();
-
-
-  SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-                 SDL_LOG_PRIORITY_INFO,
-                 "Compiling Vertex shader : %s\n",
-                 vertex_shader);
-
-  // Compile Vertex Shader
-  glShaderSource(VertexShaderID, 1, &vertex_shader, NULL);
-  GL_DEBUG_ASSERT();
-  glCompileShader(VertexShaderID);
-  GL_DEBUG_ASSERT();
-
-  // Check Vertex Shader
-  glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
-  GL_DEBUG_ASSERT();
-  glGetShaderiv(VertexShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-  GL_DEBUG_ASSERT();
-  if (InfoLogLength > 0) {
-    char *foo = (char*)malloc(InfoLogLength * sizeof(char));
-    glGetShaderInfoLog(VertexShaderID,
-                       InfoLogLength,
-                       NULL,
-                       foo);
-    GL_DEBUG_ASSERT();
-    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-                   SDL_LOG_PRIORITY_INFO,
-                   "Vertex Shader info %s\n",
-                   foo);
-    free(foo);
-  }
-
-
-
-  // Compile Fragment Shader
-  SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-                 SDL_LOG_PRIORITY_INFO,
-                 "Compiling Fragment shader : %s\n",
-                 fShader);
-  glShaderSource(FragmentShaderID, 1, &fShader, NULL);
-  GL_DEBUG_ASSERT();
-  glCompileShader(FragmentShaderID);
-  GL_DEBUG_ASSERT();
-
-  // Check Fragment Shader
-  glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &Result);
-  GL_DEBUG_ASSERT();
-  glGetShaderiv(FragmentShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-  GL_DEBUG_ASSERT();
-  if (InfoLogLength > 0) {
-
-    char *foo = (char*)malloc(InfoLogLength * sizeof(char));
-    glGetShaderInfoLog(FragmentShaderID,
-                       InfoLogLength,
-                       NULL,
-                       foo);
-    GL_DEBUG_ASSERT();
-    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-                   SDL_LOG_PRIORITY_INFO,
-                   "Fragment Shader Info %s\n",
-                   foo);
-    free(foo);
-  }
-
-
-
-  // Link the program
-  SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-                 SDL_LOG_PRIORITY_INFO,
-                 "Linking program\n");
-
-  programID = glCreateProgram();
-  glAttachShader(programID, VertexShaderID);
-  GL_DEBUG_ASSERT();
-  glAttachShader(programID, FragmentShaderID);
-  GL_DEBUG_ASSERT();
-  glLinkProgram(programID);
-  GL_DEBUG_ASSERT();
-
-  // Check the program
-  glGetProgramiv(programID, GL_LINK_STATUS, &Result);
-  GL_DEBUG_ASSERT();
-  glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-  GL_DEBUG_ASSERT();
-  if (InfoLogLength > 0) {
-    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-                   SDL_LOG_PRIORITY_INFO,
-                   "log len %d %d\n",
-                   InfoLogLength,
-                   Result);
-    char *foo = (char*)malloc(InfoLogLength * sizeof(char));
-    glGetProgramInfoLog(programID,
-			InfoLogLength,
-			NULL,
-			foo);
-    GL_DEBUG_ASSERT();
-    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-                   SDL_LOG_PRIORITY_INFO,
-                   "Linking info %s\n",
-                   foo);
-    free(foo);
-
-  }
-
-
-  glDetachShader(programID, VertexShaderID);
-  GL_DEBUG_ASSERT();
-  glDetachShader(programID, FragmentShaderID);
-  GL_DEBUG_ASSERT();
-
-  glDeleteShader(VertexShaderID);
-  GL_DEBUG_ASSERT();
-  glDeleteShader(FragmentShaderID);
-  GL_DEBUG_ASSERT();
-
-
-  return programID;
-}
 
 
 
@@ -301,7 +174,20 @@ main_scene_init_scene()
     }
   }
 
-  wallsProgramID = load_shaders();
+  // load shaders
+  {
+    const GLuint vertexShaderID = compile_shader(GL_VERTEX_SHADER,
+                                                 &vertex_shader);
+    const GLuint fragmentShaderID = compile_shader(GL_FRAGMENT_SHADER,
+                                                   &fragment_shader);
+    wallsProgramID = link_shaders(vertexShaderID,fragmentShaderID);
+
+    // clean up
+    glDeleteShader(vertexShaderID);
+    GL_DEBUG_ASSERT();
+    glDeleteShader(fragmentShaderID);
+    GL_DEBUG_ASSERT();
+  }
 }
 
 void

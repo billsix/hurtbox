@@ -9,6 +9,8 @@ hurtbox_SOURCES = \
 	main.c \
 	hb-imgui.cpp \
 	mainscene.c \
+	shader.h \
+	shader.c \
 	imgui_internal.h \
 	imgui_impl_sdl_gl3.h \
 	imgui_impl_sdl_gl3.cpp \
