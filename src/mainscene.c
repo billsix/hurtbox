@@ -257,7 +257,8 @@ static GLuint load_shaders()
 
 
 
-GLuint wallsProgramID;
+static GLuint 
+wallsProgramID;
 
 void
 main_scene_init_scene()
@@ -303,11 +304,27 @@ main_scene_init_scene()
   wallsProgramID = load_shaders();
 }
 
+void 
+main_scene_update_wall_colors()
+{
+	glBindVertexArray(VAOs[WALLS]);
+	GL_DEBUG_ASSERT();
 
-const GLuint numVertices = ARRAY_SIZE(wallVertices) / 3;
+	glBindBuffer(GL_ARRAY_BUFFER, Buffers[Color]);
+	GL_DEBUG_ASSERT();
+		
+	glBufferData(GL_ARRAY_BUFFER,
+				 sizeof(wallColors),
+				 wallColors,
+			     GL_STATIC_DRAW);
+	GL_DEBUG_ASSERT();
+}
+
+const GLuint 
+numVertices = ARRAY_SIZE(wallVertices) / 3;
 
 void
-main_scene_draw_scene(const Uint8 *state)
+main_scene_draw_scene(const Uint8 * const state)
 {
   glUseProgram(wallsProgramID);
   GL_DEBUG_ASSERT();
@@ -428,59 +445,38 @@ main_scene_draw_scene(const Uint8 *state)
 
 
 void
-main_scene_controller_handle_button (SDL_ControllerButtonEvent sdlEvent)
+main_scene_controller_handle_button (const SDL_ControllerButtonEvent * const sdlEvent)
 {
 
 }
 
 
 void
-main_scene_controller_handle_axis(SDL_ControllerAxisEvent controllerAxisEvent){
-  Uint32 timestamp	= controllerAxisEvent.timestamp;
-  SDL_JoystickID which = controllerAxisEvent.which;
-  Uint8 axis = controllerAxisEvent.axis;
-  Sint16 value = controllerAxisEvent.value; //the axis value (range: -32768 to 32767)
+main_scene_controller_handle_axis(const SDL_ControllerAxisEvent * const controllerAxisEvent){
+  Uint32 timestamp	= controllerAxisEvent->timestamp;
+  SDL_JoystickID which = controllerAxisEvent->which;
+  Uint8 axis = controllerAxisEvent->axis;
+  Sint16 value = controllerAxisEvent->value; //the axis value (range: -32768 to 32767)
 
-  if(axis == 0){
-    // linear scaling has to be changed, probably want x^2
-    const int range = 32768;
-    if(value > -5000 && value < 5000){
-      left_axis.horizontal = 0.0;
-    }
-    else{
-      left_axis.horizontal = -((float)value / (float)range);
-    }
-  }
-  else if(axis == 1){
-    // linear scaling has to be changed, probably want x^2
-    const int range = 32768;
-    if(value > -5000 && value < 5000){
-      left_axis.vertical = 0.0;
-    }
-    else{
-      left_axis.vertical = -((float)value / (float)range) ;
-    }
-  }
-  else if(axis == 2){
-    // linear scaling has to be changed, probably want x^2
-    const int range = 32768;
-    if(value > -5000 && value < 5000){
-      right_axis.horizontal = 0.0;
-    }
-    else{
-      right_axis.horizontal = -((float)value / (float)range) * 0.1;
-    }
-  }
-  else if(axis == 3){
-    // linear scaling has to be changed, probably want x^2
-    const int range = 32768;
-    if(value > -5000 && value < 5000){
-      right_axis.vertical = 0.0;
-    }
-    else{
-      right_axis.vertical = -((float)value / (float)range) * 0.1;
-    }
+  // one of the following values must be updated
+  float* axisValue[] = { &left_axis.horizontal,
+						&left_axis.vertical,
+						&right_axis.horizontal,
+						&right_axis.vertical };
+  // the different axises should change the values at different scales
+  float axisScale[] = { 1.0,1.0,0.1,0.1 };
+
+  const int range = 32768;
+
+  for (int i = 0; i < ARRAY_SIZE(axisValue); i++) {
+	  if (axis == i) {
+		  // linear scaling has to be changed, probably want x^2
+		  *axisValue[i] = (value > -5000 && value < 5000)
+			  ? 0.0
+			  : -((float)value / (float)range) * axisScale[i];
+	  }	  
   }
 }
+
 
 

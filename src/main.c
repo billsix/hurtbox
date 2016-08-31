@@ -197,18 +197,18 @@ main(int argc, char** argv)
             {
             case SDL_CONTROLLERBUTTONDOWN:
               {
-                (*current_scene.handle_controller_button_event)(event.cbutton);
+                (*current_scene.handle_controller_button_event)(&event.cbutton);
                 break;
               }
             case SDL_CONTROLLERBUTTONUP:
               {
-                (*current_scene.handle_controller_button_event)(event.cbutton);
+                (*current_scene.handle_controller_button_event)(&event.cbutton);
                 break;
               }
 
             case SDL_CONTROLLERAXISMOTION:
               {
-                (*current_scene.handle_controller_axis_motion)(event.caxis);
+                (*current_scene.handle_controller_axis_motion)(&event.caxis);
                 break;
               }
 

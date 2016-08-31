@@ -31,9 +31,9 @@ struct axis{
 
 struct scene_callbacks{
   void (*init_scene)();
-  void (*handle_controller_button_event) (SDL_ControllerButtonEvent e);
-  void (*handle_controller_axis_motion) (SDL_ControllerAxisEvent e);
-  void (*draw_scene)(const Uint8 *state);
+  void (*handle_controller_button_event) (const SDL_ControllerButtonEvent * const e);
+  void (*handle_controller_axis_motion) (const SDL_ControllerAxisEvent * const e);
+  void (*draw_scene)(const Uint8 * const state);
 
 };
 
@@ -42,10 +42,7 @@ extern struct axis left_axis;
 extern struct axis right_axis;
 
 // test data
-extern float wall1Color[3];
-extern float wall2Color[3];
-extern float wall3Color[3];
-extern float wall4Color[3];
+extern float wallColors[];
 
 void
 initGL();

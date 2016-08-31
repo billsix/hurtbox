@@ -30,6 +30,7 @@
 
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
 
+#define NOOP() (void)0
 
 // Uncomment the following flag to debug OpenGL calls
 //#define DEBUG 1
@@ -37,7 +38,7 @@
 #ifdef DEBUG
 #define GL_DEBUG_ASSERT() assert(glGetError() == GL_NO_ERROR)
 #else
-#define GL_DEBUG_ASSERT() (void)0
+#define GL_DEBUG_ASSERT() NOOP()
 #endif
 
 

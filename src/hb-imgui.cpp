@@ -38,6 +38,7 @@
 #include "imgui_impl_sdl_gl3.h"
 #include "common.h"
 #include "main.h"
+#include "mainscene.h"
 #include "hb-imgui.h"
 
 bool  show_test_window = false;
@@ -80,16 +81,45 @@ drawIMGUI()
   if (show_wall_color_chooser)
     {
       ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiSetCond_FirstUseEver);
-      ImGui::SetNextWindowSize(ImVec2(550,680), ImGuiSetCond_FirstUseEver);
+      ImGui::SetNextWindowSize(ImVec2(400,200), ImGuiSetCond_FirstUseEver);
 
       ImGui::Begin("Wall Color Changer", &show_wall_color_chooser);
 
-      // ImGui::ColorEdit3("Wall1", wall1Color);
-      // ImGui::ColorEdit3("Wall2", wall2Color);
-      // ImGui::ColorEdit3("Wall3", wall3Color);
-      // ImGui::ColorEdit3("Wall4", wall4Color);
-      ImGui::End();
-    }
+	  // only flush the colors to the graphics card if a color is changed
+	  bool colorUpdated = false;
+	  // there are four wall
+	  for (Uint32 wall = 0; wall < 4; wall++)
+	  {
+		  // text to show up within the widget
+		  char wallName[] = "Wall1";
+		  // replace the 1 with the correct number (there are only four walls
+		  // so this simplistict method is fine
+		  wallName[4] = '1' + wall;
+
+		  // ask IMGUI to make a color editor
+		  // each wall
+		  {
+			  const int verticesPerTriangle = 3;
+			  const int trianglesPerWall = 2;
+			  const int gLFloatsPerVertex = 3;
+			  const int glFloatsPerWall = gLFloatsPerVertex * verticesPerTriangle * trianglesPerWall;
+
+			  if (ImGui::ColorEdit3(wallName, &wallColors[wall * glFloatsPerWall])) {
+				  colorUpdated = true;
+				  for (Uint32 i = 0; i < glFloatsPerWall; i += verticesPerTriangle)
+				  {
+					  float* const colorToSet = &wallColors[wall * glFloatsPerWall + i];
+					  const float* const value = &wallColors[wall * glFloatsPerWall];
+					  memcpy(colorToSet, value, 3 * sizeof(float));
+				  }
+			  }
+		  }
+	  }
+	  if (colorUpdated)
+		  main_scene_update_wall_colors();
+	  ImGui::End();
+  
+  }
 
   const bool show_app_main_menu_bar = true;
   

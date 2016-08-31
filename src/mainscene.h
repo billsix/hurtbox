@@ -17,13 +17,16 @@ void
 main_scene_init_scene();
 
 void
-main_scene_controller_handle_axis(SDL_ControllerAxisEvent controllerAxisEvent);
+main_scene_controller_handle_axis(const SDL_ControllerAxisEvent controllerAxisEvent);
 
 void
-main_scene_controller_handle_button (SDL_ControllerButtonEvent sdlEvent);
+main_scene_controller_handle_button (const SDL_ControllerButtonEvent sdlEvent);
 
 void
-main_scene_draw_scene(const Uint8 *state);
+main_scene_draw_scene(const Uint8 * const state);
+
+void
+main_scene_update_wall_colors();
 
 
 END_C_DECLS
