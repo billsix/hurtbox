@@ -257,7 +257,7 @@ static GLuint load_shaders()
 
 
 
-static GLuint 
+static GLuint
 wallsProgramID;
 
 void
@@ -304,27 +304,27 @@ main_scene_init_scene()
   wallsProgramID = load_shaders();
 }
 
-void 
+void
 main_scene_update_wall_colors()
 {
-	glBindVertexArray(VAOs[WALLS]);
-	GL_DEBUG_ASSERT();
+  glBindVertexArray(VAOs[WALLS]);
+  GL_DEBUG_ASSERT();
 
-	glBindBuffer(GL_ARRAY_BUFFER, Buffers[Color]);
-	GL_DEBUG_ASSERT();
-		
-	glBufferData(GL_ARRAY_BUFFER,
-				 sizeof(wallColors),
-				 wallColors,
-			     GL_STATIC_DRAW);
-	GL_DEBUG_ASSERT();
+  glBindBuffer(GL_ARRAY_BUFFER, Buffers[Color]);
+  GL_DEBUG_ASSERT();
+
+  glBufferData(GL_ARRAY_BUFFER,
+               sizeof(wallColors),
+               wallColors,
+               GL_STATIC_DRAW);
+  GL_DEBUG_ASSERT();
 }
 
-const GLuint 
+const GLuint
 numVertices = ARRAY_SIZE(wallVertices) / 3;
 
-void
-main_scene_draw_scene(const Uint8 * const state)
+                                       void
+                                       main_scene_draw_scene(const Uint8 * const state)
 {
   glUseProgram(wallsProgramID);
   GL_DEBUG_ASSERT();
@@ -460,21 +460,21 @@ main_scene_controller_handle_axis(const SDL_ControllerAxisEvent * const controll
 
   // one of the following values must be updated
   float* axisValue[] = { &left_axis.horizontal,
-						&left_axis.vertical,
-						&right_axis.horizontal,
-						&right_axis.vertical };
+                         &left_axis.vertical,
+                         &right_axis.horizontal,
+                         &right_axis.vertical };
   // the different axises should change the values at different scales
   float axisScale[] = { 1.0,1.0,0.1,0.1 };
 
   const int range = 32768;
 
   for (int i = 0; i < ARRAY_SIZE(axisValue); i++) {
-	  if (axis == i) {
-		  // linear scaling has to be changed, probably want x^2
-		  *axisValue[i] = (value > -5000 && value < 5000)
-			  ? 0.0
-			  : -((float)value / (float)range) * axisScale[i];
-	  }	  
+    if (axis == i) {
+      // linear scaling has to be changed, probably want x^2
+      *axisValue[i] = (value > -5000 && value < 5000)
+        ? 0.0
+        : -((float)value / (float)range) * axisScale[i];
+    }
   }
 }
 
