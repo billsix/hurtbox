@@ -17,10 +17,10 @@ void
 main_scene_init_scene();
 
 void
-main_scene_controller_handle_axis(const SDL_ControllerAxisEvent controllerAxisEvent);
+main_scene_controller_handle_axis(const SDL_ControllerAxisEvent * const controllerAxisEvent);
 
 void
-main_scene_controller_handle_button (const SDL_ControllerButtonEvent sdlEvent);
+main_scene_controller_handle_button (const SDL_ControllerButtonEvent * constsdlEvent);
 
 void
 main_scene_draw_scene(const Uint8 * const state);

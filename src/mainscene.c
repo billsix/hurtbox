@@ -96,7 +96,7 @@ float wallColors[] = {
 
 
 
-const GLchar * const vertex_shader =
+const GLchar * vertex_shader =
   "#version 330 core                           \n"
   "layout (location = 0) in vec3 vPosition;    \n"
   "layout (location = 1) in vec3 vColor;       \n"
@@ -116,7 +116,7 @@ const GLchar * const vertex_shader =
   "}";
 
 
-const GLchar * const fShader =
+const GLchar * fShader =
   "#version 330 core                          \n"
   "in vec4 VOcolor;                           \n"
   "out vec4 color;                            \n"
