@@ -28,6 +28,8 @@ main_scene_draw_scene(const Uint8 * const state);
 void
 main_scene_update_wall_colors();
 
+void
+main_scene_handle_window_event(const SDL_Event* const event);
 
 END_C_DECLS
 #endif

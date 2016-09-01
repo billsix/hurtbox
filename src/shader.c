@@ -28,7 +28,6 @@ compile_shader(GLenum shaderType, const GLchar ** shader_text)
   }
   
   glShaderSource(shaderID, 1, shader_text, NULL);
-
   
   GLint Result = GL_FALSE;
   int InfoLogLength;
@@ -51,7 +50,6 @@ compile_shader(GLenum shaderType, const GLchar ** shader_text)
                    log);
     free(log);
   }
-
   return shaderID;
 }
 
@@ -95,7 +93,6 @@ link_shaders(GLuint vertexShader, GLuint fragmentShader)
     free(log);
 
   }
-
 
   glDetachShader(programID, vertexShader);
   GL_DEBUG_ASSERT();

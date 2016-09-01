@@ -6,12 +6,11 @@
  * Distributed under LGPL 2.1 or Apache 2.0
  */
 
-#include "common.h"
 #include <stdio.h>
+#include "common.h"
 #include "main.h"
 #include "hb-imgui.h"
 #include "gl-matrix.h"
-
 #include "mainscene.h"
 
 SDL_Window *window;
@@ -19,27 +18,26 @@ SDL_Renderer *renderer;
 SDL_GLContext glcontext;
 
 
-GLfloat projection_matrix[16];
-GLfloat modelview_matrix[16];
-
-SDL_bool quitMainLoop = SDL_FALSE;
-
-
 // TODO -- make a data structure to reprsent the full controller,
 // along with multiple controllers
-struct axis left_axis = { .horizontal = 0.0,
-                          .vertical = 0.0};
+struct axis left_axis = {
+  .horizontal = 0.0,
+  .vertical = 0.0
+};
 
-struct axis right_axis = { .horizontal = 0.0,
-                           .vertical = 0.0};
+struct axis right_axis = {
+  .horizontal = 0.0,
+  .vertical = 0.0
+};
 
 
 // function pointers to handle events on a per-scene basis
 struct scene_callbacks current_scene = {
   .init_scene = main_scene_init_scene,
-  .handle_controller_button_event = &main_scene_controller_handle_button,
-  .handle_controller_axis_motion = &main_scene_controller_handle_axis,
-  .draw_scene = &main_scene_draw_scene
+  .handle_controller_button_event = main_scene_controller_handle_button,
+  .handle_controller_axis_motion = main_scene_controller_handle_axis,
+  .draw_scene = main_scene_draw_scene,
+  .handle_window_event = main_scene_handle_window_event
 };
 
 
@@ -87,15 +85,11 @@ main(int argc, char** argv)
   }
 
   glcontext = SDL_GL_CreateContext(window);
-
-
-
   GL_DEBUG_ASSERT();
-
+  // init GLEW
   glewExperimental = GL_TRUE;
   glewInit();
-
-
+  // TODO - figure out why this isn't working on Windows
 #ifndef _WINDOWS
   SDL_GL_MakeCurrent(glcontext, window);
 #endif
@@ -104,14 +98,8 @@ main(int argc, char** argv)
                  SDL_LOG_PRIORITY_INFO,
                  "OpenGL version loaded: %s\n",
                  glGetString(GL_VERSION));
-
-
   // initialize OpenGL
   {
-
-    mat4_identity(projection_matrix);
-    mat4_identity(modelview_matrix);
-
     glClearColor(0,0,0,1);
     GL_DEBUG_ASSERT();
     glClearDepth( 1.0f );
@@ -120,13 +108,6 @@ main(int argc, char** argv)
     GL_DEBUG_ASSERT();
     glDepthFunc( GL_LEQUAL );
     GL_DEBUG_ASSERT();
-
-    {
-      int w, h;
-      SDL_GetWindowSize(window,&w,&h);
-      mat4_perspective(45.0f, (GLfloat)w / (GLfloat)h, 0.1f, 1000.0f,projection_matrix);
-    }
-
   }
 
   // initialize IMGUI.  Not currently sure what it does.  But I know I need
@@ -211,7 +192,6 @@ main(int argc, char** argv)
                 (*current_scene.handle_controller_axis_motion)(&event.caxis);
                 break;
               }
-
             }
           // if IMGUI has focus, let it take the mouse and keyboard event
           if(imgui_wants_event()){
@@ -222,7 +202,7 @@ main(int argc, char** argv)
             case SDL_MOUSEBUTTONDOWN:
               break;
             case SDL_WINDOWEVENT:
-              handleWindowEvent(&event);
+              (*current_scene.handle_window_event)(&event);
               break;
             }
         }
@@ -238,22 +218,8 @@ main(int argc, char** argv)
   SDL_GL_DeleteContext(glcontext);
   SDL_DestroyWindow(window);
   SDL_Quit();
-
   return 0;
 }
 
-
-
-void
-handleWindowEvent(SDL_Event *event){
-  switch (event->window.event){
-  case SDL_WINDOWEVENT_RESIZED:
-    {
-      int w = event->window.data1, h = event->window.data2;
-      mat4_perspective(45.0f, (GLfloat)w / (GLfloat)h, 0.1f, 1000.0f,projection_matrix);
-    }
-    break;
-  }
-}
 
 

@@ -20,9 +20,6 @@ struct camera{
   GLfloat rotationX, rotationY;
 };
 
-extern GLfloat projection_matrix[16];
-extern GLfloat modelview_matrix[16];
-
 
 struct axis{
   float horizontal;
@@ -34,6 +31,8 @@ struct scene_callbacks{
   void (*handle_controller_button_event) (const SDL_ControllerButtonEvent * const e);
   void (*handle_controller_axis_motion) (const SDL_ControllerAxisEvent * const e);
   void (*draw_scene)(const Uint8 * const state);
+  void (*handle_window_event)(const SDL_Event* const event);
+
 
 };
 
@@ -55,9 +54,6 @@ drawScene();
 
 void
 handleKey(SDL_Keycode *sym);
-
-void
-handleWindowEvent(SDL_Event *event);
 
 END_C_DECLS
 #endif
