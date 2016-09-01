@@ -120,33 +120,35 @@ wallColors[] = {
 
 const GLchar *
 vertex_shader =
-  "#version 330 core                           \n"
-  "layout (location = 0) in vec3 vPosition;    \n"
-  "layout (location = 1) in vec3 vColor;       \n"
-  "                                            \n"
-  "out vec4 VOcolor;                           \n"
-  "                                            \n"
-  "uniform mat4 mvpMatrix;                     \n"
-  "                                            \n"
-  "void                                        \n"
-  "main(){                                     \n"
-  "   VOcolor.xyz = vColor;                    \n"
-  "   VOcolor.w = 1.0;                         \n"
-  "   vec4 pos;                                \n"
-  "   pos.xyz = vPosition;                     \n"
-  "   pos.w = 1.0;                             \n"
-  "   gl_Position = mvpMatrix * pos;           \n"
+  "#version 330 core                                   \n"
+  "layout (location = 0) in vec3 vPosition;            \n"
+  "layout (location = 1) in vec3 vColor;               \n"
+  "                                                    \n"
+  "out VS_OUT {                                        \n"
+  "  vec4 color;                                       \n"
+  "} vs_out;                                           \n"
+  "                                                    \n"
+  "uniform mat4 mvpMatrix;                             \n"
+  "                                                    \n"
+  "void                                                \n"
+  "main(){                                             \n"
+  "   vs_out.color = vec4(vColor,1.0);                 \n"
+  "   gl_Position = mvpMatrix * vec4(vPosition,1.0);   \n"
   "}";
 
 
 const GLchar *
 fragment_shader =
-  "#version 330 core                          \n"
-  "in vec4 VOcolor;                           \n"
-  "out vec4 color;                            \n"
-  "                                           \n"
-  "void main(){                               \n"
-  "   color = VOcolor;                        \n"
+  "#version 330 core                                   \n"
+  "                                                    \n"
+  "in VS_OUT {                                         \n"
+  "  vec4 color;                                       \n"
+  "} fs_in;                                            \n"
+  "                                                    \n"
+  "out vec4 color;                                     \n"
+  "                                                    \n"
+  "void main(){                                        \n"
+  "   color = fs_in.color;                             \n"
   "}";
 
 
