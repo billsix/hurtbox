@@ -209,7 +209,7 @@ main(int argc, char** argv)
 
       const Uint8 *state = SDL_GetKeyboardState(NULL);
       (*current_scene.draw_scene)(state);
-      drawIMGUI();
+      imgui_draw();
       SDL_GL_SwapWindow(window);
     }
 

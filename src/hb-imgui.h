@@ -11,8 +11,6 @@
 #include "common.h"
 
 BEGIN_C_DECLS
-void
-drawIMGUI();
 
 void
 imgui_init();
@@ -24,10 +22,10 @@ SDL_bool
 imgui_wants_event();
 
 void
-imgui_shutdown();
+imgui_draw();
 
 void
-drawIMGUI(); 
+imgui_shutdown();
 
 END_C_DECLS
 

@@ -86,7 +86,7 @@ imgui_shutdown()
 }
 
 void
-drawIMGUI()
+imgui_draw()
 {
   ImGui_ImplSdlGL3_NewFrame(window);
 
