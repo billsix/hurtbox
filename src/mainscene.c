@@ -24,16 +24,21 @@ enum VAO_IDS{
 };
 enum Buffer_IDS{
   Position,
-  Color,
-  NumBuffers};
+  UV,
+  NumBuffers
+};
 enum Attribute_IDS{
   vPosition = 0,
-  vColor = 1};
+  vUV = 1
+};
 
 static GLuint
 VAOs[NumVAOS];
+
 static GLuint
 Buffers[NumBuffers];
+
+GLuint textureID;
 
 static float
 projection_matrix[16];
@@ -51,7 +56,7 @@ wallVertices[] =
     -40.0, 0.0, -40.0,
     40.0, 0.0, -40.0,
     40.0, 30.0, -40.0,
-    // Wall 1 triangle 2
+    //Wall 1 triangle 2
     40.0, 30.0, -40.0,
     -40.0, 30.0, -40.0,
     -40.0, 0.0, -40.0,
@@ -81,75 +86,78 @@ wallVertices[] =
     40.0, 30.0, -40.0
   };
 
-float
-wallColors[] = {
+GLfloat
+wallUVs[] = {
   // Wall 1 triangle 1
-  1.0,1.0,1.0,
-  1.0,1.0,1.0,
-  1.0,1.0,1.0,
+  0.0,0.0,
+  1.0,0.0,
+  1.0,1.0,
   // Wall 1 triangle 2
-  1.0,1.0,1.0,
-  1.0,1.0,1.0,
-  1.0,1.0,1.0,
+  1.0,1.0,
+  0.0,1.0,
+  0.0,0,0,
   // Wall 2 triangle 1
-  0.0,1.0,1.0,
-  0.0,1.0,1.0,
-  0.0,1.0,1.0,
+  0.0,0.0,
+  1.0,0.0,
+  1.0,1.0,
   // Wall 2 triangle 2
-  0.0,1.0,1.0,
-  0.0,1.0,1.0,
-  0.0,1.0,1.0,
+  1.0,1.0,
+  0.0,1.0,
+  0.0,0,0,
   // Wall 3 triangle 1
-  0.0,0.0,1.0,
-  0.0,0.0,1.0,
-  0.0,0.0,1.0,
+  1.0,0.0,
+  1.0,1.0,
+  0.0,1.0,
   // Wall 3 triangle 2
-  0.0,0.0,1.0,
-  0.0,0.0,1.0,
-  0.0,0.0,1.0,
+  0.0,1.0,
+  0.0,0.0,
+  1.0,0.0,
   // Wall 4 triangle 1
-  1.0,0.0,1.0,
-  1.0,0.0,1.0,
-  1.0,0.0,1.0,
+  0.0,0.0,
+  1.0,0.0,
+  1.0,1.0,
   // Wall 4 triangle 2
-  1.0,0.0,1.0,
-  1.0,0.0,1.0,
-  1.0,0.0,1.0
+  1.0,1.0,
+  0.0,1.0,
+  0.0,0,0,
 };
 
 
 const GLchar *
 vertex_shader =
-  "#version 330 core                                   \n"
-  "layout (location = 0) in vec3 vPosition;            \n"
-  "layout (location = 1) in vec3 vColor;               \n"
-  "                                                    \n"
-  "out VS_OUT {                                        \n"
-  "  vec4 color;                                       \n"
-  "} vs_out;                                           \n"
-  "                                                    \n"
-  "uniform mat4 mvpMatrix;                             \n"
-  "                                                    \n"
-  "void                                                \n"
-  "main(){                                             \n"
-  "   vs_out.color = vec4(vColor,1.0);                 \n"
-  "   gl_Position = mvpMatrix * vec4(vPosition,1.0);   \n"
+  "#version 330 core                                       \n"
+  "layout (location = 0) in vec3 vPosition;                \n"
+  "layout (location = 1) in vec2 vUV;                      \n"
+  "                                                        \n"
+  "out VS_OUT {                                            \n"
+  "  vec2 uv;                                              \n"
+  "} vs_out;                                               \n"
+  "                                                        \n"
+  "uniform mat4 mvpMatrix;                                 \n"
+  "                                                        \n"
+  "void                                                    \n"
+  "main(){                                                 \n"
+  "   vs_out.uv = vUV;                                     \n"
+  "   gl_Position = mvpMatrix * vec4(vPosition,1.0);       \n"
   "}";
 
 
 const GLchar *
 fragment_shader =
-  "#version 330 core                                   \n"
-  "                                                    \n"
-  "in VS_OUT {                                         \n"
-  "  vec4 color;                                       \n"
-  "} fs_in;                                            \n"
-  "                                                    \n"
-  "out vec4 color;                                     \n"
-  "                                                    \n"
-  "void main(){                                        \n"
-  "   color = fs_in.color;                             \n"
+  "#version 330 core                                           \n"
+  "                                                            \n"
+  "in VS_OUT {                                                 \n"
+  "  vec2 uv;                                                  \n"
+  "} fs_in;                                                    \n"
+  "uniform sampler2D myTextureSampler;                         \n"
+  "                                                            \n"
+  "out vec3 color;                                             \n"
+  "                                                            \n"
+  "void main(){                                                \n"
+  "  color = texture( myTextureSampler, fs_in.uv * 20 ).rgb;  \n"
   "}";
+
+
 
 
 void
@@ -183,11 +191,11 @@ main_scene_init_scene()
     // populate color buffer
     {
       GL_DEBUG_ASSERT();
-      glBindBuffer(GL_ARRAY_BUFFER, Buffers[Color]);
+      glBindBuffer(GL_ARRAY_BUFFER, Buffers[UV]);
       GL_DEBUG_ASSERT();
       glBufferData(GL_ARRAY_BUFFER,
-                   sizeof(wallColors),
-                   wallColors,
+                   sizeof(wallUVs),
+                   wallUVs,
                    GL_STATIC_DRAW);
       GL_DEBUG_ASSERT();
     }
@@ -221,22 +229,44 @@ main_scene_init_scene()
     mat4_identity(model_view_matrix);
   }
 
-}
 
-void
-main_scene_update_wall_colors()
-{
-  glBindVertexArray(VAOs[WALLS]);
-  GL_DEBUG_ASSERT();
+  // load textures
+  {
+    SDL_Surface *thegrid = IMG_Load("../share/hurtbox/thegrid.png");
+    //puts(SDL_GetError());
 
-  glBindBuffer(GL_ARRAY_BUFFER, Buffers[Color]);
-  GL_DEBUG_ASSERT();
 
-  glBufferData(GL_ARRAY_BUFFER,
-               sizeof(wallColors),
-               wallColors,
-               GL_STATIC_DRAW);
-  GL_DEBUG_ASSERT();
+    const GLuint mode = thegrid->format->BytesPerPixel == 4
+      ? GL_RGBA
+      : GL_RGB;
+
+
+    // Create one OpenGL texture
+    {
+      glGenTextures(1, &textureID);
+      glBindTexture(GL_TEXTURE_2D, textureID);
+      glPixelStorei(GL_UNPACK_ALIGNMENT,1);
+      glPixelStorei(GL_PACK_ALIGNMENT,1);
+
+
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+      glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+      glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
+      /* glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE); */
+      /* glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE); */
+      glTexImage2D(GL_TEXTURE_2D,
+                   0,
+                   mode,
+                   thegrid->w,
+                   thegrid->h,
+                   0,
+                   mode,
+                   GL_UNSIGNED_BYTE,
+                   thegrid->pixels);
+    }
+    SDL_FreeSurface(thegrid);
+  }
 }
 
 
@@ -316,7 +346,9 @@ main_scene_draw_scene(const Uint8 * const state)
     // set the vertex data
     {
       glEnableVertexAttribArray(vPosition);
+      GL_DEBUG_ASSERT();
       glBindBuffer(GL_ARRAY_BUFFER, Buffers[Position]);
+      GL_DEBUG_ASSERT();
       glVertexAttribPointer(
                             vPosition,
                             3,
@@ -328,15 +360,33 @@ main_scene_draw_scene(const Uint8 * const state)
       GL_DEBUG_ASSERT();
     }
 
-    // set the color data
+
+    // set the UV data
     {
-      glEnableVertexAttribArray(vColor);
+
+      GLuint textureUniform = glGetUniformLocation(wallsProgramID, "myTextureSampler");
       GL_DEBUG_ASSERT();
-      glBindBuffer(GL_ARRAY_BUFFER, Buffers[Color]);
+
+      // Bind our texture in Texture Unit 0
+      glActiveTexture(GL_TEXTURE0);
+      GL_DEBUG_ASSERT();
+      glUniform1i(textureUniform, 0);
+      GL_DEBUG_ASSERT();
+      glBindTexture(GL_TEXTURE_2D, textureID);
+      GL_DEBUG_ASSERT();
+      // Set our "myTextureSampler" sampler to user Texture Unit 0
+
+
+
+
+
+      glEnableVertexAttribArray(vUV);
+      GL_DEBUG_ASSERT();
+      glBindBuffer(GL_ARRAY_BUFFER, Buffers[UV]);
       GL_DEBUG_ASSERT();
       glVertexAttribPointer(
-                            vColor,
-                            3,
+                            vUV,
+                            2,
                             GL_FLOAT,
                             GL_FALSE,
                             0,
@@ -355,7 +405,7 @@ main_scene_draw_scene(const Uint8 * const state)
     GL_DEBUG_ASSERT();
     glDisableVertexAttribArray(vPosition);
     GL_DEBUG_ASSERT();
-    glDisableVertexAttribArray(vColor);
+    glDisableVertexAttribArray(vUV);
     GL_DEBUG_ASSERT();
   }
 

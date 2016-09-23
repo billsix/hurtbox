@@ -24,6 +24,7 @@
 #include <tchar.h>
 #endif
 #include "SDL.h"
+#include "SDL_image.h"
 #include <GL/glew.h>
 #include <assert.h>
 

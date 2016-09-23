@@ -15,6 +15,8 @@ BEGIN_C_DECLS
 extern SDL_Window *window;
 extern SDL_Renderer *renderer;
 extern SDL_GLContext glcontext;
+extern SDL_PixelFormat RGBAFormat;
+
 struct camera{
   GLfloat x, y, z;
   GLfloat rotationX, rotationY;
@@ -32,8 +34,6 @@ struct scene_callbacks{
   void (*handle_controller_axis_motion) (const SDL_ControllerAxisEvent * const e);
   void (*draw_scene)(const Uint8 * const state);
   void (*handle_window_event)(const SDL_Event* const event);
-
-
 };
 
 extern struct camera camera;

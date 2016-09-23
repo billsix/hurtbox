@@ -16,6 +16,8 @@
 SDL_Window *window;
 SDL_Renderer *renderer;
 SDL_GLContext glcontext;
+SDL_PixelFormat RGBAFormat;
+
 
 
 // TODO -- make a data structure to reprsent the full controller,
@@ -41,9 +43,32 @@ struct scene_callbacks current_scene = {
 };
 
 
+static void
+init_pixel_format()
+{
+
+  RGBAFormat.palette = 0;
+  RGBAFormat.BitsPerPixel = 32; RGBAFormat.BytesPerPixel = 4;
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+  RGBAFormat.Rmask = 0xFF000000; RGBAFormat.Rshift =  0; RGBAFormat.Rloss = 0;
+  RGBAFormat.Gmask = 0x00FF0000; RGBAFormat.Gshift =  8; RGBAFormat.Gloss = 0;
+  RGBAFormat.Bmask = 0x0000FF00; RGBAFormat.Bshift = 16; RGBAFormat.Bloss = 0;
+  RGBAFormat.Amask = 0x000000FF; RGBAFormat.Ashift = 24; RGBAFormat.Aloss = 0;
+#else
+  RGBAFormat.Rmask = 0x000000FF; RGBAFormat.Rshift = 24; RGBAFormat.Rloss = 0;
+  RGBAFormat.Gmask = 0x0000FF00; RGBAFormat.Gshift = 16; RGBAFormat.Gloss = 0;
+  RGBAFormat.Bmask = 0x00FF0000; RGBAFormat.Bshift =  8; RGBAFormat.Bloss = 0;
+  RGBAFormat.Amask = 0xFF000000; RGBAFormat.Ashift =  0; RGBAFormat.Aloss = 0;
+#endif
+
+}
+
+
+
 int
 main(int argc, char** argv)
 {
+
   // TODO - test initilizing individual items, and set flags
   // based off of what is available.
   // for instance, on my Funtoo system, HAPTIC is not enabled,
@@ -83,6 +108,9 @@ main(int argc, char** argv)
 		   SDL_GetError());
     return 1;
   }
+
+  init_pixel_format();
+
 
   glcontext = SDL_GL_CreateContext(window);
   GL_DEBUG_ASSERT();
@@ -220,6 +248,3 @@ main(int argc, char** argv)
   SDL_Quit();
   return 0;
 }
-
-
-
