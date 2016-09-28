@@ -196,10 +196,10 @@ main_scene_init_scene()
     const GLuint fragmentShaderID = compile_shader(GL_FRAGMENT_SHADER,
                                                    &fragment_shader);
     wallsProgramID = link_shaders(vertexShaderID,fragmentShaderID);
-    
+
     mvpMatrix = glGetUniformLocation(wallsProgramID,
                                      "mvpMatrix");
-    
+
     // clean up
     glDeleteShader(vertexShaderID);
     GL_DEBUG_ASSERT();
