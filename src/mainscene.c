@@ -199,6 +199,8 @@ main_scene_init_scene()
 
     mvpMatrix = glGetUniformLocation(wallsProgramID,
                                      "mvpMatrix");
+    wallTexture = glGetUniformLocation(wallsProgramID,
+                                       "wallTexture");
 
     // clean up
     glDeleteShader(vertexShaderID);
