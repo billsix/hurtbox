@@ -229,9 +229,6 @@ main_scene_init_scene()
 void
 main_scene_draw_scene(const Uint8 * const state)
 {
-  glUseProgram(wallsProgramID);
-  GL_DEBUG_ASSERT();
-
   // update camera from the controller
   {
     camera.x -= ( GLfloat ) sin( camera.rotationY) * left_axis.vertical;
@@ -266,6 +263,11 @@ main_scene_draw_scene(const Uint8 * const state)
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   GL_DEBUG_ASSERT();
+
+
+  glUseProgram(wallsProgramID);
+  GL_DEBUG_ASSERT();
+
 
   GLfloat wall_model_view_matrix[16];
   mat4_identity(wall_model_view_matrix);
