@@ -52,74 +52,26 @@ wallsProgramID;
 float
 wallVertices[] =
   {
-    // Wall 1 triangle 1
+    // triangle 1
     -40.0, 0.0, -40.0,
     40.0, 0.0, -40.0,
     40.0, 30.0, -40.0,
-    //Wall 1 triangle 2
+    // triangle 2
     40.0, 30.0, -40.0,
     -40.0, 30.0, -40.0,
-    -40.0, 0.0, -40.0,
-    // Wall 2 triangle 1
-    -40.0, 0.0, 40.0,
-    -40.0, 30.0, 40.0,
-    40.0, 30.0, 40.0,
-    // Wall 2 triangle 2
-    40.0, 30.0, 40.0,
-    40.0, 0.0, 40.0,
-    -40.0, 0.0, 40.0,
-    // Wall 3 triangle 1
-    -40.0, 0.0, -40.0,
-    -40.0, 30.0, -40.0,
-    -40.0, 30.0, 40.0,
-    // Wall 3 triangle 2
-    -40.0, 30.0, 40.0,
-    -40.0, 0.0, 40.0,
-    -40.0, 0.0, -40.0,
-    // Wall 4 triangle 1
-    40.0, 30.0, -40.0,
-    40.0, 0.0, -40.0,
-    40.0, 0.0, 40.0,
-    // Wall 4 triangle 2
-    40.0, 0.0, 40.0,
-    40.0, 30.0, 40.0,
-    40.0, 30.0, -40.0
+    -40.0, 0.0, -40.0
   };
 
 GLfloat
 wallUVs[] = {
-  // Wall 1 triangle 1
+  // triangle 1
   0.0,0.0,
   1.0,0.0,
   1.0,1.0,
-  // Wall 1 triangle 2
+  // triangle 2
   1.0,1.0,
   0.0,1.0,
-  0.0,0,0,
-  // Wall 2 triangle 1
-  0.0,0.0,
-  1.0,0.0,
-  1.0,1.0,
-  // Wall 2 triangle 2
-  1.0,1.0,
-  0.0,1.0,
-  0.0,0,0,
-  // Wall 3 triangle 1
-  1.0,0.0,
-  1.0,1.0,
-  0.0,1.0,
-  // Wall 3 triangle 2
-  0.0,1.0,
-  0.0,0.0,
-  1.0,0.0,
-  // Wall 4 triangle 1
-  0.0,0.0,
-  1.0,0.0,
-  1.0,1.0,
-  // Wall 4 triangle 2
-  1.0,1.0,
-  0.0,1.0,
-  0.0,0,0,
+  0.0,0,0
 };
 
 
@@ -154,7 +106,7 @@ fragment_shader =
   "out vec3 color;                                             \n"
   "                                                            \n"
   "void main(){                                                \n"
-  "  color = texture( myTextureSampler, fs_in.uv * 20 ).rgb;  \n"
+  "  color = texture( myTextureSampler, fs_in.uv * 20 ).rgb;   \n"
   "}";
 
 
@@ -221,7 +173,11 @@ main_scene_init_scene()
     mat4_identity(projection_matrix);
     int w, h;
     SDL_GetWindowSize(window,&w,&h);
-    mat4_perspective(45.0f, (GLfloat)w / (GLfloat)h, 0.1f, 1000.0f,projection_matrix);
+    mat4_perspective(45.0f,
+                     (GLfloat)w / (GLfloat)h,
+                     0.1f,
+                     1000.0f,
+                     projection_matrix);
 
   }
   //initialize the modelview matrix
@@ -318,95 +274,108 @@ main_scene_draw_scene(const Uint8 * const state)
   {
     mat4_rotateX(wall_model_view_matrix,
                  camera.rotationX,
-                 wall_model_view_matrix);
+                 NULL);
     mat4_rotateY(wall_model_view_matrix,
                  -camera.rotationY,
-                 wall_model_view_matrix);
+                 NULL);
     float neg_camera[] = {-camera.x,-camera.y,-camera.z};
     mat4_translate(wall_model_view_matrix,
                    neg_camera,
-                   wall_model_view_matrix);
+                   NULL);
   }
 
   //draw the four walls
   {
-    // translate from camera coordinates to screen coordinates
-    mat4_multiply(projection_matrix,
-                  wall_model_view_matrix,
-                  model_view_matrix);
+    const float pi_over_two = 1.57079632679;
+    float rotation = 0.0f;
+    for(int i = 0;
+        i<4;
+        rotation+=pi_over_two,i++)
+      {
 
-    glUniformMatrix4fv(glGetUniformLocation(wallsProgramID,
-                                            "mvpMatrix"),
-                       1,
-                       GL_FALSE,
-                       model_view_matrix);
-    GL_DEBUG_ASSERT();
-
-
-    // set the vertex data
-    {
-      glEnableVertexAttribArray(vPosition);
-      GL_DEBUG_ASSERT();
-      glBindBuffer(GL_ARRAY_BUFFER, Buffers[Position]);
-      GL_DEBUG_ASSERT();
-      glVertexAttribPointer(
-                            vPosition,
-                            3,
-                            GL_FLOAT,
-                            GL_FALSE,
-                            0,
-                            (void*)0
-                            );
-      GL_DEBUG_ASSERT();
-    }
+        mat4_rotateY(wall_model_view_matrix,
+                     rotation,
+                     NULL);
 
 
-    // set the UV data
-    {
+        // translate from camera coordinates to screen coordinates
+        mat4_multiply(projection_matrix,
+                      wall_model_view_matrix,
+                      model_view_matrix);
 
-      GLuint textureUniform = glGetUniformLocation(wallsProgramID, "myTextureSampler");
-      GL_DEBUG_ASSERT();
-
-      // Bind our texture in Texture Unit 0
-      glActiveTexture(GL_TEXTURE0);
-      GL_DEBUG_ASSERT();
-      glUniform1i(textureUniform, 0);
-      GL_DEBUG_ASSERT();
-      glBindTexture(GL_TEXTURE_2D, textureID);
-      GL_DEBUG_ASSERT();
-      // Set our "myTextureSampler" sampler to user Texture Unit 0
+        glUniformMatrix4fv(glGetUniformLocation(wallsProgramID,
+                                                "mvpMatrix"),
+                           1,
+                           GL_FALSE,
+                           model_view_matrix);
+        GL_DEBUG_ASSERT();
 
 
+        // set the vertex data
+        {
+          glEnableVertexAttribArray(vPosition);
+          GL_DEBUG_ASSERT();
+          glBindBuffer(GL_ARRAY_BUFFER, Buffers[Position]);
+          GL_DEBUG_ASSERT();
+          glVertexAttribPointer(
+                                vPosition,
+                                3,
+                                GL_FLOAT,
+                                GL_FALSE,
+                                0,
+                                (void*)0
+                                );
+          GL_DEBUG_ASSERT();
+        }
+
+
+        // set the UV data
+        {
+
+          GLuint textureUniform = glGetUniformLocation(wallsProgramID, "myTextureSampler");
+          GL_DEBUG_ASSERT();
+
+          // Bind our texture in Texture Unit 0
+          glActiveTexture(GL_TEXTURE0);
+          GL_DEBUG_ASSERT();
+          glUniform1i(textureUniform, 0);
+          GL_DEBUG_ASSERT();
+          glBindTexture(GL_TEXTURE_2D, textureID);
+          GL_DEBUG_ASSERT();
+          // Set our "myTextureSampler" sampler to user Texture Unit 0
 
 
 
-      glEnableVertexAttribArray(vUV);
-      GL_DEBUG_ASSERT();
-      glBindBuffer(GL_ARRAY_BUFFER, Buffers[UV]);
-      GL_DEBUG_ASSERT();
-      glVertexAttribPointer(
-                            vUV,
-                            2,
-                            GL_FLOAT,
-                            GL_FALSE,
-                            0,
-                            (void*)0
-                            );
-      GL_DEBUG_ASSERT();
-    }
 
 
-    static GLuint numVertices = ARRAY_SIZE(wallVertices)/3;
+          glEnableVertexAttribArray(vUV);
+          GL_DEBUG_ASSERT();
+          glBindBuffer(GL_ARRAY_BUFFER, Buffers[UV]);
+          GL_DEBUG_ASSERT();
+          glVertexAttribPointer(
+                                vUV,
+                                2,
+                                GL_FLOAT,
+                                GL_FALSE,
+                                0,
+                                (void*)0
+                                );
+          GL_DEBUG_ASSERT();
+        }
 
-    // Draw the triangles !
-    glDrawArrays(GL_TRIANGLES,
-                 0,
-                 numVertices);
-    GL_DEBUG_ASSERT();
-    glDisableVertexAttribArray(vPosition);
-    GL_DEBUG_ASSERT();
-    glDisableVertexAttribArray(vUV);
-    GL_DEBUG_ASSERT();
+
+        static GLuint numVertices = ARRAY_SIZE(wallVertices)/3;
+
+        // Draw the triangles !
+        glDrawArrays(GL_TRIANGLES,
+                     0,
+                     numVertices);
+        GL_DEBUG_ASSERT();
+        glDisableVertexAttribArray(vPosition);
+        GL_DEBUG_ASSERT();
+        glDisableVertexAttribArray(vUV);
+        GL_DEBUG_ASSERT();
+      }
   }
 
 }
@@ -456,7 +425,10 @@ main_scene_handle_window_event(const SDL_Event* const event){
   case SDL_WINDOWEVENT_RESIZED:
     {
       int w = event->window.data1, h = event->window.data2;
-      mat4_perspective(45.0f, (GLfloat)w / (GLfloat)h, 0.1f, 1000.0f,projection_matrix);
+      mat4_perspective(45.0f,
+                       (GLfloat)w / (GLfloat)h,
+                       0.1f,
+                       1000.0f,projection_matrix);
     }
     break;
   }
