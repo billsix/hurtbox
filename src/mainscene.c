@@ -10,6 +10,10 @@
 #include "shader.h"
 #include "main.h"
 
+/*
+ * camera data
+ */
+
 struct camera camera = {
   .x = 0.0,
   .y = 5.0,
@@ -18,27 +22,42 @@ struct camera camera = {
   .rotationY = 0.0
 };
 
+/*
+ *enums for VBO data
+ */
+
 enum VAO_IDS{
   WALLS,
-  NumVAOS
+  NumVAOS // calculated at compile-time, someone should write a book about that
 };
 enum Buffer_IDS{
   Position,
   UV,
-  NumBuffers
+  NumBuffers // calculated at compile-time, someone should write a book about that
 };
 enum Attribute_IDS{
   vPosition = 0,
   vUV = 1
 };
 
+/*
+ * VAOs
+ */
+
 static GLuint
 VAOs[NumVAOS];
+
+/*
+ * VBOs
+ */
 
 static GLuint
 Buffers[NumBuffers];
 
-GLuint textureID;
+/*
+ * projection and modelview matricies
+ * TODO - make these stackable, with a current matrix
+ */
 
 static float
 projection_matrix[16];
@@ -46,10 +65,27 @@ projection_matrix[16];
 static float
 model_view_matrix[16];
 
+/*
+ * shader data for the 4 walls
+ */
+
 static GLuint
 wallsProgramID;
 
-float
+static GLuint
+mvpMatrix;
+
+static GLuint
+textureID;
+
+static GLuint
+wallTexture;
+
+/*
+ * The vertex and UV data
+ */
+
+GLfloat
 wallVertices[] =
   {
     // triangle 1
@@ -101,12 +137,12 @@ fragment_shader =
   "in VS_OUT {                                                 \n"
   "  vec2 uv;                                                  \n"
   "} fs_in;                                                    \n"
-  "uniform sampler2D myTextureSampler;                         \n"
+  "uniform sampler2D wallTexture;                         \n"
   "                                                            \n"
   "out vec3 color;                                             \n"
   "                                                            \n"
   "void main(){                                                \n"
-  "  color = texture( myTextureSampler, fs_in.uv * 20 ).rgb;   \n"
+  "  color = texture( wallTexture, fs_in.uv * 20 ).rgb;   \n"
   "}";
 
 
@@ -160,7 +196,10 @@ main_scene_init_scene()
     const GLuint fragmentShaderID = compile_shader(GL_FRAGMENT_SHADER,
                                                    &fragment_shader);
     wallsProgramID = link_shaders(vertexShaderID,fragmentShaderID);
-
+    
+    mvpMatrix = glGetUniformLocation(wallsProgramID,
+                                     "mvpMatrix");
+    
     // clean up
     glDeleteShader(vertexShaderID);
     GL_DEBUG_ASSERT();
@@ -280,7 +319,7 @@ main_scene_draw_scene(const Uint8 * const state)
     mat4_rotateY(wall_model_view_matrix,
                  -camera.rotationY,
                  NULL);
-    float neg_camera[] = {-camera.x,-camera.y,-camera.z};
+    GLfloat neg_camera[] = {-camera.x,-camera.y,-camera.z};
     mat4_translate(wall_model_view_matrix,
                    neg_camera,
                    NULL);
@@ -288,8 +327,8 @@ main_scene_draw_scene(const Uint8 * const state)
 
   //draw the four walls
   {
-    const float pi_over_two = 1.57079632679;
-    float rotation = 0.0f;
+    const GLfloat pi_over_two = 1.57079632679;
+    GLfloat rotation = 0.0f;
     for(int i = 0;
         i<4;
         rotation+=pi_over_two,i++)
@@ -305,8 +344,7 @@ main_scene_draw_scene(const Uint8 * const state)
                       wall_model_view_matrix,
                       model_view_matrix);
 
-        glUniformMatrix4fv(glGetUniformLocation(wallsProgramID,
-                                                "mvpMatrix"),
+        glUniformMatrix4fv(mvpMatrix,
                            1,
                            GL_FALSE,
                            model_view_matrix);
@@ -319,49 +357,39 @@ main_scene_draw_scene(const Uint8 * const state)
           GL_DEBUG_ASSERT();
           glBindBuffer(GL_ARRAY_BUFFER, Buffers[Position]);
           GL_DEBUG_ASSERT();
-          glVertexAttribPointer(
-                                vPosition,
+          glVertexAttribPointer(vPosition,
                                 3,
                                 GL_FLOAT,
                                 GL_FALSE,
                                 0,
-                                (void*)0
-                                );
+                                (void*)0);
           GL_DEBUG_ASSERT();
         }
 
 
         // set the UV data
         {
-
-          GLuint textureUniform = glGetUniformLocation(wallsProgramID, "myTextureSampler");
           GL_DEBUG_ASSERT();
 
           // Bind our texture in Texture Unit 0
           glActiveTexture(GL_TEXTURE0);
           GL_DEBUG_ASSERT();
-          glUniform1i(textureUniform, 0);
+          glUniform1i(wallTexture, 0);
           GL_DEBUG_ASSERT();
           glBindTexture(GL_TEXTURE_2D, textureID);
           GL_DEBUG_ASSERT();
-          // Set our "myTextureSampler" sampler to user Texture Unit 0
-
-
-
 
 
           glEnableVertexAttribArray(vUV);
           GL_DEBUG_ASSERT();
           glBindBuffer(GL_ARRAY_BUFFER, Buffers[UV]);
           GL_DEBUG_ASSERT();
-          glVertexAttribPointer(
-                                vUV,
+          glVertexAttribPointer(vUV,
                                 2,
                                 GL_FLOAT,
                                 GL_FALSE,
                                 0,
-                                (void*)0
-                                );
+                                (void*)0);
           GL_DEBUG_ASSERT();
         }
 
@@ -398,14 +426,14 @@ main_scene_controller_handle_axis(const SDL_ControllerAxisEvent * const controll
   Sint16 value = controllerAxisEvent->value; //the axis value (range: -32768 to 32767)
 
   // one of the following values must be updated
-  float* axisValue[] = {
+  GLfloat* axisValue[] = {
     &left_axis.horizontal,
     &left_axis.vertical,
     &right_axis.horizontal,
     &right_axis.vertical
   };
   // the different axises should change the values at different scales
-  float axisScale[] = {
+  GLfloat axisScale[] = {
     1.0,
     1.0,
     0.1,
@@ -417,7 +445,7 @@ main_scene_controller_handle_axis(const SDL_ControllerAxisEvent * const controll
   // linear scaling has to be changed, probably want x^2
   *axisValue[axis] = (value > -5000 && value < 5000)
     ? 0.0
-    : -((float)value / (float)range) * axisScale[axis];
+    : -((GLfloat)value / (GLfloat)range) * axisScale[axis];
 }
 
 
@@ -435,7 +463,3 @@ main_scene_handle_window_event(const SDL_Event* const event){
     break;
   }
 }
-
-
-
-
