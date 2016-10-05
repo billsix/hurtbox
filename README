@@ -1,24 +1,24 @@
 HurtBox
 
 Building-
-  Download a git client.  On Windows, the GitHub plugin for Visual Studio works
-  well enough.
+  Download a git client.
 
-  If using git on the command line on linux/windows/osx,
-  in the current directory, run "git submodule init" and then "git submodule update".
+  Run "git submodule init" and then "git submodule update".
   This will download the remaining necessary source code from the "Dear IMGUI" project.
-  Using GitHub plugin for Windows, the plugin will take care of the submodules.
+
+  Prereqs - Use your package manager to install the following
+    sdl2
+    sdl2 development libraries
+    gcc
+    g++
+    automake
+    autoconf
+    glew
+
 
   Installation instructions for popular platforms -
     Linux -
-      Prereqs - Use your package manager to install the following
-        sdl2
-        sdl2 development libraries
-        gcc
-        g++
-        automake
-        autoconf
-        glew
+      Prereqs - Use your package manager (apt, dnf, emerge, pacman, etc) to install the prereqs
       To build -
         $ ./autogen.sh
         $ ./configure --prefix=$MY_INSTALL_DIR
@@ -29,16 +29,7 @@ Building-
         Funtoo
                          
     OS X -
-      Prereqs - I used macports to install the following
-        sdl2
-        sdl2 development libraries
-        gcc
-        g++
-        automake
-        autoconf
-        glew (if using MacPorts' glew, you may need to specify the CFLAGS
-          and CPPFLAGS to have the correct include directory for use
-          at ``configure'' time.
+      Prereqs - Use your package manager (I use macports) to install the prereqs
       To build -
         $ ./autogen.sh
         $ ./configure --prefix=$MY_INSTALL_DIR
@@ -46,14 +37,9 @@ Building-
         $ make install
   
     Windows 10
-      Prereqs - Visual Studio 15 (I have Community Edition)
-      To build
-        Both the SDL source code and the GLEW source code has been included,
-        intended for building on Windows exclusively.
-        Firstly, open the Visual Studio solution for SDL.sln, and build it,
-	including the SDL_main project.
-        Secondly, do the same for GLEW.  I updated the VC12 solution to
-        be used in VS Community 15.
-        Then, open the "HurtBox.sln" and build it.
-        Make sure that you build it with the correct profiles (i.e., if you
-        build SDL and GLEW in debug mode for x86_64, do the same for HurtBox)
+      Prereqs - MSys2, install the prereqs using pacman -S
+      To build -
+        $ ./autogen.sh
+        $ ./configure --prefix=$MY_INSTALL_DIR
+        $ make
+        $ make install

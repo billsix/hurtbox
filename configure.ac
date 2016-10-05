@@ -10,10 +10,18 @@ AC_PROG_CXX
 AC_PROG_INSTALL
 AC_CONFIG_FILES([Makefile doc/Makefile src/Makefile])
 
+
 case "$target_os" in
     darwin*)
              LDFLAGS="-framework OpenGL $LDFLAGS"
              ;;
+    ming*)
+             LDFLAGS="-lopengl32 $LDFLAGS"
+             ;;
+    *)
+             LDFLAGS="-lGL $LDFLAGS"
+             ;;
+
 esac
 
 dnl Check for SDL
@@ -22,7 +30,11 @@ AM_PATH_SDL2($SDL_VERSION,
             :,
             AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
 )
-CFLAGS="$CFLAGS -std=c99 $SDL_CFLAGS"
+
+GLEW_CFLAGS=$(pkg-config --cflags glew)
+GLEW_LIBS=$(pkg-config --libs glew)
+
+CFLAGS="$CFLAGS -std=c99 $GLEW_CFLAGS $SDL_CFLAGS"
 CXXFLAGS="$CXXFLAGS $SDL_CFLAGS"
-LIBS="$LIBS $SDL_LIBS"
+LIBS="$LIBS $SDL_LIBS $GLEW_LIBS"
 AC_OUTPUT
