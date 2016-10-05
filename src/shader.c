@@ -28,6 +28,7 @@ compile_shader(GLenum shaderType, const GLchar ** shader_text)
   }
   
   glShaderSource(shaderID, 1, shader_text, NULL);
+  glCompileShader(shaderID);
   
   GLint Result = GL_FALSE;
   int InfoLogLength;
