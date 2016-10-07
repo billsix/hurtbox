@@ -36,7 +36,9 @@ hurtbox_CFLAGS = \
 	$(GLEW_CFLAGS) \
 	$(SDL_CFLAGS)
 
-hurtbox_CXXFLAGS=$(SDL_CFLAGS)
+hurtbox_CXXFLAGS= \
+	$(GLEW_CFLAGS) \
+	$(SDL_CFLAGS)
 
 hurtbox_LDADD = \
 	$(GLEW_LIBS) \
