@@ -229,7 +229,7 @@ main_scene_init_scene()
 
   // load textures
   {
-    SDL_Surface *thegrid = IMG_Load("../share/hurtbox/thegrid.png");
+    SDL_Surface *thegrid = IMG_Load("../share/hurtbox/textures/thegrid.png");
     //puts(SDL_GetError());
 
 

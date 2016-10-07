@@ -21,10 +21,15 @@ hurtbox_SOURCES = \
 	$(abs_top_srcdir)/contrib/gl-matrix.c/str.c \
 	$(abs_top_srcdir)/contrib/imgui/imgui.cpp \
 	$(abs_top_srcdir)/contrib/imgui/imgui_demo.cpp \
-	$(abs_top_srcdir)/contrib/imgui/imgui_draw.cpp 
+	$(abs_top_srcdir)/contrib/imgui/imgui_draw.cpp
 hurtboxdir = $(datarootdir)/$(PACKAGE)/
 
-hurtbox_DATA = gamecontrollerdb.txt ../textures/thegrid.png
+hurtbox_DATA = gamecontrollerdb.txt
+
+hurtbox_dir = $(pkgdatadir)
+hurtbox_texture_dir = $(hurtbox_dir)/textures
+hurtbox_texture__DATA = ../textures/thegrid.png
+
 
 hurtbox_CFLAGS = \
 	-std=c99 \
