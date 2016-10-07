@@ -23,5 +23,18 @@ hurtbox_SOURCES = \
 	$(abs_top_srcdir)/contrib/imgui/imgui_demo.cpp \
 	$(abs_top_srcdir)/contrib/imgui/imgui_draw.cpp 
 hurtboxdir = $(datarootdir)/$(PACKAGE)/
+
 hurtbox_DATA = gamecontrollerdb.txt ../textures/thegrid.png
-hurtbox_LDADD = $(LDFLAGS) -lSDL2_image
+
+hurtbox_CFLAGS = \
+	-std=c99 \
+	$(GLEW_CFLAGS) \
+	$(SDL_CFLAGS)
+
+hurtbox_CXXFLAGS=$(SDL_CFLAGS)
+
+hurtbox_LDADD = \
+	$(GLEW_LIBS) \
+	$(SDL_LIBS) \
+	$(OPENGL_LIB) \
+	-lSDL2_image
