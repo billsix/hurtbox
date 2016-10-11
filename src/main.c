@@ -118,9 +118,7 @@ main(int argc, char** argv)
   glewExperimental = GL_TRUE;
   glewInit();
   // TODO - figure out why this isn't working on Windows
-#ifndef _WINDOWS
-  SDL_GL_MakeCurrent(glcontext, window);
-#endif
+  SDL_GL_MakeCurrent(window,glcontext);
   // log opengl version
   SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
                  SDL_LOG_PRIORITY_INFO,
