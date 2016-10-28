@@ -8,7 +8,18 @@
 
 #include "common.h"
 #include "shader.h"
+#include "mainscene.h"
 #include "main.h"
+
+struct scene_callbacks main_scene_callbacks = {
+  .init_scene = main_scene_init_scene,
+  .handle_controller_button_event = main_scene_controller_handle_button,
+  .handle_controller_axis_motion = main_scene_controller_handle_axis,
+  .draw_scene = main_scene_draw_scene,
+  .handle_window_event = main_scene_handle_window_event,
+  .leave_scene = main_scene_leave_scene
+};
+
 
 /*
  * camera data
@@ -30,29 +41,28 @@ enum VAO_IDS{
   WALLS,
   NumVAOS // calculated at compile-time, someone should write a book about that
 };
+
+static GLuint
+VAOs[NumVAOS];
+
+
 enum Buffer_IDS{
   Position,
   UV,
   NumBuffers // calculated at compile-time, someone should write a book about that
 };
+
+static GLuint
+Buffers[NumBuffers];
+
+
+
 enum Attribute_IDS{
   vPosition = 0,
   vUV = 1
 };
 
-/*
- * VAOs
- */
 
-static GLuint
-VAOs[NumVAOS];
-
-/*
- * VBOs
- */
-
-static GLuint
-Buffers[NumBuffers];
 
 /*
  * projection and modelview matricies
@@ -73,13 +83,13 @@ static GLuint
 wallsProgramID;
 
 static GLuint
-mvpMatrix;
+mvpMatrixLoc;
 
 static GLuint
 textureID;
 
 static GLuint
-wallTexture;
+wallTextureLoc;
 
 /*
  * The vertex and UV data
@@ -187,6 +197,40 @@ main_scene_init_scene()
                    GL_STATIC_DRAW);
       GL_DEBUG_ASSERT();
     }
+
+    // set the vertex data
+    {
+      glEnableVertexAttribArray(vPosition);
+      GL_DEBUG_ASSERT();
+      glBindBuffer(GL_ARRAY_BUFFER, Buffers[Position]);
+      GL_DEBUG_ASSERT();
+      glVertexAttribPointer(vPosition,
+                            3,
+                            GL_FLOAT,
+                            GL_FALSE,
+                            0,
+                            (void*)0);
+      GL_DEBUG_ASSERT();
+    }
+
+    // set the UV data
+    {
+      GL_DEBUG_ASSERT();
+
+      glEnableVertexAttribArray(vUV);
+      GL_DEBUG_ASSERT();
+      glBindBuffer(GL_ARRAY_BUFFER, Buffers[UV]);
+      GL_DEBUG_ASSERT();
+      glVertexAttribPointer(vUV,
+                            2,
+                            GL_FLOAT,
+                            GL_FALSE,
+                            0,
+                            (void*)0);
+      GL_DEBUG_ASSERT();
+    }
+
+
   }
 
   // load shaders
@@ -197,10 +241,10 @@ main_scene_init_scene()
                                                    &fragment_shader);
     wallsProgramID = link_shaders(vertexShaderID,fragmentShaderID);
 
-    mvpMatrix = glGetUniformLocation(wallsProgramID,
-                                     "mvpMatrix");
-    wallTexture = glGetUniformLocation(wallsProgramID,
-                                       "wallTexture");
+    mvpMatrixLoc = glGetUniformLocation(wallsProgramID,
+                                        "mvpMatrix");
+    wallTextureLoc = glGetUniformLocation(wallsProgramID,
+                                          "wallTexture");
 
     // clean up
     glDeleteShader(vertexShaderID);
@@ -266,6 +310,12 @@ main_scene_init_scene()
   }
 }
 
+void
+main_scene_leave_scene()
+{
+
+}
+
 
 void
 main_scene_draw_scene(const Uint8 * const state)
@@ -329,6 +379,7 @@ main_scene_draw_scene(const Uint8 * const state)
 
   //draw the four walls
   {
+    glBindVertexArray(VAOs[WALLS]);
     const GLfloat pi_over_two = 1.57079632679;
     GLfloat rotation = 0.0f;
     for(int i = 0;
@@ -346,54 +397,22 @@ main_scene_draw_scene(const Uint8 * const state)
                       wall_model_view_matrix,
                       model_view_matrix);
 
-        glUniformMatrix4fv(mvpMatrix,
+        glUniformMatrix4fv(mvpMatrixLoc,
                            1,
                            GL_FALSE,
                            model_view_matrix);
         GL_DEBUG_ASSERT();
 
 
-        // set the vertex data
-        {
-          glEnableVertexAttribArray(vPosition);
-          GL_DEBUG_ASSERT();
-          glBindBuffer(GL_ARRAY_BUFFER, Buffers[Position]);
-          GL_DEBUG_ASSERT();
-          glVertexAttribPointer(vPosition,
-                                3,
-                                GL_FLOAT,
-                                GL_FALSE,
-                                0,
-                                (void*)0);
-          GL_DEBUG_ASSERT();
-        }
 
+        // Bind our texture in Texture Unit 0
+        glActiveTexture(GL_TEXTURE0);
+        GL_DEBUG_ASSERT();
+        glUniform1i(wallTextureLoc, 0);
+        GL_DEBUG_ASSERT();
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        GL_DEBUG_ASSERT();
 
-        // set the UV data
-        {
-          GL_DEBUG_ASSERT();
-
-          // Bind our texture in Texture Unit 0
-          glActiveTexture(GL_TEXTURE0);
-          GL_DEBUG_ASSERT();
-          glUniform1i(wallTexture, 0);
-          GL_DEBUG_ASSERT();
-          glBindTexture(GL_TEXTURE_2D, textureID);
-          GL_DEBUG_ASSERT();
-
-
-          glEnableVertexAttribArray(vUV);
-          GL_DEBUG_ASSERT();
-          glBindBuffer(GL_ARRAY_BUFFER, Buffers[UV]);
-          GL_DEBUG_ASSERT();
-          glVertexAttribPointer(vUV,
-                                2,
-                                GL_FLOAT,
-                                GL_FALSE,
-                                0,
-                                (void*)0);
-          GL_DEBUG_ASSERT();
-        }
 
 
         static GLuint numVertices = ARRAY_SIZE(wallVertices)/3;
@@ -403,11 +422,10 @@ main_scene_draw_scene(const Uint8 * const state)
                      0,
                      numVertices);
         GL_DEBUG_ASSERT();
-        glDisableVertexAttribArray(vPosition);
-        GL_DEBUG_ASSERT();
-        glDisableVertexAttribArray(vUV);
-        GL_DEBUG_ASSERT();
       }
+    // unbind the current VAO
+    glBindVertexArray(0);
+
   }
 
 }

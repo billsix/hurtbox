@@ -33,15 +33,6 @@ struct axis right_axis = {
 };
 
 
-// function pointers to handle events on a per-scene basis
-struct scene_callbacks current_scene = {
-  .init_scene = main_scene_init_scene,
-  .handle_controller_button_event = main_scene_controller_handle_button,
-  .handle_controller_axis_motion = main_scene_controller_handle_axis,
-  .draw_scene = main_scene_draw_scene,
-  .handle_window_event = main_scene_handle_window_event
-};
-
 
 static void
 init_pixel_format()
@@ -175,6 +166,9 @@ main(int argc, char** argv)
     }
   }
 
+
+  // use the main scene's callbacks
+  struct scene_callbacks current_scene = main_scene_callbacks;
   (*current_scene.init_scene)();
 
   // The event loop.  Keep on truckin'.

@@ -13,6 +13,9 @@
 
 BEGIN_C_DECLS
 
+extern struct scene_callbacks
+main_scene_callbacks;
+
 void
 main_scene_init_scene();
 
@@ -30,6 +33,10 @@ main_scene_update_wall_colors();
 
 void
 main_scene_handle_window_event(const SDL_Event* const event);
+
+void
+main_scene_leave_scene();
+
 
 END_C_DECLS
 #endif
