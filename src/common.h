@@ -42,7 +42,7 @@
 #define GL_DEBUG_ASSERT() NOOP()
 #endif
 
-
+#define BUFFER_OFFSET(offset) ((void *) (offset))
 
 #endif
 

@@ -209,7 +209,7 @@ main_scene_init_scene()
                             GL_FLOAT,
                             GL_FALSE,
                             0,
-                            (void*)0);
+                            BUFFER_OFFSET(0));
       GL_DEBUG_ASSERT();
     }
 
@@ -226,7 +226,7 @@ main_scene_init_scene()
                             GL_FLOAT,
                             GL_FALSE,
                             0,
-                            (void*)0);
+                            BUFFER_OFFSET(0));
       GL_DEBUG_ASSERT();
     }
 
