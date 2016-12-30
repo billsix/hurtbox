@@ -285,17 +285,23 @@ main_scene_init_scene()
     // Create one OpenGL texture
     {
       glGenTextures(1, &textureID);
+      GL_DEBUG_ASSERT();
       glBindTexture(GL_TEXTURE_2D, textureID);
+      GL_DEBUG_ASSERT();
       glPixelStorei(GL_UNPACK_ALIGNMENT,1);
+      GL_DEBUG_ASSERT();
       glPixelStorei(GL_PACK_ALIGNMENT,1);
+      GL_DEBUG_ASSERT();
 
 
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      GL_DEBUG_ASSERT();
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+      GL_DEBUG_ASSERT();
       glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+      GL_DEBUG_ASSERT();
       glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
-      /* glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE); */
-      /* glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE); */
+      GL_DEBUG_ASSERT();
       glTexImage2D(GL_TEXTURE_2D,
                    0,
                    mode,
@@ -305,6 +311,8 @@ main_scene_init_scene()
                    mode,
                    GL_UNSIGNED_BYTE,
                    thegrid->pixels);
+      GL_DEBUG_ASSERT();
+      glGenerateMipmap(GL_TEXTURE_2D);
     }
     SDL_FreeSurface(thegrid);
   }
