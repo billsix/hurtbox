@@ -115,6 +115,16 @@ main(int argc, char** argv)
                  SDL_LOG_PRIORITY_INFO,
                  "OpenGL version loaded: %s\n",
                  glGetString(GL_VERSION));
+
+  // enable vsync so that the framerate doesn't go crazy, thus
+  // messing up inputs and movement rates
+  if(-1 == SDL_GL_SetSwapInterval(1))
+    {
+      SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+                     SDL_LOG_PRIORITY_INFO,
+                     "VSync not set correctly\n");
+
+    }
   // initialize OpenGL
   {
     glClearColor(0,0,0,1);
