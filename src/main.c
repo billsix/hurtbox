@@ -266,8 +266,14 @@ main(int argc, char** argv)
             case SDL_MOUSEBUTTONDOWN:
               break;
             case SDL_WINDOWEVENT:
-              (*current_scene.handle_window_event)(&event);
-              break;
+              {
+                int w, h;
+                SDL_GetWindowSize(window,&w,&h);
+                glViewport(0, 0,
+                           w, h);
+                (*current_scene.handle_window_event)(&event);
+                break;
+              }
             }
         }
       nk_input_end(ctx);

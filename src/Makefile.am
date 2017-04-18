@@ -35,4 +35,5 @@ hurtbox_LDADD = \
 	$(GLEW_LIBS) \
 	$(SDL_LIBS) \
 	$(OPENGL_LIB) \
-	-lSDL2_image
+	-lSDL2_image \
+	-lm
