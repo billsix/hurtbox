@@ -3,9 +3,6 @@ HurtBox
 Building-
   Download a git client.
 
-  Run "git submodule init" and then "git submodule update".
-  This will download the remaining necessary source code from the "Dear IMGUI" project.
-
   Prereqs - Use your package manager to install the following
     sdl2
     sdl2 development libraries

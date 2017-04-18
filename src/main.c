@@ -9,7 +9,6 @@
 #include <stdio.h>
 #include "common.h"
 #include "main.h"
-#include "hb-imgui.h"
 #include "gl-matrix.h"
 #include "mainscene.h"
 
@@ -137,10 +136,6 @@ main(int argc, char** argv)
     GL_DEBUG_ASSERT();
   }
 
-  // initialize IMGUI.  Not currently sure what it does.  But I know I need
-  // to it
-  imgui_init();
-
   // initialize controllers
   // TODO -- create a data structure to handle the controllers
   {
@@ -189,20 +184,10 @@ main(int argc, char** argv)
       SDL_Event event;
       while (SDL_PollEvent(&event))
         {
-          // from the IMGUI demo, I surmise that I need to do this first
-          imgui_process_events(&event);
-
           // to quote the illustrious Arnetta the Mood Setta, "I quit this bitch"
           if (event.type == SDL_QUIT){
             done = SDL_TRUE;
           }
-
-          /* If the user has his mouse over an IMGUI control, the user should
-           * expect that the event will be handled by IMGUI.  A few lines down,
-           * this code asks IMGUI if it wants the event, and if so it lets IMGUI
-           * exclusively handle it.  However, joysticks will not control
-           * IMGUI controls, and should be handled firstly.
-           */
 
           switch(event.type)
             {
@@ -223,10 +208,6 @@ main(int argc, char** argv)
                 break;
               }
             }
-          // if IMGUI has focus, let it take the mouse and keyboard event
-          if(imgui_wants_event()){
-            continue;
-          }
           switch(event.type)
             {
             case SDL_MOUSEBUTTONDOWN:
@@ -239,12 +220,10 @@ main(int argc, char** argv)
 
       const Uint8 *state = SDL_GetKeyboardState(NULL);
       (*current_scene.draw_scene)(state);
-      imgui_draw();
       SDL_GL_SwapWindow(window);
     }
 
   // Cleanup
-  imgui_shutdown();
   SDL_GL_DeleteContext(glcontext);
   SDL_DestroyWindow(window);
   SDL_Quit();

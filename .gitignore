@@ -21,11 +21,3 @@ src/Makefile
 src/Makefile.in
 src/hurtbox
 stamp-h1
-contrib/imgui/.deps/
-contrib/imgui/.dirstamp
-contrib/imgui/examples/sdl_opengl_example/.deps/
-contrib/imgui/examples/sdl_opengl_example/.dirstamp
-contrib/imgui/imgui.o
-contrib/imgui/imgui_demo.o
-contrib/imgui/imgui_draw.o
-/imgui.ini
