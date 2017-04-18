@@ -1,4 +1,4 @@
-.TH HELLO 1 "6/17/2016" "(C) William Emerison Six" "William Emerison Six"
+.TH HELLO 1 "6/17/2017" "(C) William Emerison Six" "William Emerison Six"
 .
 .SH NAME
 hurtbox \- Extensible fighting game

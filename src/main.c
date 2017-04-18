@@ -1,17 +1,12 @@
 /*
  * William Emerison Six
  *
- * Copyright 2016 - William Emerison Six
+ * Copyright 2016-2017 - William Emerison Six
  * All rights reserved
  * Distributed under LGPL 2.1 or Apache 2.0
  */
 
 #include <stdio.h>
-#include "common.h"
-#include "main.h"
-#include "gl-matrix.h"
-#include "mainscene.h"
-
 // nuklear defs
 #define NK_INCLUDE_FIXED_TYPES
 #define NK_INCLUDE_STANDARD_IO
@@ -26,8 +21,11 @@
 #define MAX_VERTEX_MEMORY 512 * 1024
 #define MAX_ELEMENT_MEMORY 128 * 1024
 
-#include "../contrib/nuklear/nuklear.h"
-#include "../contrib/nuklear/nuklear_sdl_gl3.h"
+#include "common.h"
+#include "main.h"
+#include "gl-matrix.h"
+#include "mainscene.h"
+
 
 
 
@@ -205,7 +203,8 @@ main(int argc, char** argv)
   {
     /* Load Fonts: if none of these are loaded a default font will be used  */
     /* Load Cursor: if you uncomment cursor loading please hide the cursor */
-    {struct nk_font_atlas *atlas;
+    {
+      struct nk_font_atlas *atlas;
       nk_sdl_font_stash_begin(&atlas);
       /*struct nk_font *droid = nk_font_atlas_add_from_file(atlas, "../../../extra_font/DroidSans.ttf", 14, 0);*/
       /*struct nk_font *roboto = nk_font_atlas_add_from_file(atlas, "../../../extra_font/Roboto-Regular.ttf", 16, 0);*/
@@ -276,101 +275,49 @@ main(int argc, char** argv)
       const Uint8 *state = SDL_GetKeyboardState(NULL);
       (*current_scene.draw_scene)(state);
 
-      // draw nuklear stuff
+      // nuklear
       {
-        /* GUI */
-        if (nk_begin(ctx, "Demo", nk_rect(50, 50, 200, 200),
-		     NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
-		     NK_WINDOW_CLOSABLE|NK_WINDOW_MINIMIZABLE|NK_WINDOW_TITLE))
-	  {
-            nk_menubar_begin(ctx);
-            nk_layout_row_begin(ctx, NK_STATIC, 25, 2);
-            nk_layout_row_push(ctx, 45);
-            if (nk_menu_begin_label(ctx, "FILE", NK_TEXT_LEFT, nk_vec2(120, 200))) {
-	      nk_layout_row_dynamic(ctx, 30, 1);
-	      nk_menu_item_label(ctx, "OPEN", NK_TEXT_LEFT);
-	      nk_menu_item_label(ctx, "CLOSE", NK_TEXT_LEFT);
-	      nk_menu_end(ctx);
-            }
-            nk_layout_row_push(ctx, 45);
-            if (nk_menu_begin_label(ctx, "EDIT", NK_TEXT_LEFT, nk_vec2(120, 200))) {
-	      nk_layout_row_dynamic(ctx, 30, 1);
-	      nk_menu_item_label(ctx, "COPY", NK_TEXT_LEFT);
-	      nk_menu_item_label(ctx, "CUT", NK_TEXT_LEFT);
-	      nk_menu_item_label(ctx, "PASTE", NK_TEXT_LEFT);
-	      nk_menu_end(ctx);
-            }
-            nk_layout_row_end(ctx);
-            nk_menubar_end(ctx);
+	/* IMPORTANT: `nk_sdl_render` modifies some global OpenGL state
+	 * with blending, scissor, face culling, depth test and viewport and
+	 * defaults everything back into a default state.
+	 * Make sure to either a.) save and restore or b.) reset your own state after
+	 * rendering the UI. */
+	// Backup GL state
+	GLint last_program; glGetIntegerv(GL_CURRENT_PROGRAM, &last_program);
+	GLint last_texture; glGetIntegerv(GL_TEXTURE_BINDING_2D, &last_texture);
+	GLint last_active_texture; glGetIntegerv(GL_ACTIVE_TEXTURE, &last_active_texture);
+	GLint last_array_buffer; glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &last_array_buffer);
+	GLint last_element_array_buffer; glGetIntegerv(GL_ELEMENT_ARRAY_BUFFER_BINDING, &last_element_array_buffer);
+	GLint last_vertex_array; glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &last_vertex_array);
+	GLint last_blend_src; glGetIntegerv(GL_BLEND_SRC, &last_blend_src);
+	GLint last_blend_dst; glGetIntegerv(GL_BLEND_DST, &last_blend_dst);
+	GLint last_blend_equation_rgb; glGetIntegerv(GL_BLEND_EQUATION_RGB, &last_blend_equation_rgb);
+	GLint last_blend_equation_alpha; glGetIntegerv(GL_BLEND_EQUATION_ALPHA, &last_blend_equation_alpha);
+	GLint last_viewport[4]; glGetIntegerv(GL_VIEWPORT, last_viewport);
+	GLint last_scissor_box[4]; glGetIntegerv(GL_SCISSOR_BOX, last_scissor_box);
+	GLboolean last_enable_blend = glIsEnabled(GL_BLEND);
+	GLboolean last_enable_cull_face = glIsEnabled(GL_CULL_FACE);
+	GLboolean last_enable_depth_test = glIsEnabled(GL_DEPTH_TEST);
+	GLboolean last_enable_scissor_test = glIsEnabled(GL_SCISSOR_TEST);
 
-            enum {EASY, HARD};
-            static int op = EASY;
-            static int property = 20;
-            nk_layout_row_static(ctx, 30, 80, 1);
-            if (nk_button_label(ctx, "button"))
-	      fprintf(stdout, "button pressed\n");
-            nk_layout_row_dynamic(ctx, 30, 2);
-            if (nk_option_label(ctx, "easy", op == EASY)) op = EASY;
-            if (nk_option_label(ctx, "hard", op == HARD)) op = HARD;
-            nk_layout_row_dynamic(ctx, 25, 1);
-            nk_property_int(ctx, "Compression:", 0, &property, 100, 10, 1);
-	  }
-        nk_end(ctx);
-
-        /* -------------- EXAMPLES ---------------- */
-        /*calculator(ctx);*/
-        /*overview(ctx);*/
-        /*node_editor(ctx);*/
-        /* ----------------------------------------- */
-
-        /* Draw */
-        {
-	  /* IMPORTANT: `nk_sdl_render` modifies some global OpenGL state
-	   * with blending, scissor, face culling, depth test and viewport and
-	   * defaults everything back into a default state.
-	   * Make sure to either a.) save and restore or b.) reset your own state after
-	   * rendering the UI. */
-	  // Backup GL state
-	  GLint last_program; glGetIntegerv(GL_CURRENT_PROGRAM, &last_program);
-	  GLint last_texture; glGetIntegerv(GL_TEXTURE_BINDING_2D, &last_texture);
-	  GLint last_active_texture; glGetIntegerv(GL_ACTIVE_TEXTURE, &last_active_texture);
-	  GLint last_array_buffer; glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &last_array_buffer);
-	  GLint last_element_array_buffer; glGetIntegerv(GL_ELEMENT_ARRAY_BUFFER_BINDING, &last_element_array_buffer);
-	  GLint last_vertex_array; glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &last_vertex_array);
-	  GLint last_blend_src; glGetIntegerv(GL_BLEND_SRC, &last_blend_src);
-	  GLint last_blend_dst; glGetIntegerv(GL_BLEND_DST, &last_blend_dst);
-	  GLint last_blend_equation_rgb; glGetIntegerv(GL_BLEND_EQUATION_RGB, &last_blend_equation_rgb);
-	  GLint last_blend_equation_alpha; glGetIntegerv(GL_BLEND_EQUATION_ALPHA, &last_blend_equation_alpha);
-	  GLint last_viewport[4]; glGetIntegerv(GL_VIEWPORT, last_viewport);
-	  GLint last_scissor_box[4]; glGetIntegerv(GL_SCISSOR_BOX, last_scissor_box);
-	  GLboolean last_enable_blend = glIsEnabled(GL_BLEND);
-	  GLboolean last_enable_cull_face = glIsEnabled(GL_CULL_FACE);
-	  GLboolean last_enable_depth_test = glIsEnabled(GL_DEPTH_TEST);
-	  GLboolean last_enable_scissor_test = glIsEnabled(GL_SCISSOR_TEST);
-
-	  // render nuklear
-	  nk_sdl_render(NK_ANTI_ALIASING_ON, MAX_VERTEX_MEMORY, MAX_ELEMENT_MEMORY);
-	  // Restore modified GL state
-	  {
-	    glUseProgram(last_program);
-	    glActiveTexture(last_active_texture);
-	    glBindTexture(GL_TEXTURE_2D, last_texture);
-	    glBindVertexArray(last_vertex_array);
-	    glBindBuffer(GL_ARRAY_BUFFER, last_array_buffer);
-	    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, last_element_array_buffer);
-	    glBlendEquationSeparate(last_blend_equation_rgb, last_blend_equation_alpha);
-	    glBlendFunc(last_blend_src, last_blend_dst);
-	    if (last_enable_blend) glEnable(GL_BLEND); else glDisable(GL_BLEND);
-	    if (last_enable_cull_face) glEnable(GL_CULL_FACE); else glDisable(GL_CULL_FACE);
-	    if (last_enable_depth_test) glEnable(GL_DEPTH_TEST); else glDisable(GL_DEPTH_TEST);
-	    if (last_enable_scissor_test) glEnable(GL_SCISSOR_TEST); else glDisable(GL_SCISSOR_TEST);
-	    glViewport(last_viewport[0], last_viewport[1], (GLsizei)last_viewport[2], (GLsizei)last_viewport[3]);
-	    glScissor(last_scissor_box[0], last_scissor_box[1], (GLsizei)last_scissor_box[2], (GLsizei)last_scissor_box[3]);
-	  }
-
-
-	}
-
+	(*current_scene.draw_nuklear)(ctx);
+	// render nuklear
+	nk_sdl_render(NK_ANTI_ALIASING_ON, MAX_VERTEX_MEMORY, MAX_ELEMENT_MEMORY);
+	// Restore modified GL state
+	glUseProgram(last_program);
+	glActiveTexture(last_active_texture);
+	glBindTexture(GL_TEXTURE_2D, last_texture);
+	glBindVertexArray(last_vertex_array);
+	glBindBuffer(GL_ARRAY_BUFFER, last_array_buffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, last_element_array_buffer);
+	glBlendEquationSeparate(last_blend_equation_rgb, last_blend_equation_alpha);
+	glBlendFunc(last_blend_src, last_blend_dst);
+	if (last_enable_blend) glEnable(GL_BLEND); else glDisable(GL_BLEND);
+	if (last_enable_cull_face) glEnable(GL_CULL_FACE); else glDisable(GL_CULL_FACE);
+	if (last_enable_depth_test) glEnable(GL_DEPTH_TEST); else glDisable(GL_DEPTH_TEST);
+	if (last_enable_scissor_test) glEnable(GL_SCISSOR_TEST); else glDisable(GL_SCISSOR_TEST);
+	glViewport(last_viewport[0], last_viewport[1], (GLsizei)last_viewport[2], (GLsizei)last_viewport[3]);
+	glScissor(last_scissor_box[0], last_scissor_box[1], (GLsizei)last_scissor_box[2], (GLsizei)last_scissor_box[3]);
       }
       SDL_GL_SwapWindow(window);
     }

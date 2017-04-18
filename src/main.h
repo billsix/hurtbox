@@ -3,7 +3,7 @@
 /*
  * William Emerison Six
  *
- * Copyright 2016 - William Emerison Six
+ * Copyright 2016-2017 - William Emerison Six
  * All rights reserved
  * Distributed under LGPL 2.1 or Apache 2.0
  */
@@ -35,6 +35,7 @@ struct scene_callbacks{
   void (*draw_scene)(const Uint8 * const state);
   void (*handle_window_event)(const SDL_Event* const event);
   void (*leave_scene)();
+  void (*draw_nuklear)(struct nk_context *ctx);
 };
 
 extern struct camera camera;

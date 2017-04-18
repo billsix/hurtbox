@@ -28,6 +28,8 @@
 #include <GL/glew.h>
 #include <assert.h>
 
+#include "../contrib/nuklear/nuklear.h"
+#include "../contrib/nuklear/nuklear_sdl_gl3.h"
 
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
 
