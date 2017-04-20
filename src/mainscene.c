@@ -6,10 +6,12 @@
  * Distributed under LGPL 2.1 or Apache 2.0
  */
 
+#include <stdio.h>
 #include "common.h"
 #include "shader.h"
 #include "mainscene.h"
 #include "main.h"
+
 
 struct scene_callbacks main_scene_callbacks = {
   .init_scene = main_scene_init_scene,
@@ -274,7 +276,12 @@ main_scene_init_scene()
 
   // load textures
   {
+
+#ifdef _WIN32
+    SDL_Surface *thegrid = IMG_Load("textures/thegrid.png");
+#else
     SDL_Surface *thegrid = IMG_Load("../share/hurtbox/textures/thegrid.png");
+#endif
     //puts(SDL_GetError());
 
 
@@ -312,6 +319,11 @@ main_scene_init_scene()
                    mode,
                    GL_UNSIGNED_BYTE,
                    thegrid->pixels);
+      GL_DEBUG_ASSERT();
+      GL_DEBUG_ASSERT();
+      glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+      GL_DEBUG_ASSERT();
+      glPixelStorei(GL_PACK_ALIGNMENT, 1);
       GL_DEBUG_ASSERT();
       glGenerateMipmap(GL_TEXTURE_2D);
     }
@@ -524,7 +536,7 @@ main_scene_draw_nuklear(struct nk_context *ctx){
       static int property = 20;
       nk_layout_row_static(ctx, 30, 80, 1);
       if (nk_button_label(ctx, "button"))
-	fprintf(stdout, "button pressed\n");
+        printf("button pressed\n");
       nk_layout_row_dynamic(ctx, 30, 2);
       if (nk_option_label(ctx, "easy", op == EASY)) op = EASY;
       if (nk_option_label(ctx, "hard", op == HARD)) op = HARD;

@@ -3,8 +3,9 @@
 
 #define M_PI acos(-1.0)
 #include "gl-matrix.h"
-
+#ifndef _WIN32
 #define GLEW_STATIC 1
+#endif
 
 #ifdef __cplusplus
 #define BEGIN_C_DECLS extern "C" {
@@ -28,6 +29,7 @@
 #include <GL/glew.h>
 #include <assert.h>
 
+// nuklear defs
 #define NK_INCLUDE_FIXED_TYPES
 #define NK_INCLUDE_STANDARD_IO
 #define NK_INCLUDE_STANDARD_VARARGS

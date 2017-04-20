@@ -7,14 +7,6 @@
  */
 
 #include <stdio.h>
-// nuklear defs
-#define NK_INCLUDE_FIXED_TYPES
-#define NK_INCLUDE_STANDARD_IO
-#define NK_INCLUDE_STANDARD_VARARGS
-#define NK_INCLUDE_DEFAULT_ALLOCATOR
-#define NK_INCLUDE_VERTEX_BUFFER_OUTPUT
-#define NK_INCLUDE_FONT_BAKING
-#define NK_INCLUDE_DEFAULT_FONT
 #define NK_IMPLEMENTATION
 #define NK_SDL_GL3_IMPLEMENTATION
 
@@ -71,7 +63,9 @@ init_pixel_format()
 }
 
 
-
+#ifdef __cplusplus
+extern "C"
+#endif
 int
 main(int argc, char** argv)
 {
@@ -89,6 +83,8 @@ main(int argc, char** argv)
 		     SDL_GetError());
       return 1;
     }
+
+  IMG_Init(IMG_INIT_PNG);
 
   // Initialize SDL Attributes
   {
@@ -111,7 +107,7 @@ main(int argc, char** argv)
                                         720,
                                         SDL_WINDOW_OPENGL
 					|SDL_WINDOW_RESIZABLE
-					|SDL_WINDOW_ALLOW_HIGHDPI))){
+                                        |SDL_WINDOW_ALLOW_HIGHDPI))){
     SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
 		   SDL_LOG_PRIORITY_ERROR,
 		   "Could not create window: %s\n",
@@ -123,14 +119,28 @@ main(int argc, char** argv)
 
 
   glcontext = SDL_GL_CreateContext(window);
+
+  if (0 != SDL_GL_MakeCurrent(window, glcontext)) {
+    // Unrecoverable error, exit here.
+    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+                   SDL_LOG_PRIORITY_INFO,
+                   "SDL_Init failed: %s\n", SDL_GetError());
+    return 1;
+  }
+
   GL_DEBUG_ASSERT();
   // init GLEW
   glewExperimental = GL_TRUE;
-  glewInit();
+  {
+    GLenum err = glewInit();
+    if (GLEW_OK != err)
+      {
+        SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+                       SDL_LOG_PRIORITY_ERROR,
+                       "Could not init glew\n");
+      }
+  }
 
-
-  // TODO - figure out why this isn't working on Windows
-  SDL_GL_MakeCurrent(window,glcontext);
   // log opengl version
   SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
                  SDL_LOG_PRIORITY_INFO,
@@ -148,7 +158,8 @@ main(int argc, char** argv)
     }
   // initialize OpenGL
   {
-    glClearColor(0,0,0,1);
+    GL_DEBUG_ASSERT();
+    glClearColor(0.0,0.0,0.0,1.0);
     GL_DEBUG_ASSERT();
     glClearDepth( 1.0f );
     GL_DEBUG_ASSERT();
@@ -193,7 +204,12 @@ main(int argc, char** argv)
     }
   }
 
-
+  {
+    int w, h;
+    SDL_GetWindowSize(window, &w, &h);
+    glViewport(0, 0,
+               w, h);
+  }
   // use the main scene's callbacks
   struct scene_callbacks current_scene = main_scene_callbacks;
   (*current_scene.init_scene)();
@@ -331,6 +347,7 @@ main(int argc, char** argv)
   // Cleanup
   SDL_GL_DeleteContext(glcontext);
   SDL_DestroyWindow(window);
+  IMG_Quit();
   SDL_Quit();
   return 0;
 }
