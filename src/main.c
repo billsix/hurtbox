@@ -69,21 +69,36 @@ extern "C"
 int
 main(int argc, char** argv)
 {
+  // init SDL
+  if (SDL_Init(SDL_INIT_VIDEO) != 0){
+    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+                   SDL_LOG_PRIORITY_ERROR,
+                   "Error: Could not init SDL video %s\n",
+                   SDL_GetError());
+    return 1;
+  }
+  if (SDL_Init(SDL_INIT_AUDIO) != 0){
+    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+                   SDL_LOG_PRIORITY_INFO,
+                   "Could not init SDL audio");
+  }
+  if (SDL_Init(SDL_INIT_TIMER) != 0){
+    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+                   SDL_LOG_PRIORITY_INFO,
+                   "Could not init SDL timer");
+  }
+  if (SDL_Init(SDL_INIT_GAMECONTROLLER) != 0){
+    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+                   SDL_LOG_PRIORITY_INFO,
+                   "Could not init SDL game controller");
+  }
+  if (SDL_Init(SDL_INIT_HAPTIC)){
+    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+                   SDL_LOG_PRIORITY_INFO,
+                   "Could not init SDL haptic feedback");
+  }
 
-  // TODO - test initilizing individual items, and set flags
-  // based off of what is available.
-  // for instance, on my Funtoo system, HAPTIC is not enabled,
-  // which should not cause hurtbox to quit.
-  // Setup SDL
-  if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
-    {
-      SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-		     SDL_LOG_PRIORITY_ERROR,
-		     "Error: %s\n",
-		     SDL_GetError());
-      return 1;
-    }
-
+    // init SDL_image
   IMG_Init(IMG_INIT_PNG);
 
   // Initialize SDL Attributes
