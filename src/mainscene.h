@@ -9,7 +9,6 @@
  */
 
 #include "common.h"
-#include "main.h"
 
 BEGIN_C_DECLS
 

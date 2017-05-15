@@ -2,7 +2,6 @@
 #define COMMON_H 1
 
 #define M_PI acos(-1.0)
-#include "gl-matrix.h"
 #ifndef _WIN32
 #define GLEW_STATIC 1
 #endif

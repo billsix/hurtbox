@@ -8,7 +8,6 @@
  * Distributed under LGPL 2.1 or Apache 2.0
  */
 
-#include "common.h"
 
 BEGIN_C_DECLS
 
@@ -42,8 +41,6 @@ extern struct camera camera;
 extern struct axis left_axis;
 extern struct axis right_axis;
 
-// test data
-extern float wallColors[];
 
 void
 initGL();
@@ -56,6 +53,7 @@ drawScene();
 
 void
 handleKey(SDL_Keycode *sym);
+
 
 END_C_DECLS
 #endif

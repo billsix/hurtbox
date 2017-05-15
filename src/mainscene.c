@@ -6,65 +6,12 @@
  * Distributed under LGPL 2.1 or Apache 2.0
  */
 
-#include <stdio.h>
 #include "common.h"
-#include "shader.h"
-#include "mainscene.h"
 #include "main.h"
 
-
-struct scene_callbacks main_scene_callbacks = {
-  .init_scene = main_scene_init_scene,
-  .handle_controller_button_event = main_scene_controller_handle_button,
-  .handle_controller_axis_motion = main_scene_controller_handle_axis,
-  .draw_scene = main_scene_draw_scene,
-  .handle_window_event = main_scene_handle_window_event,
-  .leave_scene = main_scene_leave_scene,
-  .draw_nuklear = main_scene_draw_nuklear
-};
-
-
-/*
- * camera data
- */
-
-struct camera camera = {
-  .x = 0.0,
-  .y = 5.0,
-  .z = 0.0,
-  .rotationX = 0.0,
-  .rotationY = 0.0
-};
-
-/*
- *enums for VBO data
- */
-
-enum VAO_IDS{
-  WALLS,
-  NumVAOS // calculated at compile-time, someone should write a book about that
-};
-
-static GLuint
-VAOs[NumVAOS];
-
-
-enum Buffer_IDS{
-  Position,
-  UV,
-  NumBuffers // calculated at compile-time, someone should write a book about that
-};
-
-static GLuint
-Buffers[NumBuffers];
-
-
-
-enum Attribute_IDS{
-  vPosition = 0,
-  vUV = 1
-};
-
+#include "shader.h"
+#include "mainscene.h"
+#include "gl-matrix.h"
 
 
 /*
@@ -78,21 +25,8 @@ projection_matrix[16];
 static float
 model_view_matrix[16];
 
-/*
- * shader data for the 4 walls
- */
 
-static GLuint
-wallsProgramID;
 
-static GLuint
-mvpMatrixLoc;
-
-static GLuint
-textureID;
-
-static GLuint
-wallTextureLoc;
 
 /*
  * The vertex and UV data
@@ -160,6 +94,35 @@ fragment_shader =
 
 
 
+enum VAO_IDS{
+  WALLS,
+  NumVAOS // calculated at compile-time, someone should write a book about that
+};
+
+static GLuint
+VAOs[NumVAOS];
+
+enum Buffer_IDS{
+  Position,
+  UV,
+  NumBuffers // calculated at compile-time, someone should write a book about that
+};
+
+static GLuint
+Buffers[NumBuffers];
+
+
+static GLuint
+wallsProgramID;
+
+static GLuint
+mvpMatrixLoc;
+
+static GLuint
+textureID;
+
+static GLuint
+wallTextureLoc;
 
 void
 main_scene_init_scene()
@@ -167,6 +130,9 @@ main_scene_init_scene()
 
   glGenVertexArrays(NumVAOS, VAOs);
   GL_DEBUG_ASSERT();
+
+
+
   glBindVertexArray(VAOs[WALLS]);
   GL_DEBUG_ASSERT();
 
@@ -200,6 +166,12 @@ main_scene_init_scene()
                    GL_STATIC_DRAW);
       GL_DEBUG_ASSERT();
     }
+
+    enum Attribute_IDS{
+      vPosition = 0,
+      vUV = 1
+    };
+
 
     // set the vertex data
     {
@@ -336,6 +308,19 @@ main_scene_leave_scene()
 {
 
 }
+
+
+/*
+ * camera data
+ */
+
+struct camera camera = {
+  .x = 0.0,
+  .y = 5.0,
+  .z = 0.0,
+  .rotationX = 0.0,
+  .rotationY = 0.0
+};
 
 
 void
@@ -535,8 +520,11 @@ main_scene_draw_nuklear(struct nk_context *ctx){
       static int op = EASY;
       static int property = 20;
       nk_layout_row_static(ctx, 30, 80, 1);
-      if (nk_button_label(ctx, "button"))
-        printf("button pressed\n");
+      if (nk_button_label(ctx, "button")){
+        SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+                       SDL_LOG_PRIORITY_INFO,
+                       "Button pressed\n");
+      }
       nk_layout_row_dynamic(ctx, 30, 2);
       if (nk_option_label(ctx, "easy", op == EASY)) op = EASY;
       if (nk_option_label(ctx, "hard", op == HARD)) op = HARD;

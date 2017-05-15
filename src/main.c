@@ -42,25 +42,6 @@ struct axis right_axis = {
 
 
 
-static void
-init_pixel_format()
-{
-
-  RGBAFormat.palette = 0;
-  RGBAFormat.BitsPerPixel = 32; RGBAFormat.BytesPerPixel = 4;
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-  RGBAFormat.Rmask = 0xFF000000; RGBAFormat.Rshift =  0; RGBAFormat.Rloss = 0;
-  RGBAFormat.Gmask = 0x00FF0000; RGBAFormat.Gshift =  8; RGBAFormat.Gloss = 0;
-  RGBAFormat.Bmask = 0x0000FF00; RGBAFormat.Bshift = 16; RGBAFormat.Bloss = 0;
-  RGBAFormat.Amask = 0x000000FF; RGBAFormat.Ashift = 24; RGBAFormat.Aloss = 0;
-#else
-  RGBAFormat.Rmask = 0x000000FF; RGBAFormat.Rshift = 24; RGBAFormat.Rloss = 0;
-  RGBAFormat.Gmask = 0x0000FF00; RGBAFormat.Gshift = 16; RGBAFormat.Gloss = 0;
-  RGBAFormat.Bmask = 0x00FF0000; RGBAFormat.Bshift =  8; RGBAFormat.Bloss = 0;
-  RGBAFormat.Amask = 0xFF000000; RGBAFormat.Ashift =  0; RGBAFormat.Aloss = 0;
-#endif
-
-}
 
 
 #ifdef __cplusplus
@@ -130,8 +111,24 @@ main(int argc, char** argv)
     return 1;
   }
 
-  init_pixel_format();
+  // init pixel format
+  {
 
+    RGBAFormat.palette = 0;
+    RGBAFormat.BitsPerPixel = 32; RGBAFormat.BytesPerPixel = 4;
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+    RGBAFormat.Rmask = 0xFF000000; RGBAFormat.Rshift =  0; RGBAFormat.Rloss = 0;
+    RGBAFormat.Gmask = 0x00FF0000; RGBAFormat.Gshift =  8; RGBAFormat.Gloss = 0;
+    RGBAFormat.Bmask = 0x0000FF00; RGBAFormat.Bshift = 16; RGBAFormat.Bloss = 0;
+    RGBAFormat.Amask = 0x000000FF; RGBAFormat.Ashift = 24; RGBAFormat.Aloss = 0;
+#else
+    RGBAFormat.Rmask = 0x000000FF; RGBAFormat.Rshift = 24; RGBAFormat.Rloss = 0;
+    RGBAFormat.Gmask = 0x0000FF00; RGBAFormat.Gshift = 16; RGBAFormat.Gloss = 0;
+    RGBAFormat.Bmask = 0x00FF0000; RGBAFormat.Bshift =  8; RGBAFormat.Bloss = 0;
+    RGBAFormat.Amask = 0xFF000000; RGBAFormat.Ashift =  0; RGBAFormat.Aloss = 0;
+#endif
+
+  }
 
   glcontext = SDL_GL_CreateContext(window);
 
@@ -225,6 +222,20 @@ main(int argc, char** argv)
     glViewport(0, 0,
                w, h);
   }
+
+
+  struct scene_callbacks main_scene_callbacks = {
+    .init_scene = main_scene_init_scene,
+    .handle_controller_button_event = main_scene_controller_handle_button,
+    .handle_controller_axis_motion = main_scene_controller_handle_axis,
+    .draw_scene = main_scene_draw_scene,
+    .handle_window_event = main_scene_handle_window_event,
+    .leave_scene = main_scene_leave_scene,
+    .draw_nuklear = main_scene_draw_nuklear
+  };
+
+
+
   // use the main scene's callbacks
   struct scene_callbacks current_scene = main_scene_callbacks;
   (*current_scene.init_scene)();
@@ -366,3 +377,4 @@ main(int argc, char** argv)
   SDL_Quit();
   return 0;
 }
+
