@@ -8,6 +8,8 @@ hurtbox_SOURCES = \
 	mainscene.c \
 	shader.h \
 	shader.c \
+	intro-scene.c \
+	intro-scene.h \
 	$(abs_top_srcdir)/contrib/gl-matrix.c/vec3.c \
 	$(abs_top_srcdir)/contrib/gl-matrix.c/mat3.c \
 	$(abs_top_srcdir)/contrib/gl-matrix.c/mat4.c \

@@ -17,6 +17,7 @@
 #include "main.h"
 #include "gl-matrix.h"
 #include "mainscene.h"
+#include "intro-scene.h"
 
 
 
@@ -224,14 +225,29 @@ main(int argc, char** argv)
   }
 
 
+  struct scene_callbacks intro_scene_callbacks = {	  
+	  .init_scene = intro_scene_init_scene,
+	  .leave_scene = intro_scene_leave_scene,
+
+	  .draw_scene = intro_scene_draw_scene,
+	  .handle_window_event = intro_scene_handle_window_event,
+	  .draw_nuklear = intro_scene_draw_nuklear,
+
+	  .handle_controller_button_event = intro_scene_controller_handle_button,
+	  .handle_controller_axis_motion = intro_scene_controller_handle_axis
+  };
+
+
   struct scene_callbacks main_scene_callbacks = {
     .init_scene = main_scene_init_scene,
-    .handle_controller_button_event = main_scene_controller_handle_button,
-    .handle_controller_axis_motion = main_scene_controller_handle_axis,
-    .draw_scene = main_scene_draw_scene,
-    .handle_window_event = main_scene_handle_window_event,
-    .leave_scene = main_scene_leave_scene,
-    .draw_nuklear = main_scene_draw_nuklear
+	.leave_scene = main_scene_leave_scene,
+
+	.draw_scene = main_scene_draw_scene,
+	.handle_window_event = main_scene_handle_window_event,
+	.draw_nuklear = main_scene_draw_nuklear,
+
+	.handle_controller_button_event = main_scene_controller_handle_button,
+    .handle_controller_axis_motion = main_scene_controller_handle_axis
   };
 
 
@@ -348,7 +364,45 @@ main(int argc, char** argv)
 	GLboolean last_enable_depth_test = glIsEnabled(GL_DEPTH_TEST);
 	GLboolean last_enable_scissor_test = glIsEnabled(GL_SCISSOR_TEST);
 
+
+	//draw the scene manager UI
+	{
+		if (nk_begin(ctx, "Override Scene", nk_rect(0, 0, 200, 200),
+			NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE |
+			NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE))
+		{
+
+			enum { INTRO, MAIN };
+			static int currentSceneRadioButton = INTRO;
+			static int property = 20;
+			nk_layout_row_dynamic(ctx, 30, 2);
+
+			int oldScene = currentSceneRadioButton;
+			if (nk_option_label(ctx, "Intro", currentSceneRadioButton == INTRO)) {
+				if (oldScene != INTRO) {
+					(*current_scene.leave_scene)();
+				}
+				currentSceneRadioButton = INTRO;
+				current_scene = intro_scene_callbacks;
+			}
+			if (nk_option_label(ctx, "Main", currentSceneRadioButton == MAIN)) {
+				if (oldScene != MAIN) {
+					(*current_scene.leave_scene)();
+				}
+				currentSceneRadioButton = MAIN;
+				current_scene = main_scene_callbacks;
+			}
+		}
+		nk_end(ctx);
+
+
+	}
+
+
+	// draw the scene specific controls
 	(*current_scene.draw_nuklear)(ctx);
+
+	
 	// render nuklear
 	nk_sdl_render(NK_ANTI_ALIASING_ON, MAX_VERTEX_MEMORY, MAX_ELEMENT_MEMORY);
 	// Restore modified GL state
