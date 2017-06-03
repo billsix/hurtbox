@@ -10,8 +10,9 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#ifndef _WIN32
 #include <unistd.h>
-
+#endif
 // wrapper to handle ignore errors, and to
 // retry reading from the stream
 size_t xfread(void *ptr,

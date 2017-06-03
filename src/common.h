@@ -16,8 +16,11 @@
 
 #if HAVE_CONFIG_H
 #include <config.h>
+#else // Visual Studio
+#define SHADER_DIR "shaders/"
+#define TEXTURE_DIR "textures/"
 #endif
-#ifdef _WINDOWS
+#ifdef _WIN32
 #include <windows.h>
 #include <stdlib.h>
 #include <string.h>
