@@ -2,7 +2,7 @@ EXTRA_DIST = gamecontrollerdb.txt
 
 bin_PROGRAMS = hurtbox
 AM_CPPFLAGS = \
-	-I$(abs_top_srcdir)/contrib/gl-matrix.c/
+	-I$(abs_top_srcdir)/contrib/gl-matrix.c/ -D RESOURCE_DIR=\"$(hurtbox_texture_dir)/\"
 hurtbox_SOURCES = \
 	main.c \
 	mainscene.c \

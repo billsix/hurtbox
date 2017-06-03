@@ -249,11 +249,7 @@ main_scene_init_scene()
   // load textures
   {
 
-#ifdef _WIN32
-    SDL_Surface *thegrid = IMG_Load("textures/thegrid.png");
-#else
-    SDL_Surface *thegrid = IMG_Load("../share/hurtbox/textures/thegrid.png");
-#endif
+    SDL_Surface *thegrid = IMG_Load(RESOURCE_DIR "thegrid.png");
     //puts(SDL_GetError());
 
 
