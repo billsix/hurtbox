@@ -80,7 +80,7 @@ main(int argc, char** argv)
                    "Could not init SDL haptic feedback");
   }
 
-    // init SDL_image
+  // init SDL_image
   IMG_Init(IMG_INIT_PNG);
 
   // Initialize SDL Attributes
@@ -225,28 +225,28 @@ main(int argc, char** argv)
   }
 
 
-  struct scene_callbacks intro_scene_callbacks = {	  
-	  .init_scene = intro_scene_init_scene,
-	  .leave_scene = intro_scene_leave_scene,
+  struct scene_callbacks intro_scene_callbacks = {
+    .init_scene = intro_scene_init_scene,
+    .leave_scene = intro_scene_leave_scene,
 
-	  .draw_scene = intro_scene_draw_scene,
-	  .handle_window_event = intro_scene_handle_window_event,
-	  .draw_nuklear = intro_scene_draw_nuklear,
+    .draw_scene = intro_scene_draw_scene,
+    .handle_window_event = intro_scene_handle_window_event,
+    .draw_nuklear = intro_scene_draw_nuklear,
 
-	  .handle_controller_button_event = intro_scene_controller_handle_button,
-	  .handle_controller_axis_motion = intro_scene_controller_handle_axis
+    .handle_controller_button_event = intro_scene_controller_handle_button,
+    .handle_controller_axis_motion = intro_scene_controller_handle_axis
   };
 
 
   struct scene_callbacks main_scene_callbacks = {
     .init_scene = main_scene_init_scene,
-	.leave_scene = main_scene_leave_scene,
+    .leave_scene = main_scene_leave_scene,
 
-	.draw_scene = main_scene_draw_scene,
-	.handle_window_event = main_scene_handle_window_event,
-	.draw_nuklear = main_scene_draw_nuklear,
+    .draw_scene = main_scene_draw_scene,
+    .handle_window_event = main_scene_handle_window_event,
+    .draw_nuklear = main_scene_draw_nuklear,
 
-	.handle_controller_button_event = main_scene_controller_handle_button,
+    .handle_controller_button_event = main_scene_controller_handle_button,
     .handle_controller_axis_motion = main_scene_controller_handle_axis
   };
 
@@ -347,79 +347,119 @@ main(int argc, char** argv)
 	 * Make sure to either a.) save and restore or b.) reset your own state after
 	 * rendering the UI. */
 	// Backup GL state
-	GLint last_program; glGetIntegerv(GL_CURRENT_PROGRAM, &last_program);
-	GLint last_texture; glGetIntegerv(GL_TEXTURE_BINDING_2D, &last_texture);
-	GLint last_active_texture; glGetIntegerv(GL_ACTIVE_TEXTURE, &last_active_texture);
-	GLint last_array_buffer; glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &last_array_buffer);
-	GLint last_element_array_buffer; glGetIntegerv(GL_ELEMENT_ARRAY_BUFFER_BINDING, &last_element_array_buffer);
-	GLint last_vertex_array; glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &last_vertex_array);
-	GLint last_blend_src; glGetIntegerv(GL_BLEND_SRC, &last_blend_src);
-	GLint last_blend_dst; glGetIntegerv(GL_BLEND_DST, &last_blend_dst);
-	GLint last_blend_equation_rgb; glGetIntegerv(GL_BLEND_EQUATION_RGB, &last_blend_equation_rgb);
-	GLint last_blend_equation_alpha; glGetIntegerv(GL_BLEND_EQUATION_ALPHA, &last_blend_equation_alpha);
-	GLint last_viewport[4]; glGetIntegerv(GL_VIEWPORT, last_viewport);
-	GLint last_scissor_box[4]; glGetIntegerv(GL_SCISSOR_BOX, last_scissor_box);
+	GLint last_program;
+        glGetIntegerv(GL_CURRENT_PROGRAM, &last_program);
+	GLint last_texture;
+        glGetIntegerv(GL_TEXTURE_BINDING_2D, &last_texture);
+	GLint last_active_texture;
+        glGetIntegerv(GL_ACTIVE_TEXTURE, &last_active_texture);
+	GLint last_array_buffer;
+        glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &last_array_buffer);
+	GLint last_element_array_buffer;
+        glGetIntegerv(GL_ELEMENT_ARRAY_BUFFER_BINDING, &last_element_array_buffer);
+	GLint last_vertex_array;
+        glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &last_vertex_array);
+	GLint last_blend_src;
+        glGetIntegerv(GL_BLEND_SRC, &last_blend_src);
+	GLint last_blend_dst;
+        glGetIntegerv(GL_BLEND_DST, &last_blend_dst);
+	GLint last_blend_equation_rgb;
+        glGetIntegerv(GL_BLEND_EQUATION_RGB, &last_blend_equation_rgb);
+	GLint last_blend_equation_alpha;
+        glGetIntegerv(GL_BLEND_EQUATION_ALPHA, &last_blend_equation_alpha);
+	GLint last_viewport[4];
+        glGetIntegerv(GL_VIEWPORT, last_viewport);
+	GLint last_scissor_box[4];
+        glGetIntegerv(GL_SCISSOR_BOX, last_scissor_box);
 	GLboolean last_enable_blend = glIsEnabled(GL_BLEND);
 	GLboolean last_enable_cull_face = glIsEnabled(GL_CULL_FACE);
 	GLboolean last_enable_depth_test = glIsEnabled(GL_DEPTH_TEST);
 	GLboolean last_enable_scissor_test = glIsEnabled(GL_SCISSOR_TEST);
 
 
-	//draw the scene manager UI
-	{
-		if (nk_begin(ctx, "Override Scene", nk_rect(0, 0, 200, 200),
-			NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE |
-			NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE))
-		{
-
-			enum { INTRO, MAIN };
-			static int currentSceneRadioButton = INTRO;
-			static int property = 20;
-			nk_layout_row_dynamic(ctx, 30, 2);
-
-			int oldScene = currentSceneRadioButton;
-			if (nk_option_label(ctx, "Intro", currentSceneRadioButton == INTRO)) {
-				if (oldScene != INTRO) {
-					(*current_scene.leave_scene)();
-				}
-				currentSceneRadioButton = INTRO;
-				current_scene = intro_scene_callbacks;
-			}
-			if (nk_option_label(ctx, "Main", currentSceneRadioButton == MAIN)) {
-				if (oldScene != MAIN) {
-					(*current_scene.leave_scene)();
-				}
-				currentSceneRadioButton = MAIN;
-				current_scene = main_scene_callbacks;
-			}
-		}
-		nk_end(ctx);
-
-
-	}
-
-
 	// draw the scene specific controls
 	(*current_scene.draw_nuklear)(ctx);
 
-	
+
+	//draw the scene manager UI
+	{
+          if (nk_begin(ctx,
+                       "Override Scene",
+                       nk_rect(0, 0, 200, 200),
+                       NK_WINDOW_BORDER
+                       | NK_WINDOW_MOVABLE
+                       | NK_WINDOW_SCALABLE
+                       | NK_WINDOW_MINIMIZABLE
+                       | NK_WINDOW_TITLE))
+            {
+
+              enum { INTRO, MAIN };
+              static int currentSceneRadioButton = INTRO;
+              static int property = 20;
+              nk_layout_row_dynamic(ctx, 30, 2);
+
+              int oldScene = currentSceneRadioButton;
+              if (nk_option_label(ctx, "Intro", currentSceneRadioButton == INTRO)) {
+                if (oldScene != INTRO) {
+                  (*current_scene.leave_scene)();
+                }
+                currentSceneRadioButton = INTRO;
+                current_scene = intro_scene_callbacks;
+              }
+              if (nk_option_label(ctx, "Main", currentSceneRadioButton == MAIN)) {
+                if (oldScene != MAIN) {
+                  (*current_scene.leave_scene)();
+                }
+                currentSceneRadioButton = MAIN;
+                current_scene = main_scene_callbacks;
+              }
+            }
+          nk_end(ctx);
+	}
+
 	// render nuklear
-	nk_sdl_render(NK_ANTI_ALIASING_ON, MAX_VERTEX_MEMORY, MAX_ELEMENT_MEMORY);
+	nk_sdl_render(NK_ANTI_ALIASING_ON,
+                      MAX_VERTEX_MEMORY,
+                      MAX_ELEMENT_MEMORY);
+
 	// Restore modified GL state
 	glUseProgram(last_program);
 	glActiveTexture(last_active_texture);
-	glBindTexture(GL_TEXTURE_2D, last_texture);
+	glBindTexture(GL_TEXTURE_2D,
+                      last_texture);
 	glBindVertexArray(last_vertex_array);
-	glBindBuffer(GL_ARRAY_BUFFER, last_array_buffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, last_element_array_buffer);
-	glBlendEquationSeparate(last_blend_equation_rgb, last_blend_equation_alpha);
-	glBlendFunc(last_blend_src, last_blend_dst);
-	if (last_enable_blend) glEnable(GL_BLEND); else glDisable(GL_BLEND);
-	if (last_enable_cull_face) glEnable(GL_CULL_FACE); else glDisable(GL_CULL_FACE);
-	if (last_enable_depth_test) glEnable(GL_DEPTH_TEST); else glDisable(GL_DEPTH_TEST);
-	if (last_enable_scissor_test) glEnable(GL_SCISSOR_TEST); else glDisable(GL_SCISSOR_TEST);
-	glViewport(last_viewport[0], last_viewport[1], (GLsizei)last_viewport[2], (GLsizei)last_viewport[3]);
-	glScissor(last_scissor_box[0], last_scissor_box[1], (GLsizei)last_scissor_box[2], (GLsizei)last_scissor_box[3]);
+	glBindBuffer(GL_ARRAY_BUFFER,
+                     last_array_buffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,
+                     last_element_array_buffer);
+	glBlendEquationSeparate(last_blend_equation_rgb,
+                                last_blend_equation_alpha);
+	glBlendFunc(last_blend_src,
+                    last_blend_dst);
+	if (last_enable_blend)
+          glEnable(GL_BLEND);
+        else
+          glDisable(GL_BLEND);
+	if (last_enable_cull_face)
+          glEnable(GL_CULL_FACE);
+        else
+          glDisable(GL_CULL_FACE);
+	if (last_enable_depth_test)
+          glEnable(GL_DEPTH_TEST);
+        else
+          glDisable(GL_DEPTH_TEST);
+	if (last_enable_scissor_test)
+          glEnable(GL_SCISSOR_TEST);
+        else
+          glDisable(GL_SCISSOR_TEST);
+	glViewport(last_viewport[0],
+                   last_viewport[1],
+                   (GLsizei)last_viewport[2],
+                   (GLsizei)last_viewport[3]);
+	glScissor(last_scissor_box[0],
+                  last_scissor_box[1],
+                  (GLsizei)last_scissor_box[2],
+                  (GLsizei)last_scissor_box[3]);
       }
       SDL_GL_SwapWindow(window);
     }

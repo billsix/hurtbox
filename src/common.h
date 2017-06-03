@@ -28,6 +28,9 @@
 #include <GL/glew.h>
 #include <assert.h>
 
+#include <stdbool.h>
+#include <stdint.h>
+
 // nuklear defs
 #define NK_INCLUDE_FIXED_TYPES
 #define NK_INCLUDE_STANDARD_IO
