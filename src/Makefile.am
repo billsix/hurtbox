@@ -2,7 +2,10 @@ EXTRA_DIST = gamecontrollerdb.txt
 
 bin_PROGRAMS = hurtbox
 AM_CPPFLAGS = \
-	-I$(abs_top_srcdir)/contrib/gl-matrix.c/ -D RESOURCE_DIR=\"$(hurtbox_texture_dir)/\"
+	-I$(abs_top_srcdir)/contrib/gl-matrix.c/ \
+	-D RESOURCE_DIR=\"$(hurtbox_dir)/\" \
+	-D TEXTURE_DIR=\"$(hurtbox_texture_dir)/\" \
+	-D SHADER_DIR=\"$(hurtbox_shader_dir)/\" 
 hurtbox_SOURCES = \
 	main.c \
 	mainscene.c \
@@ -22,6 +25,11 @@ hurtbox_DATA = gamecontrollerdb.txt
 hurtbox_dir = $(pkgdatadir)
 hurtbox_texture_dir = $(hurtbox_dir)/textures
 hurtbox_texture__DATA = ../textures/thegrid.png
+
+hurtbox_shader_dir = $(hurtbox_dir)/shaders
+hurtbox_shader__DATA = \
+	../shaders/walls.vert \
+	../shaders/walls.frag 
 
 
 hurtbox_CFLAGS = \

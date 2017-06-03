@@ -13,6 +13,11 @@
 #include "mainscene.h"
 #include "gl-matrix.h"
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+
 
 /*
  * projection and modelview matricies
@@ -58,39 +63,39 @@ wallUVs[] = {
 };
 
 
-const GLchar *
-vertex_shader =
-  "#version 330 core                                       \n"
-  "layout (location = 0) in vec3 vPosition;                \n"
-  "layout (location = 1) in vec2 vUV;                      \n"
-  "                                                        \n"
-  "out VS_OUT {                                            \n"
-  "  vec2 uv;                                              \n"
-  "} vs_out;                                               \n"
-  "                                                        \n"
-  "uniform mat4 mvpMatrix;                                 \n"
-  "                                                        \n"
-  "void                                                    \n"
-  "main(){                                                 \n"
-  "   vs_out.uv = vUV;                                     \n"
-  "   gl_Position = mvpMatrix * vec4(vPosition,1.0);       \n"
-  "}";
+/* const GLchar * */
+/* vertex_shader = */
+/*   "#version 330 core                                       \n" */
+/*   "layout (location = 0) in vec3 vPosition;                \n" */
+/*   "layout (location = 1) in vec2 vUV;                      \n" */
+/*   "                                                        \n" */
+/*   "out VS_OUT {                                            \n" */
+/*   "  vec2 uv;                                              \n" */
+/*   "} vs_out;                                               \n" */
+/*   "                                                        \n" */
+/*   "uniform mat4 mvpMatrix;                                 \n" */
+/*   "                                                        \n" */
+/*   "void                                                    \n" */
+/*   "main(){                                                 \n" */
+/*   "   vs_out.uv = vUV;                                     \n" */
+/*   "   gl_Position = mvpMatrix * vec4(vPosition,1.0);       \n" */
+/*   "}"; */
 
 
-const GLchar *
-fragment_shader =
-  "#version 330 core                                           \n"
-  "                                                            \n"
-  "in VS_OUT {                                                 \n"
-  "  vec2 uv;                                                  \n"
-  "} fs_in;                                                    \n"
-  "uniform sampler2D wallTexture;                         \n"
-  "                                                            \n"
-  "out vec3 color;                                             \n"
-  "                                                            \n"
-  "void main(){                                                \n"
-  "  color = texture( wallTexture, fs_in.uv * 20 ).rgb;   \n"
-  "}";
+/* const GLchar * */
+/* fragment_shader = */
+/*   "#version 330 core                                           \n" */
+/*   "                                                            \n" */
+/*   "in VS_OUT {                                                 \n" */
+/*   "  vec2 uv;                                                  \n" */
+/*   "} fs_in;                                                    \n" */
+/*   "uniform sampler2D wallTexture;                         \n" */
+/*   "                                                            \n" */
+/*   "out vec3 color;                                             \n" */
+/*   "                                                            \n" */
+/*   "void main(){                                                \n" */
+/*   "  color = texture( wallTexture, fs_in.uv * 20 ).rgb;   \n" */
+/*   "}"; */
 
 
 
@@ -210,10 +215,53 @@ main_scene_init_scene()
 
   // load shaders
   {
-    const GLuint vertexShaderID = compile_shader(GL_VERTEX_SHADER,
-                                                 &vertex_shader);
-    const GLuint fragmentShaderID = compile_shader(GL_FRAGMENT_SHADER,
-                                                   &fragment_shader);
+
+    GLuint vertexShaderID;
+    {
+      const char * const wallPath = SHADER_DIR "walls.vert";
+      struct stat buf;
+      if (0 != stat(wallPath,
+                    &buf))
+        {
+          // TODO check errno
+        }
+      
+      char * vertex_shader = (char*) malloc(buf.st_size + 1);
+      FILE *wallsFile  = fopen(wallPath, "r");
+      size_t read_size = fread(vertex_shader,
+                               sizeof(char),
+                               buf.st_size,
+                               wallsFile);
+      vertex_shader[buf.st_size] = 0;
+      vertexShaderID = compile_shader(GL_VERTEX_SHADER,
+                                      &vertex_shader);
+      free(vertex_shader);
+      fclose(wallsFile);
+    }
+    
+    GLuint fragmentShaderID;
+    {
+      const char * const wallPath = SHADER_DIR "walls.frag";
+      struct stat buf;
+      if (0 != stat(wallPath,
+                    &buf))
+        {
+          // TODO check errno
+        }
+      
+      char * fragment_shader = (char*) malloc(buf.st_size + 1);
+      FILE *wallsFile  = fopen(wallPath, "r");
+      size_t read_size = fread(fragment_shader,
+                               sizeof(char),
+                               buf.st_size,
+                               wallsFile);
+      fragment_shader[buf.st_size] = 0;
+      fragmentShaderID = compile_shader(GL_FRAGMENT_SHADER,
+                                        &fragment_shader);
+      free(fragment_shader);
+      fclose(wallsFile);
+    }
+    
     wallsProgramID = link_shaders(vertexShaderID,fragmentShaderID);
 
     mvpMatrixLoc = glGetUniformLocation(wallsProgramID,
@@ -249,7 +297,7 @@ main_scene_init_scene()
   // load textures
   {
 
-    SDL_Surface *thegrid = IMG_Load(RESOURCE_DIR "thegrid.png");
+    SDL_Surface *thegrid = IMG_Load(TEXTURE_DIR "thegrid.png");
     //puts(SDL_GetError());
 
 

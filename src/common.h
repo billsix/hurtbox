@@ -28,6 +28,7 @@
 #include <GL/glew.h>
 #include <assert.h>
 
+#include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
 
