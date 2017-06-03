@@ -236,6 +236,10 @@ main(int argc, char** argv)
     .handle_controller_button_event = intro_scene_controller_handle_button,
     .handle_controller_axis_motion = intro_scene_controller_handle_axis
   };
+  // use the intro scene's callbacks
+  struct scene_callbacks current_scene = intro_scene_callbacks;
+  // init the intro scene
+  (*current_scene.init_scene)();
 
 
   struct scene_callbacks main_scene_callbacks = {
@@ -249,12 +253,11 @@ main(int argc, char** argv)
     .handle_controller_button_event = main_scene_controller_handle_button,
     .handle_controller_axis_motion = main_scene_controller_handle_axis
   };
+  // init the main scene
+  (*main_scene_callbacks.init_scene)();
 
 
 
-  // use the main scene's callbacks
-  struct scene_callbacks current_scene = main_scene_callbacks;
-  (*current_scene.init_scene)();
 
   // nuklear context
   struct nk_context *ctx = nk_sdl_init(window);

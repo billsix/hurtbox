@@ -8,7 +8,7 @@
 
 
 GLuint
-compile_shader(GLenum shaderType, const GLchar ** shader_text);
+compile_shader(GLenum shaderType, const char* const path);
 
 GLuint
 link_shaders(GLuint vertexShader, GLuint fragmentShader);

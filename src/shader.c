@@ -8,9 +8,53 @@
 
 #include "common.h"
 
-GLuint
-compile_shader(GLenum shaderType, const GLchar ** shader_text)
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+// wrapper to handle ignore errors, and to
+// retry reading from the stream
+size_t xfread(void *ptr,
+              size_t size,
+              size_t nmemb,
+              FILE *stream)
 {
+  size_t result = 0;
+ attemptToRead:
+  result += fread(ptr, size, nmemb, stream);
+  if(result)
+    return result;
+  if(feof(stream))
+    return result;
+  goto attemptToRead;
+}
+
+
+
+GLuint
+compile_shader(GLenum shaderType, const char* const path)//GLchar ** shader_text)
+{
+
+  struct stat buf;
+  if (0 != stat(path,
+                &buf))
+    {
+      // TODO check errno
+    }
+
+  // no need to do size+1 because glshadersource takes len as an arg
+  char * shader_text = (char*) malloc(buf.st_size);
+
+  FILE *file  = fopen(path, "r");
+  size_t read_size = xfread(shader_text,
+                            sizeof(char),
+                            buf.st_size,
+                            file);
+  fclose(file);
+
+
+
+
   GLuint shaderID = glCreateShader(shaderType);
   GL_DEBUG_ASSERT();
 
@@ -18,18 +62,25 @@ compile_shader(GLenum shaderType, const GLchar ** shader_text)
     SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
                    SDL_LOG_PRIORITY_INFO,
                    "Compiling Vertex shader : %s\n",
-                   *shader_text);
+                   shader_text);
   }
   else if (shaderType == GL_FRAGMENT_SHADER) {
     SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
                    SDL_LOG_PRIORITY_INFO,
                    "Compiling Fragment shader : %s\n",
-                   *shader_text);
+                   shader_text);
   }
-  
-  glShaderSource(shaderID, 1, shader_text, NULL);
+
+  {
+    GLint bufferSize = buf.st_size;
+    const char ** the_text = (const char **)&shader_text;
+    glShaderSource(shaderID,
+                   1,
+                   the_text,
+                   &bufferSize);
+  }
   glCompileShader(shaderID);
-  
+
   GLint Result = GL_FALSE;
   int InfoLogLength;
 
@@ -51,6 +102,9 @@ compile_shader(GLenum shaderType, const GLchar ** shader_text)
                    log);
     free(log);
   }
+
+  free(shader_text);
+
   return shaderID;
 }
 
