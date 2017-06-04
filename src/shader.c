@@ -83,7 +83,7 @@ compile_shader(GLenum shaderType, const char* const path)//GLchar ** shader_text
   glCompileShader(shaderID);
 
   GLint Result = GL_FALSE;
-  int InfoLogLength;
+  int32_t InfoLogLength;
 
   // Check Shader
   glGetShaderiv(shaderID, GL_COMPILE_STATUS, &Result);
@@ -128,7 +128,7 @@ link_shaders(GLuint vertexShader, GLuint fragmentShader)
 
 
   GLint Result = GL_FALSE;
-  int InfoLogLength;
+  int32_t InfoLogLength;
 
   // Check the program
   glGetProgramiv(programID, GL_LINK_STATUS, &Result);

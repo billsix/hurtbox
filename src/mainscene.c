@@ -201,7 +201,7 @@ main_scene_init_scene()
   // initialize projection matrix
   {
     mat4_identity(projection_matrix);
-    int w, h;
+    int32_t w, h;
     SDL_GetWindowSize(window,&w,&h);
     mat4_perspective(45.0f,
                      (GLfloat)w / (GLfloat)h,
@@ -354,7 +354,7 @@ main_scene_draw_scene(const Uint8 * const state)
     glBindVertexArray(VAOs[WALLS]);
     const GLfloat pi_over_two = 1.57079632679;
     GLfloat rotation = 0.0f;
-    for(int i = 0;
+    for(uint8_t i = 0;
         i<4;
         rotation+=pi_over_two,i++)
       {
@@ -432,7 +432,7 @@ main_scene_controller_handle_axis(const SDL_ControllerAxisEvent * const controll
     0.1
   };
 
-  const int range = 32768;
+  const uint32_t range = 32768;
 
   // linear scaling has to be changed, probably want x^2
   *axisValue[axis] = (value > -5000 && value < 5000)
@@ -446,7 +446,7 @@ main_scene_handle_window_event(const SDL_Event* const event){
   switch (event->window.event){
   case SDL_WINDOWEVENT_RESIZED:
     {
-      int w = event->window.data1, h = event->window.data2;
+      uint32_t w = event->window.data1, h = event->window.data2;
       mat4_perspective(45.0f,
                        (GLfloat)w / (GLfloat)h,
                        0.1f,
@@ -514,8 +514,8 @@ main_scene_draw_nuklear(struct nk_context *ctx){
       nk_menubar_end(ctx);
 
       enum {EASY, HARD};
-      static int op = EASY;
-      static int property = 20;
+      static uint8_t op = EASY;
+      static uint32_t property = 20;
       nk_layout_row_static(ctx,
                            30,
                            80,

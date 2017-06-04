@@ -199,12 +199,12 @@ main(int argc, char** argv)
 		   "%d controllers\n",
 		   SDL_NumJoysticks());
     SDL_GameController *controller = NULL;
-    for (int i = 0; i < SDL_NumJoysticks(); ++i) {
+    for (int8_t i = 0; i < SDL_NumJoysticks(); ++i) {
       if (SDL_IsGameController(i)) {
         controller = SDL_GameControllerOpen(i);
         if (controller) {
           SDL_Joystick *joy = SDL_GameControllerGetJoystick( controller );
-          int instanceID = SDL_JoystickInstanceID( joy );
+          int8_t instanceID = SDL_JoystickInstanceID( joy );
           break;
         } else {
 	  SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
@@ -218,7 +218,7 @@ main(int argc, char** argv)
   }
 
   {
-    int w, h;
+    int32_t w, h;
     SDL_GetWindowSize(window, &w, &h);
     glViewport(0, 0,
                w, h);
@@ -328,7 +328,7 @@ main(int argc, char** argv)
               break;
             case SDL_WINDOWEVENT:
               {
-                int w, h;
+                int32_t w, h;
                 SDL_GetWindowSize(window,&w,&h);
                 glViewport(0, 0,
                            w, h);
@@ -401,7 +401,7 @@ main(int argc, char** argv)
               static int property = 20;
               nk_layout_row_dynamic(ctx, 30, 2);
 
-              int oldScene = currentSceneRadioButton;
+              int8_t oldScene = currentSceneRadioButton;
               if (nk_option_label(ctx, "Intro", currentSceneRadioButton == INTRO)) {
                 if (oldScene != INTRO) {
                   (*current_scene.leave_scene)();
