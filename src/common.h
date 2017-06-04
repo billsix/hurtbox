@@ -43,8 +43,8 @@
 #define NK_INCLUDE_VERTEX_BUFFER_OUTPUT
 #define NK_INCLUDE_FONT_BAKING
 #define NK_INCLUDE_DEFAULT_FONT
-#include "../contrib/nuklear/nuklear.h"
-#include "../contrib/nuklear/nuklear_sdl_gl3.h"
+#include "nuklear.h"
+#include "nuklear_sdl_gl3.h"
 
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
 

@@ -1,4 +1,4 @@
 aclocal
-autoconf
+autoreconf -i
 autoheader
 automake -a
