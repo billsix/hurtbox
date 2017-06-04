@@ -102,6 +102,7 @@
 #endif
 
 #define BUFFER_OFFSET(offset) ((void *) (offset))
+#include "controller.h"
 
 #endif
 

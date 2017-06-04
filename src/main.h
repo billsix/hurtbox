@@ -22,10 +22,6 @@ struct camera{
 };
 
 
-struct axis{
-  float horizontal;
-  float vertical;
-};
 
 struct scene_callbacks{
   void (*init_scene)();
@@ -40,9 +36,6 @@ struct scene_callbacks{
 };
 
 extern struct camera camera;
-extern struct axis left_axis;
-extern struct axis right_axis;
-
 
 void
 initGL();

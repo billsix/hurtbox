@@ -5,13 +5,18 @@ AM_CPPFLAGS = \
 	-I$(abs_top_srcdir)/contrib/gl-matrix-c/ \
 	-D RESOURCE_DIR=\"$(hurtbox_dir)/\" \
 	-D TEXTURE_DIR=\"$(hurtbox_texture_dir)/\" \
-	-D SHADER_DIR=\"$(hurtbox_shader_dir)/\" 
+	-D SHADER_DIR=\"$(hurtbox_shader_dir)/\"
 
 hurtbox_HEADERS = \
-	shader.h \
-	intro-scene.h 
+	common.h  \
+	controller.h \
+	intro-scene.h \
+	main.h \
+	mainscene.h \
+	shader.h
 
 hurtbox_SOURCES = \
+	controller.c \
 	main.c \
 	mainscene.c \
 	shader.c \
@@ -28,7 +33,7 @@ hurtbox_texture__DATA = ../textures/thegrid.png
 hurtbox_shader_dir = $(hurtbox_dir)/shaders
 hurtbox_shader__DATA = \
 	../shaders/walls.vert \
-	../shaders/walls.frag 
+	../shaders/walls.frag
 
 
 hurtbox_CFLAGS = \
