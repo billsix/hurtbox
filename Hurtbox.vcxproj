@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -86,7 +86,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir)\contrib\nuklear;$(SolutionDir)\contrib\gl-matrix.c;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\contrib\nuklear;$(SolutionDir)\contrib\gl-matrix-c;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <TargetMachine>MachineX86</TargetMachine>
@@ -101,7 +101,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>$(SolutionDir)contrib\nuklear;$(SolutionDir)contrib\gl-matrix.c;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)contrib\nuklear;$(SolutionDir)contrib\gl-matrix-c;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <TargetMachine>MachineX86</TargetMachine>
@@ -114,7 +114,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)contrib\nuklear;$(SolutionDir)contrib\gl-matrix.c;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)contrib\nuklear;$(SolutionDir)contrib\gl-matrix-c;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -123,7 +123,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)hurtbox\contrib\nuklear;$(SolutionDir)contrib\gl-matrix.c;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)hurtbox\contrib\nuklear;$(SolutionDir)contrib\gl-matrix-c;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -131,21 +131,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="contrib\gl-matrix.c\gl-matrix.h" />
+    <ClInclude Include="contrib\gl-matrix-c\gl-matrix.h" />
     <ClInclude Include="contrib\nuklear\nuklear.h" />
     <ClInclude Include="contrib\nuklear\nuklear_sdl_gl3.h" />
     <ClInclude Include="src\common.h" />
+    <ClInclude Include="src\controller.h" />
     <ClInclude Include="src\intro-scene.h" />
     <ClInclude Include="src\main.h" />
     <ClInclude Include="src\mainscene.h" />
     <ClInclude Include="src\shader.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="contrib\gl-matrix.c\mat3.c" />
-    <ClCompile Include="contrib\gl-matrix.c\mat4.c" />
-    <ClCompile Include="contrib\gl-matrix.c\quat.c" />
-    <ClCompile Include="contrib\gl-matrix.c\str.c" />
-    <ClCompile Include="contrib\gl-matrix.c\vec3.c" />
+    <ClCompile Include="contrib\gl-matrix-c\mat3.c" />
+    <ClCompile Include="contrib\gl-matrix-c\mat4.c" />
+    <ClCompile Include="contrib\gl-matrix-c\quat.c" />
+    <ClCompile Include="contrib\gl-matrix-c\str.c" />
+    <ClCompile Include="contrib\gl-matrix-c\vec3.c" />
+    <ClCompile Include="src\controller.c" />
     <ClCompile Include="src\intro-scene.c" />
     <ClCompile Include="src\main.c" />
     <ClCompile Include="src\mainscene.c" />
