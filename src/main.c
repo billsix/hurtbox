@@ -169,6 +169,11 @@ main(int argc, char** argv)
     GL_DEBUG_ASSERT();
     glDepthFunc( GL_LEQUAL );
     GL_DEBUG_ASSERT();
+    glBlendEquation(GL_FUNC_ADD);
+    GL_DEBUG_ASSERT();
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    GL_DEBUG_ASSERT();
+
   }
 
   init_controllers();

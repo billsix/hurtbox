@@ -12,7 +12,7 @@
 #include "shader.h"
 #include "mainscene.h"
 #include "gl-matrix.h"
-
+#include "load_asset.h"
 
 
 
@@ -94,7 +94,18 @@ wallTextureLoc;
 void
 main_scene_init_scene()
 {
+  /* the global Assimp scene object */
+  struct aiScene aiScene;
+  struct aiVector3D scene_min, scene_max, scene_center;
+  
 
+  load_asset(MODELS_DIR "walls.obj",
+             &aiScene,
+             &scene_min,
+             &scene_max,
+             &scene_center);
+
+  
   glGenVertexArrays(NumVAOS, VAOs);
   GL_DEBUG_ASSERT();
 

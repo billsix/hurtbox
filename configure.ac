@@ -5,7 +5,7 @@ AC_CONFIG_HEADER([config.h])
 AC_CHECK_HEADER([stdio.h])
 AC_REVISION([: 0.0.1 $])
 AM_INIT_AUTOMAKE()
-LT_PREREQ([2.4.6])
+LT_PREREQ([2.4.2])
 LT_INIT([disable-shared])
 AC_PROG_CC
 AC_PROG_CXX

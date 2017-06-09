@@ -46,6 +46,11 @@
 #include "nuklear.h"
 #include "nuklear_sdl_gl3.h"
 
+#include <assimp/cimport.h>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
+
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
 
 #define NOOP() (void)0
