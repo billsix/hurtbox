@@ -3,7 +3,7 @@
  *
  * Copyright 2016-2017 - William Emerison Six
  * All rights reserved
- * Distributed under LGPL 2.1 or Apache 2.0
+ * Distributed under Apache 2.0
  */
 
 

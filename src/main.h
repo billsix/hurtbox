@@ -1,12 +1,13 @@
-#ifndef MAIN_H
-#define MAIN_H 1
 /*
  * William Emerison Six
  *
  * Copyright 2016-2017 - William Emerison Six
  * All rights reserved
- * Distributed under LGPL 2.1 or Apache 2.0
+ * Distributed under Apache 2.0
  */
+
+#ifndef MAIN_H
+#define MAIN_H 1
 
 
 BEGIN_C_DECLS
