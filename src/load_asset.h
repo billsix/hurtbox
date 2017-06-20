@@ -11,16 +11,16 @@
 
 
 bool load_asset(const char* path,
-                struct aiScene* aiScene,
+                const struct aiScene* aiScene,
                 struct aiVector3D *scene_min,
                 struct aiVector3D *scene_max,
                 struct aiVector3D *scene_center);
-  
-void get_bounding_box(struct aiScene* aiScene,
+
+void get_bounding_box(const struct aiScene* aiScene,
                       struct aiVector3D* min,
                       struct aiVector3D* max);
 
-void get_bounding_box_for_node (struct aiScene* aiScene,
+void get_bounding_box_for_node (const struct aiScene* aiScene,
                                 const struct aiNode* nd,
                                 struct aiVector3D* min,
                                 struct aiVector3D* max,

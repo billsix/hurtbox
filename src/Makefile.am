@@ -41,7 +41,8 @@ hurtbox_shader__DATA = \
 
 hurtbox_model_dir = $(hurtbox_dir)/models/
 hurtbox_model__DATA = \
-	../models/walls.blend
+	../models/walls.dae \
+	../models/walls.obj
 
 
 hurtbox_CFLAGS = \

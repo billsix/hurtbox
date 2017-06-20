@@ -97,15 +97,21 @@ main_scene_init_scene()
   /* the global Assimp scene object */
   struct aiScene aiScene;
   struct aiVector3D scene_min, scene_max, scene_center;
-  
 
-  load_asset(MODELS_DIR "walls.obj",
-             &aiScene,
-             &scene_min,
-             &scene_max,
-             &scene_center);
 
-  
+  if(!load_asset(MODELS_DIR "walls.dae",
+                 &aiScene,
+                 &scene_min,
+                 &scene_max,
+                 &scene_center)){
+    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+                   SDL_LOG_PRIORITY_ERROR,
+                   "Error: Could not init SDL video\n",
+                   SDL_GetError());
+    return;
+  }
+
+
   glGenVertexArrays(NumVAOS, VAOs);
   GL_DEBUG_ASSERT();
 
@@ -191,7 +197,7 @@ main_scene_init_scene()
 
     GLuint vertexShaderID = compile_shader(GL_VERTEX_SHADER,
                                            SHADER_DIR "walls.vert");
-    
+
     GLuint fragmentShaderID =compile_shader(GL_FRAGMENT_SHADER,
                                             SHADER_DIR "walls.frag");
 
