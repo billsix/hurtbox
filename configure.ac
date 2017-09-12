@@ -34,7 +34,4 @@ AM_PATH_SDL2($SDL_VERSION,
             AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
 )
 
-dnl Check for glew and set cflags/libs
-PKG_CHECK_MODULES(GLEW, glew >= 1.10)
-
 AC_OUTPUT

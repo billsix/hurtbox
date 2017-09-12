@@ -2,9 +2,6 @@
 #define COMMON_H 1
 
 #define M_PI acos(-1.0)
-#ifndef _WIN32
-#define GLEW_STATIC 1
-#endif
 
 #ifdef __cplusplus
 #define BEGIN_C_DECLS extern "C" {
@@ -28,7 +25,7 @@
 #endif
 #include "SDL.h"
 #include "SDL_image.h"
-#include <GL/glew.h>
+#include "gl3w.h"
 #include <assert.h>
 
 #include <stdio.h>
@@ -110,4 +107,3 @@
 #include "controller.h"
 
 #endif
-

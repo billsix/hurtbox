@@ -13,6 +13,9 @@
 #define MAX_VERTEX_MEMORY 512 * 1024
 #define MAX_ELEMENT_MEMORY 128 * 1024
 
+#define GL3W_IMPLEMENTATION
+#include "gl3w.h"
+
 #include "common.h"
 #include "main.h"
 #include "gl-matrix.h"
@@ -131,15 +134,13 @@ main(int argc, char** argv)
   }
 
   GL_DEBUG_ASSERT();
-  // init GLEW
-  glewExperimental = GL_TRUE;
+  // init GL3W
   {
-    GLenum err = glewInit();
-    if (GLEW_OK != err)
+    if (0 == gl3w_init())
       {
         SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
                        SDL_LOG_PRIORITY_ERROR,
-                       "Could not init glew\n");
+                       "Could not init gl3w\n");
       }
   }
 
