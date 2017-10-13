@@ -8,15 +8,13 @@
 
 #include <stdio.h>
 #define NK_IMPLEMENTATION
-#define NK_SDL_GL3_IMPLEMENTATION
-
+#define NK_GLFW_GL3_IMPLEMENTATION
 #define MAX_VERTEX_MEMORY 512 * 1024
 #define MAX_ELEMENT_MEMORY 128 * 1024
-
 #define GL3W_IMPLEMENTATION
-#include "gl3w.h"
-
+#define STB_IMAGE_IMPLEMENTATION
 #include "common.h"
+
 #include "main.h"
 #include "gl-matrix.h"
 #include "mainscene.h"
@@ -24,14 +22,24 @@
 
 
 
-
-SDL_Window *window;
-SDL_Renderer *renderer;
-SDL_GLContext glcontext;
-SDL_PixelFormat RGBAFormat;
-
+GLFWwindow* window;
+// show the nuklear GUIs or not.  pressing escape toggles
+// it
+bool guiEnable = true;
 
 
+static void error_callback(int error, const char* description)
+{
+    fprintf(stderr, "Error: %s\n", description);
+}
+
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+  if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
+    //glfwSetWindowShouldClose(window, GLFW_TRUE);
+    guiEnable = !guiEnable;
+  }
+}
 
 
 
@@ -43,122 +51,46 @@ extern "C"
 int
 main(int argc, char** argv)
 {
-  // init SDL
-  if (SDL_Init(SDL_INIT_VIDEO) != 0){
-    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-                   SDL_LOG_PRIORITY_ERROR,
-                   "Error: Could not init SDL video %s\n",
-                   SDL_GetError());
-    return 1;
-  }
-  if (SDL_Init(SDL_INIT_AUDIO) != 0){
-    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-                   SDL_LOG_PRIORITY_INFO,
-                   "Could not init SDL audio");
-  }
-  if (SDL_Init(SDL_INIT_TIMER) != 0){
-    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-                   SDL_LOG_PRIORITY_INFO,
-                   "Could not init SDL timer");
-  }
-  if (SDL_Init(SDL_INIT_GAMECONTROLLER) != 0){
-    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-                   SDL_LOG_PRIORITY_INFO,
-                   "Could not init SDL game controller");
-  }
-  if (SDL_Init(SDL_INIT_HAPTIC)){
-    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-                   SDL_LOG_PRIORITY_INFO,
-                   "Could not init SDL haptic feedback");
-  }
-
-  // init SDL_image
-  IMG_Init(IMG_INIT_PNG);
-
-  // Initialize SDL Attributes
-  {
-    SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "0");
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-    SDL_DisplayMode current;
-    SDL_GetCurrentDisplayMode(0, &current);
-  }
-
-  if(NULL == (window = SDL_CreateWindow("HurtBox",
-                                        SDL_WINDOWPOS_CENTERED,
-                                        SDL_WINDOWPOS_CENTERED,
-                                        1280,
-                                        720,
-                                        SDL_WINDOW_OPENGL
-					|SDL_WINDOW_RESIZABLE
-                                        |SDL_WINDOW_ALLOW_HIGHDPI))){
-    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-		   SDL_LOG_PRIORITY_ERROR,
-		   "Could not create window: %s\n",
-		   SDL_GetError());
-    return 1;
-  }
-
-  // init pixel format
-  {
-
-    RGBAFormat.palette = 0;
-    RGBAFormat.BitsPerPixel = 32; RGBAFormat.BytesPerPixel = 4;
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-    RGBAFormat.Rmask = 0xFF000000; RGBAFormat.Rshift =  0; RGBAFormat.Rloss = 0;
-    RGBAFormat.Gmask = 0x00FF0000; RGBAFormat.Gshift =  8; RGBAFormat.Gloss = 0;
-    RGBAFormat.Bmask = 0x0000FF00; RGBAFormat.Bshift = 16; RGBAFormat.Bloss = 0;
-    RGBAFormat.Amask = 0x000000FF; RGBAFormat.Ashift = 24; RGBAFormat.Aloss = 0;
-#else
-    RGBAFormat.Rmask = 0x000000FF; RGBAFormat.Rshift = 24; RGBAFormat.Rloss = 0;
-    RGBAFormat.Gmask = 0x0000FF00; RGBAFormat.Gshift = 16; RGBAFormat.Gloss = 0;
-    RGBAFormat.Bmask = 0x00FF0000; RGBAFormat.Bshift =  8; RGBAFormat.Bloss = 0;
-    RGBAFormat.Amask = 0xFF000000; RGBAFormat.Ashift =  0; RGBAFormat.Aloss = 0;
-#endif
-
-  }
-
-  glcontext = SDL_GL_CreateContext(window);
-
-  if (0 != SDL_GL_MakeCurrent(window, glcontext)) {
-    // Unrecoverable error, exit here.
-    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-                   SDL_LOG_PRIORITY_INFO,
-                   "SDL_Init failed: %s\n", SDL_GetError());
-    return 1;
-  }
+  glfwSetErrorCallback(error_callback);
+  /* Initialize the library */
+  if (!glfwInit())
+    return -1;
 
   GL_DEBUG_ASSERT();
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#ifdef __APPLE__
+  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
+
+  /* Create a windowed mode window and its OpenGL context */
+  if(!(window = glfwCreateWindow(640,
+                                 480,
+                                 "Hello World",
+                                 NULL,
+                                 NULL)))
+    {
+      glfwTerminate();
+      return -1;
+    }
+  glfwSetKeyCallback(window, key_callback);
+
   // init GL3W
   {
     if (0 == gl3w_init())
       {
-        SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-                       SDL_LOG_PRIORITY_ERROR,
-                       "Could not init gl3w\n");
+        printf("Could not init gl3w\n");
       }
   }
 
-  // log opengl version
-  SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-                 SDL_LOG_PRIORITY_INFO,
-                 "OpenGL version loaded: %s\n",
-                 glGetString(GL_VERSION));
 
-  // enable vsync so that the framerate doesn't go crazy, thus
-  // messing up inputs and movement rates
-  if(-1 == SDL_GL_SetSwapInterval(1))
-    {
-      SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-                     SDL_LOG_PRIORITY_INFO,
-                     "VSync not set correctly\n");
+  /* Make the window's context current */
+  glfwMakeContextCurrent(window);
 
-    }
+
+
+
   // initialize OpenGL
   {
     GL_DEBUG_ASSERT();
@@ -177,13 +109,15 @@ main(int argc, char** argv)
 
   }
 
+
   init_controllers();
 
+  // set viewport
   {
-    int32_t w, h;
-    SDL_GetWindowSize(window, &w, &h);
+    int width = 0, height = 0;
+    glfwGetFramebufferSize(window, &width, &height);
     glViewport(0, 0,
-               w, h);
+               width, height);
   }
 
 
@@ -192,11 +126,11 @@ main(int argc, char** argv)
     .leave_scene = intro_scene_leave_scene,
 
     .draw_scene = intro_scene_draw_scene,
-    .handle_window_event = intro_scene_handle_window_event,
+    //    .handle_window_event = intro_scene_handle_window_event,
     .draw_nuklear = intro_scene_draw_nuklear,
 
-    .handle_controller_button_event = intro_scene_controller_handle_button,
-    .handle_controller_axis_motion = intro_scene_controller_handle_axis
+    //    .handle_controller_button_event = intro_scene_controller_handle_button,
+    //.handle_controller_axis_motion = intro_scene_controller_handle_axis
   };
   // use the intro scene's callbacks
   struct scene_callbacks current_scene = intro_scene_callbacks;
@@ -209,11 +143,11 @@ main(int argc, char** argv)
     .leave_scene = main_scene_leave_scene,
 
     .draw_scene = main_scene_draw_scene,
-    .handle_window_event = main_scene_handle_window_event,
+    //    .handle_window_event = main_scene_handle_window_event,
     .draw_nuklear = main_scene_draw_nuklear,
 
-    .handle_controller_button_event = main_scene_controller_handle_button,
-    .handle_controller_axis_motion = main_scene_controller_handle_axis
+    //.handle_controller_button_event = main_scene_controller_handle_button,
+    //.handle_controller_axis_motion = main_scene_controller_handle_axis
   };
   // init the main scene
   (*main_scene_callbacks.init_scene)();
@@ -222,20 +156,20 @@ main(int argc, char** argv)
 
 
   // nuklear context
-  struct nk_context *ctx = nk_sdl_init(window);
+  struct nk_context *ctx = nk_glfw3_init(window, NK_GLFW3_INSTALL_CALLBACKS);
   {
     /* Load Fonts: if none of these are loaded a default font will be used  */
     /* Load Cursor: if you uncomment cursor loading please hide the cursor */
     {
       struct nk_font_atlas *atlas;
-      nk_sdl_font_stash_begin(&atlas);
+      nk_glfw3_font_stash_begin(&atlas);
       /*struct nk_font *droid = nk_font_atlas_add_from_file(atlas, "../../../extra_font/DroidSans.ttf", 14, 0);*/
       /*struct nk_font *roboto = nk_font_atlas_add_from_file(atlas, "../../../extra_font/Roboto-Regular.ttf", 16, 0);*/
       /*struct nk_font *future = nk_font_atlas_add_from_file(atlas, "../../../extra_font/kenvector_future_thin.ttf", 13, 0);*/
       /*struct nk_font *clean = nk_font_atlas_add_from_file(atlas, "../../../extra_font/ProggyClean.ttf", 12, 0);*/
       /*struct nk_font *tiny = nk_font_atlas_add_from_file(atlas, "../../../extra_font/ProggyTiny.ttf", 10, 0);*/
       /*struct nk_font *cousine = nk_font_atlas_add_from_file(atlas, "../../../extra_font/Cousine-Regular.ttf", 13, 0);*/
-      nk_sdl_font_stash_end();
+      nk_glfw3_font_stash_end();
       /*nk_style_load_all_cursors(ctx, atlas->cursors);*/
       /*nk_style_set_font(ctx, &roboto->handle)*/;}
 
@@ -248,65 +182,21 @@ main(int argc, char** argv)
   }
 
   // The event loop.  Keep on truckin'.
-  SDL_bool done = SDL_FALSE;
-  while (!done)
+  while (!glfwWindowShouldClose(window))
     {
-      // put a SDL Event on the stack so that SDL can be polled
-      SDL_Event event;
-      nk_input_begin(ctx);
-      while (SDL_PollEvent(&event))
-        {
-          // to quote the illustrious Arnetta the Mood Setta, "I quit this bitch"
-          if (event.type == SDL_QUIT){
-            done = SDL_TRUE;
-          }
 
-	  // need to only handle events that nuklear wants, I had the same issue with IMGUI at first,
-	  // I know they have some way to handle this
-	  nk_sdl_handle_event(&event);
+      /* Poll for and process events */
+      glfwPollEvents();
 
-          switch(event.type)
-            {
-            case SDL_CONTROLLERBUTTONDOWN:
-              {
-                (*current_scene.handle_controller_button_event)(&event.cbutton);
-                break;
-              }
-            case SDL_CONTROLLERBUTTONUP:
-              {
-                (*current_scene.handle_controller_button_event)(&event.cbutton);
-                break;
-              }
+      if(guiEnable) nk_glfw3_new_frame();
 
-            case SDL_CONTROLLERAXISMOTION:
-              {
-                (*current_scene.handle_controller_axis_motion)(&event.caxis);
-                break;
-              }
-            }
-          switch(event.type)
-            {
-            case SDL_MOUSEBUTTONDOWN:
-              break;
-            case SDL_WINDOWEVENT:
-              {
-                int32_t w, h;
-                SDL_GetWindowSize(window,&w,&h);
-                glViewport(0, 0,
-                           w, h);
-                (*current_scene.handle_window_event)(&event);
-                break;
-              }
-            }
-        }
-      nk_input_end(ctx);
 
-      const Uint8 *state = SDL_GetKeyboardState(NULL);
-      (*current_scene.draw_scene)(state);
+      (*current_scene.draw_scene)();
 
       // nuklear
+      if(guiEnable)
       {
-	/* IMPORTANT: `nk_sdl_render` modifies some global OpenGL state
+	/* IMPORTANT: `nk_glfw3_render` modifies some global OpenGL state
 	 * with blending, scissor, face culling, depth test and viewport and
 	 * defaults everything back into a default state.
 	 * Make sure to either a.) save and restore or b.) reset your own state after
@@ -383,7 +273,7 @@ main(int argc, char** argv)
 	}
 
 	// render nuklear
-	nk_sdl_render(NK_ANTI_ALIASING_ON,
+	nk_glfw3_render(NK_ANTI_ALIASING_ON,
                       MAX_VERTEX_MEMORY,
                       MAX_ELEMENT_MEMORY);
 
@@ -426,13 +316,11 @@ main(int argc, char** argv)
                   (GLsizei)last_scissor_box[2],
                   (GLsizei)last_scissor_box[3]);
       }
-      SDL_GL_SwapWindow(window);
+      glfwSwapBuffers(window);
+
     }
 
   // Cleanup
-  SDL_GL_DeleteContext(glcontext);
-  SDL_DestroyWindow(window);
-  IMG_Quit();
-  SDL_Quit();
+  glfwTerminate();
   return 0;
 }

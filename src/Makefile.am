@@ -5,6 +5,7 @@ AM_CPPFLAGS = \
 	-I$(abs_top_srcdir)/contrib/gl-matrix-c/ \
 	-I$(abs_top_srcdir)/contrib/nuklear/ \
 	-I$(abs_top_srcdir)/contrib/gl3w-Single-File/ \
+	-I$(abs_top_srcdir)/contrib/stb/ \
 	-D RESOURCE_DIR=\"$(hurtbox_dir)/\" \
 	-D TEXTURE_DIR=\"$(hurtbox_texture_dir)/\" \
 	-D SHADER_DIR=\"$(hurtbox_shader_dir)/\" \
@@ -48,17 +49,13 @@ hurtbox_model__DATA = \
 
 hurtbox_CFLAGS = \
 	-std=c99 \
-	$(SDL_CFLAGS) \
 	-I../contrib/nuklear/
 
-hurtbox_CXXFLAGS= \
-	$(SDL_CFLAGS)
 
 hurtbox_LDADD = \
-	$(SDL_LIBS) \
 	$(OPENGL_LIB) \
-	-lSDL2_image \
 	../contrib/gl-matrix-c/libglmatrix.la \
+	-lglfw \
 	-lassimp \
 	-ldl \
 	-lm

@@ -19,19 +19,10 @@ void
 main_scene_init_scene();
 
 void
-main_scene_controller_handle_axis(const SDL_ControllerAxisEvent * const controllerAxisEvent);
-
-void
-main_scene_controller_handle_button (const SDL_ControllerButtonEvent * const sdlEvent);
-
-void
-main_scene_draw_scene(const Uint8 * const state);
+main_scene_draw_scene();
 
 void
 main_scene_update_wall_colors();
-
-void
-main_scene_handle_window_event(const SDL_Event* const event);
 
 void
 main_scene_leave_scene();

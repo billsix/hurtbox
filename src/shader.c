@@ -60,16 +60,14 @@ compile_shader(GLenum shaderType, const char* const path)//GLchar ** shader_text
   GL_DEBUG_ASSERT();
 
   if(shaderType == GL_VERTEX_SHADER){
-    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-                   SDL_LOG_PRIORITY_INFO,
-                   "Compiling Vertex shader : %s\n",
-                   shader_text);
+    fprintf(stderr,
+            "Compiling Vertex shader : %s\n",
+            shader_text);
   }
   else if (shaderType == GL_FRAGMENT_SHADER) {
-    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-                   SDL_LOG_PRIORITY_INFO,
-                   "Compiling Fragment shader : %s\n",
-                   shader_text);
+    fprintf(stderr,
+            "Compiling Fragment shader : %s\n",
+            shader_text);
   }
 
   {
@@ -97,10 +95,9 @@ compile_shader(GLenum shaderType, const char* const path)//GLchar ** shader_text
                        NULL,
                        log);
     GL_DEBUG_ASSERT();
-    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-                   SDL_LOG_PRIORITY_INFO,
-                   "Shader info %s\n",
-                   log);
+    fprintf("Shader info %s\n",
+            log);
+
     free(log);
   }
 
@@ -114,9 +111,7 @@ GLuint
 link_shaders(GLuint vertexShader, GLuint fragmentShader)
 {
   // Link the program
-  SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-                 SDL_LOG_PRIORITY_INFO,
-                 "Linking program\n");
+  fprintf(stderr,"Linking program\n");
 
   GLuint programID = glCreateProgram();
   glAttachShader(programID, vertexShader);
@@ -142,10 +137,9 @@ link_shaders(GLuint vertexShader, GLuint fragmentShader)
 			NULL,
 			log);
     GL_DEBUG_ASSERT();
-    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-                   SDL_LOG_PRIORITY_INFO,
-                   "Linking info %s\n",
-                   log);
+    fprintf(stderr,
+            "Linking info %s\n",
+            log);
     free(log);
 
   }

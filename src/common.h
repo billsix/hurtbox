@@ -17,15 +17,17 @@
 #define SHADER_DIR "shaders/"
 #define TEXTURE_DIR "textures/"
 #endif
+
+#include <string.h>
+#include <stdlib.h>
+
 #ifdef _WIN32
 #include <windows.h>
-#include <stdlib.h>
-#include <string.h>
 #include <tchar.h>
 #endif
-#include "SDL.h"
-#include "SDL_image.h"
+
 #include "gl3w.h"
+#include <GLFW/glfw3.h>
 #include <assert.h>
 
 #include <stdio.h>
@@ -41,7 +43,9 @@
 #define NK_INCLUDE_FONT_BAKING
 #define NK_INCLUDE_DEFAULT_FONT
 #include "nuklear.h"
-#include "nuklear_sdl_gl3.h"
+#include "nuklear_glfw_gl3.h"
+
+#include "stb_image.h"
 
 #include <assimp/cimport.h>
 #include <assimp/scene.h>

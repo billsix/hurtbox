@@ -14,6 +14,9 @@
 #include "gl-matrix.h"
 #include "load_asset.h"
 
+#include "stb_image.h"
+
+
 
 
 /*
@@ -104,10 +107,7 @@ main_scene_init_scene()
                  &scene_min,
                  &scene_max,
                  &scene_center)){
-    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-                   SDL_LOG_PRIORITY_ERROR,
-                   "Error: Could not init SDL video\n",
-                   SDL_GetError());
+    fprintf(stderr, "Could not load asset/n");
     return;
   }
 
@@ -219,7 +219,8 @@ main_scene_init_scene()
   {
     mat4_identity(projection_matrix);
     int32_t w, h;
-    SDL_GetWindowSize(window,&w,&h);
+
+    glfwGetWindowSize(window, &w, &h);
     mat4_perspective(45.0f,
                      (GLfloat)w / (GLfloat)h,
                      0.1f,
@@ -235,12 +236,14 @@ main_scene_init_scene()
 
   // load textures
   {
+    int width,height,numberOf8BitComponentsPerPixel;
+    unsigned char *thegrid = stbi_load(TEXTURE_DIR "thegrid.png",
+                                       &width,
+                                       &height,
+                                       &numberOf8BitComponentsPerPixel,
+                                       0);
 
-    SDL_Surface *thegrid = IMG_Load(TEXTURE_DIR "thegrid.png");
-    //puts(SDL_GetError());
-
-
-    const GLuint mode = thegrid->format->BytesPerPixel == 4
+    const GLuint mode =  numberOf8BitComponentsPerPixel == 4
       ? GL_RGBA
       : GL_RGB;
 
@@ -265,15 +268,16 @@ main_scene_init_scene()
       GL_DEBUG_ASSERT();
       glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
       GL_DEBUG_ASSERT();
+
       glTexImage2D(GL_TEXTURE_2D,
                    0,
                    mode,
-                   thegrid->w,
-                   thegrid->h,
+                   width,
+                   height,
                    0,
                    mode,
                    GL_UNSIGNED_BYTE,
-                   thegrid->pixels);
+                   thegrid);
       GL_DEBUG_ASSERT();
       GL_DEBUG_ASSERT();
       glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -282,7 +286,7 @@ main_scene_init_scene()
       GL_DEBUG_ASSERT();
       glGenerateMipmap(GL_TEXTURE_2D);
     }
-    SDL_FreeSurface(thegrid);
+    stbi_image_free(thegrid);
   }
 }
 
@@ -307,8 +311,18 @@ struct camera camera = {
 
 
 void
-main_scene_draw_scene(const Uint8 * const state)
+main_scene_draw_scene()
 {
+
+  // set viewport
+  {
+    int width = 0, height = 0;
+    glfwGetFramebufferSize(window, &width, &height);
+    glViewport(0, 0,
+               width, height);
+  }
+
+
   // update camera from the controller
   {
     camera.x -= ( GLfloat ) sin( camera.rotationY) * left_axis.vertical;
@@ -322,19 +336,24 @@ main_scene_draw_scene(const Uint8 * const state)
 
   }
 
+
   // update camera from the keyboard
   {
-    if (state[SDL_SCANCODE_RIGHT]) {
+    int state = glfwGetKey(window, GLFW_KEY_RIGHT);
+    if (state == GLFW_PRESS){
       camera.rotationY -= (GLfloat)0.03;
     }
-    if (state[SDL_SCANCODE_LEFT]) {
+    state = glfwGetKey(window, GLFW_KEY_LEFT);
+    if (state == GLFW_PRESS){
       camera.rotationY += (GLfloat)0.03;
     }
-    if (state[SDL_SCANCODE_UP]) {
+    state = glfwGetKey(window, GLFW_KEY_UP);
+    if (state == GLFW_PRESS){
       camera.x -= (GLfloat)sin(camera.rotationY);
       camera.z -= (GLfloat)cos(camera.rotationY);
     }
-    if (state[SDL_SCANCODE_DOWN]) {
+    state = glfwGetKey(window, GLFW_KEY_DOWN);
+    if (state == GLFW_PRESS){
       camera.x += (GLfloat)sin(camera.rotationY);
       camera.z += (GLfloat)cos(camera.rotationY);
     }
@@ -420,58 +439,9 @@ main_scene_draw_scene(const Uint8 * const state)
 }
 
 
-void
-main_scene_controller_handle_button (const SDL_ControllerButtonEvent * const sdlEvent)
-{
-
-}
 
 
-void
-main_scene_controller_handle_axis(const SDL_ControllerAxisEvent * const controllerAxisEvent){
-  Uint32 timestamp	= controllerAxisEvent->timestamp;
-  SDL_JoystickID which = controllerAxisEvent->which;
-  Uint8 axis = controllerAxisEvent->axis;
-  Sint16 value = controllerAxisEvent->value; //the axis value (range: -32768 to 32767)
 
-  // one of the following values must be updated
-  GLfloat* axisValue[] = {
-    &left_axis.horizontal,
-    &left_axis.vertical,
-    &right_axis.horizontal,
-    &right_axis.vertical
-  };
-  // the different axises should change the values at different scales
-  GLfloat axisScale[] = {
-    1.0,
-    1.0,
-    0.1,
-    0.1
-  };
-
-  const uint32_t range = 32768;
-
-  // linear scaling has to be changed, probably want x^2
-  *axisValue[axis] = (value > -5000 && value < 5000)
-    ? 0.0
-    : -((GLfloat)value / (GLfloat)range) * axisScale[axis];
-}
-
-
-void
-main_scene_handle_window_event(const SDL_Event* const event){
-  switch (event->window.event){
-  case SDL_WINDOWEVENT_RESIZED:
-    {
-      uint32_t w = event->window.data1, h = event->window.data2;
-      mat4_perspective(45.0f,
-                       (GLfloat)w / (GLfloat)h,
-                       0.1f,
-                       1000.0f,projection_matrix);
-    }
-    break;
-  }
-}
 
 void
 main_scene_draw_nuklear(struct nk_context *ctx){
@@ -539,9 +509,7 @@ main_scene_draw_nuklear(struct nk_context *ctx){
                            1);
       if (nk_button_label(ctx,
                           "button")){
-        SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-                       SDL_LOG_PRIORITY_INFO,
-                       "Button pressed\n");
+        printf("Button Pressed! \n");
       }
       nk_layout_row_dynamic(ctx,
                             30,

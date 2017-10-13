@@ -5,8 +5,8 @@ in VS_OUT {
 } fs_in;
 uniform sampler2D wallTexture;
 
-out vec3 color;
+out vec4 color;
 
 void main(){
-  color = texture( wallTexture, fs_in.uv * 20 ).rgb;
+  color = texture( wallTexture, fs_in.uv * 20 );
 }

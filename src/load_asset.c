@@ -21,12 +21,7 @@ load_asset(const char* path,
                          aiProcessPreset_TargetRealtime_MaxQuality|
                          aiProcess_Triangulate);
   if(!aiScene){
-    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-                   SDL_LOG_PRIORITY_ERROR,
-                   "Error: Could not load %s, %s\n",
-                   path,
-                   SDL_GetError());
-
+    fprintf(stderr, "Error: Could not load %s\n",path);
     return false;
   }
   get_bounding_box(aiScene,scene_min,scene_max);
