@@ -11,24 +11,12 @@
 
 #include "shader.h"
 #include "mainscene.h"
-#include "gl-matrix.h"
+#include "gl-matrix-stack.h"
 #include "load_asset.h"
 
 #include "stb_image.h"
 
 
-
-
-/*
- * projection and modelview matricies
- * TODO - make these stackable, with a current matrix
- */
-
-static float
-projection_matrix[16];
-
-static float
-model_view_matrix[16];
 
 
 
@@ -217,20 +205,21 @@ main_scene_init_scene()
 
   // initialize projection matrix
   {
-    mat4_identity(projection_matrix);
+    enum matrixType m = PROJECTION;
+    mat4_identity(m);
     int32_t w, h;
 
     glfwGetWindowSize(window, &w, &h);
     mat4_perspective(45.0f,
                      (GLfloat)w / (GLfloat)h,
                      0.1f,
-                     1000.0f,
-                     projection_matrix);
+                     1000.0f);
 
   }
   //initialize the modelview matrix
   {
-    mat4_identity(model_view_matrix);
+    mat4_identity(MODEL);
+    mat4_identity(VIEW);
   }
 
 
@@ -322,6 +311,28 @@ main_scene_draw_scene()
                width, height);
   }
 
+  // initialize projection matrix
+  {
+    enum matrixType m = PROJECTION;
+    mat4_identity(m);
+
+    int32_t w, h;
+
+    glfwGetWindowSize(window, &w, &h);
+    mat4_perspective(45.0f,
+                     (GLfloat)w / (GLfloat)h,
+                     0.1f,
+                     1000.0f);
+
+  }
+  //initialize the modelview matrix
+  {
+    mat4_identity(MODEL);
+    mat4_identity(VIEW);
+  }
+
+
+
 
   // update camera from the controller
   {
@@ -368,21 +379,17 @@ main_scene_draw_scene()
   GL_DEBUG_ASSERT();
 
 
-  GLfloat wall_model_view_matrix[16];
-  mat4_identity(wall_model_view_matrix);
 
   // translate from object coordinates to camera coordinates
   {
-    mat4_rotateX(wall_model_view_matrix,
-                 camera.rotationX,
-                 NULL);
-    mat4_rotateY(wall_model_view_matrix,
-                 -camera.rotationY,
-                 NULL);
     GLfloat neg_camera[] = {-camera.x,-camera.y,-camera.z};
-    mat4_translate(wall_model_view_matrix,
-                   neg_camera,
-                   NULL);
+    mat4_rotateX(VIEW,
+                 camera.rotationX);
+    mat4_rotateY(VIEW,
+                 -camera.rotationY);
+    mat4_translate(VIEW,
+                   neg_camera);
+
   }
 
   //draw the four walls
@@ -395,20 +402,16 @@ main_scene_draw_scene()
         rotation+=pi_over_two,i++)
       {
 
-        mat4_rotateY(wall_model_view_matrix,
-                     rotation,
-                     NULL);
+        mat4_rotateY(MODEL,
+                     rotation);
 
 
-        // translate from camera coordinates to screen coordinates
-        mat4_multiply(projection_matrix,
-                      wall_model_view_matrix,
-                      model_view_matrix);
+        const mat4_t * const matr = mat4_get_matrix(MODELVIEWPROJECTION);
 
         glUniformMatrix4fv(mvpMatrixLoc,
                            1,
                            GL_FALSE,
-                           model_view_matrix);
+                           matr);
         GL_DEBUG_ASSERT();
 
 
