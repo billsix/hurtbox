@@ -56,7 +56,6 @@ main(int argc, char** argv)
   if (!glfwInit())
     return -1;
 
-  GL_DEBUG_ASSERT();
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -76,6 +75,10 @@ main(int argc, char** argv)
     }
   glfwSetKeyCallback(window, key_callback);
 
+
+  /* Make the window's context current */
+  glfwMakeContextCurrent(window);
+
   // init GL3W
   {
     if (0 == gl3w_init())
@@ -83,10 +86,6 @@ main(int argc, char** argv)
         printf("Could not init gl3w\n");
       }
   }
-
-
-  /* Make the window's context current */
-  glfwMakeContextCurrent(window);
 
 
 

@@ -14,6 +14,7 @@
 #if HAVE_CONFIG_H
 #include <config.h>
 #else // Visual Studio
+#define MODELS_DIR "models/"
 #define SHADER_DIR "shaders/"
 #define TEXTURE_DIR "textures/"
 #endif
