@@ -95,7 +95,8 @@ compile_shader(GLenum shaderType, const char* const path)//GLchar ** shader_text
                        NULL,
                        log);
     GL_DEBUG_ASSERT();
-    fprintf("Shader info %s\n",
+    fprintf(stderr,
+            "Shader info %s\n",
             log);
 
     free(log);
