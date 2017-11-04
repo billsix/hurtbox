@@ -23,14 +23,21 @@ add_executable(hurtbox_app ${hurtbox_headers} ${hurtbox_source})
 
 target_include_directories ( hurtbox_app
     PRIVATE
-    ${gl-matrix-c_contrib_headers}
-    ${stb_contrib_headers}
-    ${nuklear_contrib_headers}
-    ${gl3w-Single-File_contrib_headers}
+    ${CMAKE_SOURCE_DIR}/contrib/gl3w-Single-File
+    ${CMAKE_SOURCE_DIR}/contrib/stb
+    ${CMAKE_SOURCE_DIR}/contrib/nuklear
+    ${CMAKE_SOURCE_DIR}/contrib/gl-matrix-c
 )
 
 target_link_libraries ( hurtbox_app
     PRIVATE
+    "-lm"
+    "-ldl"
+    ${OPENGL_gl_LIBRARY}
+    ${GLFW_LIBRARIES}
+    assimp
     gl-matrix-c_contrib
-    nuklear_contrib
 )
+
+
+install(TARGETS hurtbox_app DESTINATION bin)

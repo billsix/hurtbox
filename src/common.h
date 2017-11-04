@@ -11,8 +11,10 @@
 #define END_C_DECLS
 #endif
 
-#if HAVE_CONFIG_H
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#elif CMAKE_CONFIG
+//do nothing
 #else // Visual Studio
 #define MODELS_DIR "models/"
 #define SHADER_DIR "shaders/"
