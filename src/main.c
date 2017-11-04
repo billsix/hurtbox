@@ -80,6 +80,9 @@ main(int argc, char** argv)
   glfwMakeContextCurrent(window);
 
   // init GL3W
+  //ERS Note - I don't understand this, because gl3w_init returns -1 for error state,
+  // and zero for correctly finding/setting the gl3w version.  Seems to always print 
+  //this error on my console.
   {
     if (0 == gl3w_init())
       {
