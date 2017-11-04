@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.0)
+project(hurtbox)
+add_subdirectory(shaders)
+add_subdirectory(contrib)
+add_subdirectory(src)
