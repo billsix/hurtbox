@@ -16,14 +16,18 @@ Prereqs
 -glfw3 development libraries
 -gcc
 -g++
--automake
--autoconf
+-cmake
 
+#Make a build directory
+mkdir $(pwd)/../debug
+#Make an install directory
+mkdir $(pwd)/../debugInstall
+export INSTALL_DIR=$(pwd)/../debugInstall
+#Charge to the build directory
+cd ../debug
 
-$ ./autogen.sh
-$ ./configure --prefix=$MY_INSTALL_DIR
-$ make
-$ make install
+cmake ../hurtbox
+cmake -DCMAKE_INSTALL_PREFIX:PATH=$INSTALL_DIR . && make all install
 
 
 Visual Studio Community 2017
