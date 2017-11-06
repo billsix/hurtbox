@@ -29,10 +29,11 @@ add_definitions(-DPACKAGE_STRING="hurtbox 0.0.1")
 add_definitions(-DPACKAGE_BUGREPORT="William Emerison Six <billsix@gmail.com>")
 add_definitions(-DPACKAGE_URL="")
 
-#I'm assuming these are rel to 'bin' in the install...
-add_definitions(-DTEXTURE_DIR="../share/hurtbox/textures/")
-add_definitions(-DSHADER_DIR="../share/hurtbox/shaders/")
-add_definitions(-DMODELS_DIR="../share/hurtbox/models/")
+
+#not quite sure why ${CMAKE_INSTALL_PREFIX} resolves correctly, but ${DESTINATION} doesn't
+add_definitions(-DTEXTURE_DIR="${CMAKE_INSTALL_PREFIX}/share/hurtbox/textures/")
+add_definitions(-DSHADER_DIR="${CMAKE_INSTALL_PREFIX}/share/hurtbox/shaders/")
+add_definitions(-DMODELS_DIR="${CMAKE_INSTALL_PREFIX}/share/hurtbox/models/")
 
 add_definitions(-DCMAKE_CONFIG)
 
@@ -42,8 +43,8 @@ add_subdirectory(shaders)
 add_subdirectory(contrib)
 add_subdirectory(src)
 
-install(DIRECTORY src/ DESTINATION share/hurtbox
-    FILES_MATCHING PATTERN "*.h")
+#install(DIRECTORY src/ DESTINATION share/hurtbox
+#    FILES_MATCHING PATTERN "*.h")
 install(DIRECTORY models/ DESTINATION share/hurtbox/models)
 install(DIRECTORY shaders/ DESTINATION share/hurtbox/shaders)
 install(DIRECTORY textures/ DESTINATION share/hurtbox/textures)

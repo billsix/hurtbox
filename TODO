@@ -1,4 +1,2 @@
 - Build correctly via cmake
-  - ensure that the models/textures/shaders are loaded correctly (i.e. have the correct path) regardless of directory of hurtbox invocation
-  - don't export .h files, as this is an app, not a library
   - take a look to see if cmake subprojects are actually needed for single-file header libraries from within contrib

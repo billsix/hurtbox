@@ -1,4 +1,4 @@
-project(hurtbox_app)
+project(hurtbox)
 
 set(hurtbox_headers
     ./common.h
@@ -19,9 +19,9 @@ set(hurtbox_source
     ./shader.c
 )
 
-add_executable(hurtbox_app ${hurtbox_headers} ${hurtbox_source})
+add_executable(hurtbox ${hurtbox_headers} ${hurtbox_source})
 
-target_include_directories ( hurtbox_app
+target_include_directories ( hurtbox
     PRIVATE
     ${CMAKE_SOURCE_DIR}/contrib/gl3w-Single-File
     ${CMAKE_SOURCE_DIR}/contrib/stb
@@ -29,7 +29,7 @@ target_include_directories ( hurtbox_app
     ${CMAKE_SOURCE_DIR}/contrib/gl-matrix-c
 )
 
-target_link_libraries ( hurtbox_app
+target_link_libraries ( hurtbox
     PRIVATE
     "-lm"
     "-ldl"
@@ -40,4 +40,4 @@ target_link_libraries ( hurtbox_app
 )
 
 
-install(TARGETS hurtbox_app DESTINATION bin)
+install(TARGETS hurtbox DESTINATION bin)
