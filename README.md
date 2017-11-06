@@ -13,11 +13,11 @@ Prereqs
 
 * git
 
-*glfw3
+* glfw3
 
-*glfw3 development libraries
+* glfw3 development libraries
 
-*gcc
+* gcc
 
 *cmake
 
