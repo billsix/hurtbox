@@ -1,2 +1,3 @@
 - Build correctly via cmake
   - take a look to see if cmake subprojects are actually needed for single-file header libraries from within contrib
+  - figure out how to pass CFLAGS etc to cmake.
