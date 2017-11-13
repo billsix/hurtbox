@@ -406,12 +406,12 @@ main_scene_draw_scene()
                      rotation);
 
 
-        const mat4_t * const matr = mat4_get_matrix(MODELVIEWPROJECTION);
+        const struct mat4_t * const matr = mat4_get_matrix(MODELVIEWPROJECTION);
 
         glUniformMatrix4fv(mvpMatrixLoc,
                            1,
                            GL_FALSE,
-                           matr);
+                           matr->m);
         GL_DEBUG_ASSERT();
 
 
