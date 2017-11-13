@@ -36,7 +36,7 @@ Build
     export INSTALL_DIR=$(pwd)/../debugInstall
     #Charge to the build directory
     cd ../debug
-    cmake ../hurtbox
+    CFLAGS='-g -O0' cmake ../hurtbox
     cmake -DCMAKE_INSTALL_PREFIX:PATH=$INSTALL_DIR . && make all install
 
 
