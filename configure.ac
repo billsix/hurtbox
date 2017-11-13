@@ -12,7 +12,6 @@ AC_PROG_CXX
 AC_PROG_INSTALL
 AC_CONFIG_FILES([Makefile \
         contrib/Makefile \
-        contrib/gl-matrix-c/Makefile \
         doc/Makefile \
         src/Makefile])
 

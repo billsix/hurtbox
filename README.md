@@ -19,7 +19,15 @@ Prereqs
 
 * gcc
 
-*cmake
+Build
+
+* using autoconf
+    $ ./autogen.sh
+    $ CFLAGS='-g -O0' ./configure --prefix=$MY_INSTALL_DIR
+    $ make
+    $ make install
+
+* Or using cmake
 
     #Make a build directory
     mkdir $(pwd)/../debug

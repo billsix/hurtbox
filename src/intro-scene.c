@@ -11,7 +11,7 @@
 
 #include "shader.h"
 #include "intro-scene.h"
-#include "gl-matrix.h"
+#include "gl-matrix-stack.h"
 
 
 extern struct scene_callbacks

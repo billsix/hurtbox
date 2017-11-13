@@ -2,7 +2,7 @@ EXTRA_DIST = gamecontrollerdb.txt
 
 bin_PROGRAMS = hurtbox
 AM_CPPFLAGS = \
-	-I$(abs_top_srcdir)/contrib/gl-matrix-c/ \
+	-I$(abs_top_srcdir)/contrib/gl-matrix-stack/ \
 	-I$(abs_top_srcdir)/contrib/nuklear/ \
 	-I$(abs_top_srcdir)/contrib/gl3w-Single-File/ \
 	-I$(abs_top_srcdir)/contrib/stb/ \
@@ -54,7 +54,6 @@ hurtbox_CFLAGS = \
 
 hurtbox_LDADD = \
 	$(OPENGL_LIB) \
-	../contrib/gl-matrix-c/libglmatrix.la \
 	-lglfw \
 	-lassimp \
 	-ldl \

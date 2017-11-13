@@ -16,9 +16,11 @@
 #include "common.h"
 
 #include "main.h"
-#include "gl-matrix.h"
 #include "mainscene.h"
 #include "intro-scene.h"
+
+#define GL_MATRIX_STACK_IMPLEMENTATION
+#include "gl-matrix-stack.h"
 
 
 

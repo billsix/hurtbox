@@ -40,7 +40,6 @@ add_definitions(-DCMAKE_CONFIG)
 #CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 add_subdirectory(shaders)
-add_subdirectory(contrib)
 add_subdirectory(src)
 
 #install(DIRECTORY src/ DESTINATION share/hurtbox

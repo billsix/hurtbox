@@ -26,7 +26,7 @@ target_include_directories ( hurtbox
     ${CMAKE_SOURCE_DIR}/contrib/gl3w-Single-File
     ${CMAKE_SOURCE_DIR}/contrib/stb
     ${CMAKE_SOURCE_DIR}/contrib/nuklear
-    ${CMAKE_SOURCE_DIR}/contrib/gl-matrix-c
+    ${CMAKE_SOURCE_DIR}/contrib/gl-matrix-stack/
 )
 
 target_link_libraries ( hurtbox
@@ -36,7 +36,6 @@ target_link_libraries ( hurtbox
     ${OPENGL_gl_LIBRARY}
     ${GLFW_LIBRARIES}
     assimp
-    gl-matrix-c_contrib
 )
 
 
