@@ -87,7 +87,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir)\contrib\gl-matrix-c;$(SolutionDir)\contrib\stb;$(SolutionDir)\contrib\nuklear;$(SolutionDir)\contrib\gl3w-Single-File</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\contrib\gl-matrix-stack;$(SolutionDir)\contrib\stb;$(SolutionDir)\contrib\nuklear;$(SolutionDir)\contrib\gl3w-Single-File</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <TargetMachine>MachineX86</TargetMachine>
@@ -102,7 +102,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>$(SolutionDir)\contrib\gl-matrix-c;$(SolutionDir)\contrib\stb;$(SolutionDir)\contrib\nuklear;$(SolutionDir)\contrib\gl3w-Single-File</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\contrib\gl-matrix-stack;$(SolutionDir)\contrib\stb;$(SolutionDir)\contrib\nuklear;$(SolutionDir)\contrib\gl3w-Single-File</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <TargetMachine>MachineX86</TargetMachine>
@@ -115,7 +115,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\contrib\gl-matrix-c;$(SolutionDir)\contrib\stb;$(SolutionDir)\contrib\nuklear;$(SolutionDir)\contrib\gl3w-Single-File</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\contrib\gl-matrix-stack;$(SolutionDir)\contrib\stb;$(SolutionDir)\contrib\nuklear;$(SolutionDir)\contrib\gl3w-Single-File</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -124,7 +124,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\contrib\gl-matrix-c;$(SolutionDir)\contrib\stb;$(SolutionDir)\contrib\nuklear;$(SolutionDir)\contrib\gl3w-Single-File</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\contrib\gl-matrix-stack;$(SolutionDir)\contrib\stb;$(SolutionDir)\contrib\nuklear;$(SolutionDir)\contrib\gl3w-Single-File</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -133,6 +133,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="contrib\gl-matrix-c\gl-matrix.h" />
+    <ClInclude Include="contrib\gl-matrix-stack\gl-matrix-stack.h" />
     <ClInclude Include="contrib\gl3w-Single-File\gl3w.h" />
     <ClInclude Include="contrib\nuklear\nuklear.h" />
     <ClInclude Include="contrib\nuklear\nuklear_sdl_gl3.h" />
@@ -146,11 +147,6 @@
     <ClInclude Include="src\shader.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="contrib\gl-matrix-c\mat3.c" />
-    <ClCompile Include="contrib\gl-matrix-c\mat4.c" />
-    <ClCompile Include="contrib\gl-matrix-c\quat.c" />
-    <ClCompile Include="contrib\gl-matrix-c\str.c" />
-    <ClCompile Include="contrib\gl-matrix-c\vec3.c" />
     <ClCompile Include="src\controller.c" />
     <ClCompile Include="src\intro-scene.c" />
     <ClCompile Include="src\load_asset.c" />

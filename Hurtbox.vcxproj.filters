@@ -51,6 +51,9 @@
     <ClInclude Include="src\load_asset.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="contrib\gl-matrix-stack\gl-matrix-stack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.c">
@@ -60,21 +63,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\shader.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="contrib\gl-matrix-c\mat3.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="contrib\gl-matrix-c\mat4.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="contrib\gl-matrix-c\quat.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="contrib\gl-matrix-c\str.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="contrib\gl-matrix-c\vec3.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\intro-scene.c">
