@@ -350,21 +350,19 @@ main_scene_draw_scene()
 
   // update camera from the keyboard
   {
-    int state = glfwGetKey(window, GLFW_KEY_RIGHT);
-    if (state == GLFW_PRESS){
+    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS){
       camera.rotationY -= (GLfloat)0.03;
     }
-    state = glfwGetKey(window, GLFW_KEY_LEFT);
-    if (state == GLFW_PRESS){
+
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS){
       camera.rotationY += (GLfloat)0.03;
     }
-    state = glfwGetKey(window, GLFW_KEY_UP);
-    if (state == GLFW_PRESS){
+
+    if (glfwGetKey(window, GLFW_KEY_UP) ==  GLFW_PRESS){
       camera.x -= (GLfloat)sin(camera.rotationY);
       camera.z -= (GLfloat)cos(camera.rotationY);
     }
-    state = glfwGetKey(window, GLFW_KEY_DOWN);
-    if (state == GLFW_PRESS){
+    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){
       camera.x += (GLfloat)sin(camera.rotationY);
       camera.z += (GLfloat)cos(camera.rotationY);
     }

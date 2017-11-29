@@ -30,5 +30,6 @@ case "$target_os" in
 esac
 AC_SUBST(OPENGL_LIB)
 
+PKG_CHECK_MODULES(GLFW, glfw3 >= 3.2)
 
 AC_OUTPUT
