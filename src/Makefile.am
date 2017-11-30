@@ -49,12 +49,14 @@ hurtbox_model__DATA = \
 
 hurtbox_CFLAGS = \
 	-std=c99 \
+	$(GLFW_CFLAGS) \
+	$(ASSIMP_CFLAGS) \
 	-I../contrib/nuklear/
 
 
 hurtbox_LDADD = \
 	$(OPENGL_LIB) \
-	-lglfw \
-	-lassimp \
+	$(GLFW_LIBS) \
+	$(ASSIMP_LIBS) \
 	-ldl \
 	-lm

@@ -17,7 +17,7 @@ AC_CONFIG_FILES([Makefile \
 
 case "$target_os" in
     darwin*)
-             LDFLAGS="-framework OpenGL $LDFLAGS"
+             LDFLAGS="-framework CoreFoundation -framework OpenGL $LDFLAGS"
              OPENGL_LIB=""
              ;;
     ming*)
@@ -31,5 +31,6 @@ esac
 AC_SUBST(OPENGL_LIB)
 
 PKG_CHECK_MODULES(GLFW, glfw3 >= 3.2)
+PKG_CHECK_MODULES(ASSIMP, assimp >= 4.0)
 
 AC_OUTPUT
