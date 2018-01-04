@@ -113,6 +113,14 @@ mat4_translate(enum matrixType m,
                vec3_t * vector);
 
 /*
+ * Adds a scaling to the desired matrix.
+ */
+void
+mat4_scale(enum matrixType m,
+           vec3_t * vector);
+
+
+/*
  * Sets the projection matrix to perspective mode
  */
 void
@@ -443,6 +451,48 @@ mat4_translate(enum matrixType m,
   M(4,4) = M(4,1)*x + M(4,2)*y + M(4,3)*z + M(4,4);  // w is 1 in modelview
 #undef M
 }
+void
+mat4_scale(enum matrixType m,
+           vec3_t * vector){
+/*
+  M(1,1) M(1,2) M(1,3) M(1,4)     x 0 0 0
+  M(2,1) M(2,2) M(2,3) M(2,4) *   0 y 0 0
+  M(3,1) M(3,2) M(3,3) M(3,4)     0 0 z 0
+  M(4,1) M(4,2) M(4,3) M(4,4)     0 0 0 1
+
+  =
+
+  M(1,1)*x  M(1,2)*y  M(1,3)*z  M(1,4)
+  M(2,1)*x  M(2,2)*y  M(2,3)*z  M(2,4)
+  M(3,1)*x  M(3,2)*y  M(3,3)*z  M(3,4)
+  M(4,1)*x  M(4,2)*y  M(4,3)*z  M(4,4)
+*/
+  struct mat4_t * dest =  *private_mat4_get_matrix(m);
+#define M(row, column) dest->m[((column-1)*4)+row-1]
+
+  const float x = vector[0],
+    y = vector[1],
+    z = vector[2];
+
+
+  M(1,1) = M(1,1)*x;
+  M(2,1) = M(2,1)*x;
+  M(3,1) = M(3,1)*x;
+  M(4,1) = M(4,1)*x;
+
+  M(1,2) = M(1,2)*y;
+  M(2,2) = M(2,2)*y;
+  M(3,2) = M(3,2)*y;
+  M(4,2) = M(4,2)*y;
+
+  M(1,3) = M(1,3)*z;
+  M(2,3) = M(2,3)*z;
+  M(3,3) = M(3,3)*z;
+  M(4,3) = M(4,3)*z;
+#undef M
+
+}
+
 
 
 /*
