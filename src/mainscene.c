@@ -539,7 +539,7 @@ main_scene_draw_nuklear(struct nk_context *ctx){
 
       enum {EASY, HARD};
       static uint8_t op = EASY;
-      static uint32_t property = 20;
+      static int property = 20;
       nk_layout_row_static(ctx,
                            30,
                            80,

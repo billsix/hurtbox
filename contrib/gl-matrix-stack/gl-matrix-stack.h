@@ -241,30 +241,27 @@ private_mat4_multiply(struct mat4_t* dest,
 
 
 static struct mat4_t ** private_mat4_get_matrix(enum matrixType m){
-  if(MODEL == m){
+  switch(m){
+  case MODEL:
     return &model_matrix;
-  }
-  if(VIEW == m){
+  case VIEW:
     return &view_matrix;
-  }
-  if(PROJECTION == m){
+  case PROJECTION:
     return &projection_matrix;
-  }
-  if(MODELVIEW == m || MODELVIEWPROJECTION == m){
+  case MODELVIEW: 
     private_mat4_multiply(modelview_matrix,
                           view_matrix,
                           model_matrix);
-    if(MODELVIEW == m){
-      return &modelview_matrix;
-    }
-    // mvp
+    return &modelview_matrix;
+  default:
+    private_mat4_multiply(modelview_matrix,
+                          view_matrix,
+                          model_matrix);
     private_mat4_multiply(modelviewprojection_matrix,
                           projection_matrix,
                           modelview_matrix);
     return &modelviewprojection_matrix;
-
   }
-
 }
 
 /*
