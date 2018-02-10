@@ -1,5 +1,3 @@
-EXTRA_DIST = gamecontrollerdb.txt
-
 bin_PROGRAMS = hurtbox
 AM_CPPFLAGS = \
 	-I$(abs_top_srcdir)/contrib/gl-matrix-stack/ \
@@ -29,8 +27,6 @@ hurtbox_SOURCES = \
 	intro-scene.c
 
 hurtboxdir = $(datarootdir)/$(PACKAGE)/
-
-hurtbox_DATA = gamecontrollerdb.txt
 
 hurtbox_dir = $(pkgdatadir)
 hurtbox_texture_dir = $(hurtbox_dir)/textures

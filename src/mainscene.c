@@ -1,7 +1,7 @@
 /*
  * William Emerison Six
  *
- * Copyright 2016-2017 - William Emerison Six
+ * Copyright 2016-2018 - William Emerison Six
  * All rights reserved
  * Distributed under Apache 2.0
  */
@@ -15,9 +15,6 @@
 #include "load_asset.h"
 
 #include "stb_image.h"
-
-
-
 
 
 
@@ -216,6 +213,9 @@ main_scene_init_scene()
                      1000.0f);
 
   }
+
+
+
   //initialize the modelview matrix
   {
     mat4_identity(MODEL);
@@ -332,19 +332,42 @@ main_scene_draw_scene()
   }
 
 
-
-
   // update camera from the controller
   {
-    camera.x -= ( GLfloat ) sin( camera.rotationY) * left_axis.vertical;
-    camera.z -= ( GLfloat ) cos( camera.rotationY) * left_axis.vertical;
 
-    camera.x -= ( GLfloat ) cos(camera.rotationY) * left_axis.horizontal;
-    camera.z += ( GLfloat ) sin(camera.rotationY) * left_axis.horizontal;
+    // TODO -- update the code with comments to say which axes are which
 
-    camera.rotationX += right_axis.vertical;
-    camera.rotationY += right_axis.horizontal;
+    // currently only tested on Linux with a PS4 controller or a 360 controller.
+    // on linux,
+    // TODO - test on windows, macOS
 
+    // get input from controller 1
+    int count;
+    const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &count);
+
+    // xbox 360 controllers seem to have much more noise
+    // than PS4 controllers.  not moving the stick still seems
+    // to have a value
+    if(count >= 1 && fabsf(axes[0]) > 0.19){
+      // vertical
+      camera.x += ( GLfloat ) cos(camera.rotationY) * axes[0];
+      camera.z -= ( GLfloat ) sin(camera.rotationY) * axes[0];
+    }
+    if(count >= 2 && fabsf(axes[1]) > 0.19){
+      // horizontal
+      camera.x += ( GLfloat ) sin( camera.rotationY) * axes[1];
+      camera.z += ( GLfloat ) cos( camera.rotationY) * axes[1];
+    }
+
+    // 2 is left trigger
+    if(count >= 5){
+      if(fabsf(axes[3]) > 0.19){
+        camera.rotationY -= axes[3]*0.01;
+      }
+      if(fabsf(axes[4]) > 0.19){
+        camera.rotationX += axes[4]*0.01;
+      }
+    }
   }
 
 
@@ -440,7 +463,20 @@ main_scene_draw_scene()
 }
 
 
+void
+main_scene_window_size_callback(GLFWwindow* window, int width, int height)
+{
+  enum matrixType m = PROJECTION;
+  mat4_identity(m);
+  int32_t w, h;
 
+  mat4_perspective(45.0f,
+                   (GLfloat)width / (GLfloat)height,
+                   0.1f,
+                   1000.0f);
+
+
+}
 
 
 
@@ -534,6 +570,9 @@ main_scene_draw_nuklear(struct nk_context *ctx){
                       10,
                       1);
     }
+
+
+
   nk_end(ctx);
 
   /* -------------- EXAMPLES ---------------- */

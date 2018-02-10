@@ -1,12 +1,13 @@
-#ifndef MAINSCENE_H
-#define MAINSCENE_H 1
 /*
  * William Emerison Six
  *
- * Copyright 2016-2017 - William Emerison Six
+ * Copyright 2016-2018 - William Emerison Six
  * All rights reserved
  * Distributed under Apache 2.0
  */
+
+#ifndef MAINSCENE_H
+#define MAINSCENE_H 1
 
 #include "common.h"
 
@@ -26,6 +27,10 @@ main_scene_update_wall_colors();
 
 void
 main_scene_leave_scene();
+
+void
+main_scene_window_size_callback(GLFWwindow* window, int width, int height);
+
 
 void
 main_scene_draw_nuklear(struct nk_context *ctx);

@@ -1,3 +1,12 @@
+/*
+ * William Emerison Six
+ *
+ * Copyright 2016-2018 - William Emerison Six
+ * All rights reserved
+ * Distributed under Apache 2.0
+ */
+
+
 #ifndef COMMON_H
 #define COMMON_H 1
 
@@ -36,6 +45,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <math.h>
 
 // nuklear defs
 #define NK_INCLUDE_FIXED_TYPES
@@ -111,6 +121,7 @@
 #endif
 
 #define BUFFER_OFFSET(offset) ((void *) (offset))
+
 #include "controller.h"
 
 #endif

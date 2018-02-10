@@ -1,7 +1,7 @@
 /*
  * William Emerison Six
  *
- * Copyright 2016-2017 - William Emerison Six
+ * Copyright 2016-2018 - William Emerison Six
  * All rights reserved
  * Distributed under Apache 2.0
  */
@@ -112,8 +112,6 @@ main(int argc, char** argv)
   }
 
 
-  init_controllers();
-
   // set viewport
   {
     int width = 0, height = 0;
@@ -123,16 +121,16 @@ main(int argc, char** argv)
   }
 
 
+  // get controllers
+  init_controllers();
+
+
   struct scene_callbacks intro_scene_callbacks = {
     .init_scene = intro_scene_init_scene,
     .leave_scene = intro_scene_leave_scene,
-
     .draw_scene = intro_scene_draw_scene,
-    //    .handle_window_event = intro_scene_handle_window_event,
+    .window_size_callback = intro_scene_window_size_callback,
     .draw_nuklear = intro_scene_draw_nuklear,
-
-    //    .handle_controller_button_event = intro_scene_controller_handle_button,
-    //.handle_controller_axis_motion = intro_scene_controller_handle_axis
   };
   // use the intro scene's callbacks
   struct scene_callbacks current_scene = intro_scene_callbacks;
@@ -143,13 +141,9 @@ main(int argc, char** argv)
   struct scene_callbacks main_scene_callbacks = {
     .init_scene = main_scene_init_scene,
     .leave_scene = main_scene_leave_scene,
-
     .draw_scene = main_scene_draw_scene,
-    //    .handle_window_event = main_scene_handle_window_event,
+    .window_size_callback = main_scene_window_size_callback,
     .draw_nuklear = main_scene_draw_nuklear,
-
-    //.handle_controller_button_event = main_scene_controller_handle_button,
-    //.handle_controller_axis_motion = main_scene_controller_handle_axis
   };
   // init the main scene
   (*main_scene_callbacks.init_scene)();

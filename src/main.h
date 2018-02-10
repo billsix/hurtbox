@@ -1,7 +1,7 @@
 /*
  * William Emerison Six
  *
- * Copyright 2016-2017 - William Emerison Six
+ * Copyright 2016-2018 - William Emerison Six
  * All rights reserved
  * Distributed under Apache 2.0
  */
@@ -26,7 +26,7 @@ struct scene_callbacks{
   void (*init_scene)();
   void (*leave_scene)();
   void (*draw_scene)();
-
+  void (*window_size_callback)(GLFWwindow* window, int width, int height);
   void (*draw_nuklear)(struct nk_context *ctx);
 
 };
