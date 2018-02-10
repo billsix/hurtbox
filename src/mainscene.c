@@ -282,7 +282,8 @@ main_scene_init_scene()
 void
 main_scene_leave_scene()
 {
-
+  // TODO
+  // free every VAO, VBO, and shader program
 }
 
 

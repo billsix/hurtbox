@@ -145,10 +145,6 @@ main(int argc, char** argv)
     .window_size_callback = main_scene_window_size_callback,
     .draw_nuklear = main_scene_draw_nuklear,
   };
-  // init the main scene
-  (*main_scene_callbacks.init_scene)();
-
-
 
 
   // nuklear context
@@ -256,6 +252,9 @@ main(int argc, char** argv)
                 }
                 currentSceneRadioButton = INTRO;
                 current_scene = intro_scene_callbacks;
+                if (oldScene != INTRO) {
+		  (*current_scene.init_scene)();
+                }
               }
               if (nk_option_label(ctx, "Main", currentSceneRadioButton == MAIN)) {
                 if (oldScene != MAIN) {
@@ -263,6 +262,9 @@ main(int argc, char** argv)
                 }
                 currentSceneRadioButton = MAIN;
                 current_scene = main_scene_callbacks;
+                if (oldScene != MAIN) {
+		  (*current_scene.init_scene)();
+                }
               }
             }
           nk_end(ctx);
