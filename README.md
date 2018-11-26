@@ -21,13 +21,7 @@ Prereqs
 
 Build
 
-* using autoconf
-    $ ./autogen.sh
-    $ CFLAGS='-g -O0' ./configure --prefix=$MY_INSTALL_DIR
-    $ make
-    $ make install
-
-* Or using cmake
+* using cmake
 
     #Make a build directory
     mkdir $(pwd)/../debug
@@ -38,11 +32,3 @@ Build
     cd ../debug
     CFLAGS='-g -O0' cmake ../hurtbox
     cmake -DCMAKE_INSTALL_PREFIX:PATH=$INSTALL_DIR . && make all install
-
-
-Visual Studio Community 2017
-----------------------------
-
-Prereqs
-
-Nuget handles the depedencies
