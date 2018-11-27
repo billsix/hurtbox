@@ -23,12 +23,14 @@ Build
 
 * using cmake
 
-    #Make a build directory
-    mkdir $(pwd)/../debug
-    #Make an install directory
-    mkdir $(pwd)/../debugInstall
-    export INSTALL_DIR=$(pwd)/../debugInstall
-    #Charge to the build directory
-    cd ../debug
-    CFLAGS='-g -O0' cmake ../hurtbox
-    cmake -DCMAKE_INSTALL_PREFIX:PATH=$INSTALL_DIR . && make all install
+```bash
+#Make a build directory
+mkdir $(pwd)/../debug
+#Make an install directory
+mkdir $(pwd)/../debugInstall
+export INSTALL_DIR=$(pwd)/../debugInstall
+#Charge to the build directory
+cd ../debug
+CFLAGS='-g -O0' cmake ../hurtbox
+cmake -DCMAKE_INSTALL_PREFIX:PATH=$INSTALL_DIR . && make all install
+```
