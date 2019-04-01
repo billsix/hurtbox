@@ -5,6 +5,8 @@ include(CheckIncludeFiles)
 
 #find dependencies
 
+set(OpenGL_GL_PREFERENCE "GLVND")
+
 find_package(PkgConfig REQUIRED)
 pkg_search_module(GLFW REQUIRED glfw3)
 pkg_search_module(GLFW REQUIRED assimp)
