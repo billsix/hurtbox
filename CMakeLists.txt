@@ -13,6 +13,10 @@ else()
     find_package(OpenGL REQUIRED)
 endif()
 
+if(WIN32)
+    add_subdirectory(${CMAKE_SOURCE_DIR}/contrib/glfw)
+    include_directories(${CMAKE_SOURCE_DIR}/contrib/glfw/include)
+endif(WIN32)
 
 add_definitions(-DPACKAGE_NAME="hurtbox")
 add_definitions(-DPACKAGE_TARNAME="hurtbox")

@@ -71,12 +71,11 @@ compile_shader(GLenum shaderType, const char* const path)//GLchar ** shader_text
   }
 
   {
-    GLint bufferSize = buf.st_size;
     const char ** the_text = (const char **)&shader_text;
     glShaderSource(shaderID,
                    1,
                    the_text,
-                   &bufferSize);
+                   &read_size);
   }
   glCompileShader(shaderID);
 

@@ -23,14 +23,10 @@ if(APPLE OR WIN32)
      set(BUILD_SHARED_LIBS OFF)
      if(WIN32)
          # no console on start
-         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
+         #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
      endif(WIN32)
 endif()
 
-if(WIN32)
-    add_subdirectory(${CMAKE_SOURCE_DIR}/contrib/glfw)
-    include_directories(${CMAKE_SOURCE_DIR}/contrib/glfw/include)
-endif(WIN32)
 
 
 
@@ -38,6 +34,14 @@ add_executable(hurtbox ${hurtbox_headers} ${hurtbox_source})
 
 if(WIN32)
     target_link_libraries(hurtbox glfw opengl32 )
+else()
+    target_link_libraries ( hurtbox
+        PRIVATE
+        "-lm"
+        "-ldl"
+        ${OPENGL_gl_LIBRARY}
+        ${GLFW_LIBRARIES}
+)
 endif(WIN32)
 
 target_include_directories ( hurtbox
@@ -48,13 +52,6 @@ target_include_directories ( hurtbox
     ${CMAKE_SOURCE_DIR}/contrib/gl-matrix-stack/
 )
 
-target_link_libraries ( hurtbox
-    PRIVATE
-    "-lm"
-    "-ldl"
-    ${OPENGL_gl_LIBRARY}
-    ${GLFW_LIBRARIES}
-)
 
 
 install(TARGETS hurtbox DESTINATION bin)
