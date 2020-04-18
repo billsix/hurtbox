@@ -5,12 +5,13 @@ include(CheckIncludeFiles)
 
 #find dependencies
 
-set(OpenGL_GL_PREFERENCE "GLVND")
-
-find_package(PkgConfig REQUIRED)
-pkg_search_module(GLFW REQUIRED glfw3)
-pkg_search_module(GLFW REQUIRED assimp)
-find_package(OpenGL REQUIRED)
+if(APPLE OR WIN32)
+else()
+    set(OpenGL_GL_PREFERENCE "GLVND")
+    find_package(PkgConfig REQUIRED)
+    pkg_search_module(GLFW REQUIRED glfw3)
+    find_package(OpenGL REQUIRED)
+endif()
 
 
 add_definitions(-DPACKAGE_NAME="hurtbox")

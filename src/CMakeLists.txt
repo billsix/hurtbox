@@ -4,7 +4,6 @@ set(hurtbox_headers
     ./common.h
     ./controller.h
     ./intro-scene.h
-    ./load_asset.h
     ./main.h
     ./mainscene.h
     ./shader.h
@@ -13,7 +12,6 @@ set(hurtbox_headers
 set(hurtbox_source
     ./controller.c
     ./intro-scene.c
-    ./load_asset.c
     ./main.c
     ./mainscene.c
     ./shader.c
@@ -56,7 +54,6 @@ target_link_libraries ( hurtbox
     "-ldl"
     ${OPENGL_gl_LIBRARY}
     ${GLFW_LIBRARIES}
-    assimp
 )
 
 
