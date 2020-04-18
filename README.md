@@ -9,16 +9,7 @@ Building
 Windows VS2019
 --------------
 
-    git clone https://github.com/billsix/hurtbox.git
-    cd hurtbox
-    mkdir build
-    mkdir buildInstall
-    cd build
-    # create the visual studio solution and project files
-    cmake -DCMAKE_INSTALL_PREFIX=..\buildInstall ..\
-    cmake --build . --target INSTALL --config Debug
-    cd ..\buildInstall
-    .\bin\hurtbox.exe
+    build.bat
 
 
 Linux/macOS
