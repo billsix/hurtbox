@@ -47,10 +47,10 @@ compile_shader(GLenum shaderType, const char* const path)//GLchar ** shader_text
   char * shader_text = (char*) malloc(buf.st_size);
 
   FILE *file  = fopen(path, "r");
-  size_t read_size = xfread(shader_text,
-                            sizeof(char),
-                            buf.st_size,
-                            file);
+  const size_t read_size = xfread(shader_text,
+                                  sizeof(char),
+                                  buf.st_size,
+                                  file);
   fclose(file);
 
 
@@ -75,7 +75,7 @@ compile_shader(GLenum shaderType, const char* const path)//GLchar ** shader_text
     glShaderSource(shaderID,
                    1,
                    the_text,
-                   &read_size);
+                   (const GLint *) &read_size);
   }
   glCompileShader(shaderID);
 
