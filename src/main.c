@@ -42,11 +42,10 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action,
 }
 
 #ifdef __cplusplus
-extern "C"
+extern "C" {
 #endif
 
-    int
-    main(int argc, char **argv) {
+int main(int argc, char **argv) {
   glfwSetErrorCallback(error_callback);
   /* Initialize the library */
   if (!glfwInit())
@@ -287,3 +286,6 @@ extern "C"
   glfwTerminate();
   return 0;
 }
+#ifdef __cplusplus
+}
+#endif
