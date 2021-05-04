@@ -8,12 +8,9 @@
 
 #include "common.h"
 
-int
-number_of_controllers = 0;
+int number_of_controllers = 0;
 
-void
-init_controllers()
-{
+void init_controllers() {
   int number_of_controllers = glfwJoystickPresent(GLFW_JOYSTICK_1);
   printf("number of controllers %d\n", number_of_controllers);
 }

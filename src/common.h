@@ -6,7 +6,6 @@
  * Distributed under Apache 2.0
  */
 
-
 #ifndef COMMON_H
 #define COMMON_H 1
 
@@ -23,29 +22,29 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #elif CMAKE_CONFIG
-//do nothing
+// do nothing
 #else // Visual Studio
 #define MODELS_DIR "models/"
 #define SHADER_DIR "shaders/"
 #define TEXTURE_DIR "textures/"
 #endif
 
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
 #ifdef _WIN32
-#include <windows.h>
 #include <tchar.h>
+#include <windows.h>
 #endif
 
 #include "gl3w.h"
 #include <GLFW/glfw3.h>
 #include <assert.h>
 
-#include <stdio.h>
+#include <math.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include <math.h>
+#include <stdio.h>
 
 // nuklear defs
 #define NK_INCLUDE_FIXED_TYPES
@@ -68,54 +67,54 @@
 //#define DEBUG 1
 
 #ifdef DEBUG
-#define GL_DEBUG_ASSERT() { \
-  GLenum error = glGetError(); \
-  if (error != GL_NO_ERROR) \
-    {                                                                   \
-      switch(error){                                                    \
-      case GL_INVALID_ENUM:                                             \
-        printf("An unacceptable value is specified for an enumerated "  \
-               "argument. The offending command is ignored and has no " \
-               "other side effect than to set the error flag.");        \
-        break;                                                          \
-      case GL_INVALID_VALUE:                                            \
-        printf("A numeric argument is out of range. The offending "     \
-               "command is ignored and has no other side effect than "  \
-               "to set the error flag.");                               \
-        break;                                                          \
-      case GL_INVALID_OPERATION:                                        \
-        printf("The specified operation is not allowed in the current " \
-               "state. The offending command is ignored and has no "    \
-               "other side effect than to set the error flag.");        \
-        break;                                                          \
-      case GL_INVALID_FRAMEBUFFER_OPERATION:                            \
-        printf("The framebuffer object is not complete. The offending " \
-               "command is ignored and has no other side effect than "  \
-               "to set the error flag.");                               \
-        break;                                                          \
-      case GL_OUT_OF_MEMORY:                                            \
-        printf("There is not enough memory left to execute the "        \
-               "command. The state of the GL is undefined, except for " \
-               "the state of the error flags, after this error is "     \
-               "recorded."); \
-        break;                                                          \
-      case GL_STACK_UNDERFLOW:                                          \
-        printf("An attempt has been made to perform an operation that " \
-               "would cause an internal stack to underflow.");          \
-        break;                                                          \
-      case GL_STACK_OVERFLOW:                                           \
-        printf("An attempt has been made to perform an operation that " \
-               "would cause an internal stack to overflow. ");          \
-        break;                                                          \
-      }                                                                 \
-      assert (error != GL_NO_ERROR);                                    \
-    }                                                                   \
+#define GL_DEBUG_ASSERT()                                                      \
+  {                                                                            \
+    GLenum error = glGetError();                                               \
+    if (error != GL_NO_ERROR) {                                                \
+      switch (error) {                                                         \
+      case GL_INVALID_ENUM:                                                    \
+        printf("An unacceptable value is specified for an enumerated "         \
+               "argument. The offending command is ignored and has no "        \
+               "other side effect than to set the error flag.");               \
+        break;                                                                 \
+      case GL_INVALID_VALUE:                                                   \
+        printf("A numeric argument is out of range. The offending "            \
+               "command is ignored and has no other side effect than "         \
+               "to set the error flag.");                                      \
+        break;                                                                 \
+      case GL_INVALID_OPERATION:                                               \
+        printf("The specified operation is not allowed in the current "        \
+               "state. The offending command is ignored and has no "           \
+               "other side effect than to set the error flag.");               \
+        break;                                                                 \
+      case GL_INVALID_FRAMEBUFFER_OPERATION:                                   \
+        printf("The framebuffer object is not complete. The offending "        \
+               "command is ignored and has no other side effect than "         \
+               "to set the error flag.");                                      \
+        break;                                                                 \
+      case GL_OUT_OF_MEMORY:                                                   \
+        printf("There is not enough memory left to execute the "               \
+               "command. The state of the GL is undefined, except for "        \
+               "the state of the error flags, after this error is "            \
+               "recorded.");                                                   \
+        break;                                                                 \
+      case GL_STACK_UNDERFLOW:                                                 \
+        printf("An attempt has been made to perform an operation that "        \
+               "would cause an internal stack to underflow.");                 \
+        break;                                                                 \
+      case GL_STACK_OVERFLOW:                                                  \
+        printf("An attempt has been made to perform an operation that "        \
+               "would cause an internal stack to overflow. ");                 \
+        break;                                                                 \
+      }                                                                        \
+      assert(error != GL_NO_ERROR);                                            \
+    }                                                                          \
   }
 #else
 #define GL_DEBUG_ASSERT() NOOP()
 #endif
 
-#define BUFFER_OFFSET(offset) ((void *) (offset))
+#define BUFFER_OFFSET(offset) ((void *)(offset))
 
 #include "controller.h"
 

@@ -13,28 +13,19 @@
 
 BEGIN_C_DECLS
 
-extern struct scene_callbacks
-main_scene_callbacks;
+extern struct scene_callbacks main_scene_callbacks;
 
-void
-main_scene_init_scene();
+void main_scene_init_scene();
 
-void
-main_scene_draw_scene();
+void main_scene_draw_scene();
 
-void
-main_scene_update_wall_colors();
+void main_scene_update_wall_colors();
 
-void
-main_scene_leave_scene();
+void main_scene_leave_scene();
 
-void
-main_scene_window_size_callback(GLFWwindow* window, int width, int height);
+void main_scene_window_size_callback(GLFWwindow *window, int width, int height);
 
-
-void
-main_scene_draw_nuklear(struct nk_context *ctx);
-
+void main_scene_draw_nuklear(struct nk_context *ctx);
 
 END_C_DECLS
 #endif

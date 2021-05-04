@@ -9,37 +9,29 @@
 #ifndef MAIN_H
 #define MAIN_H 1
 
-
 BEGIN_C_DECLS
 
-extern GLFWwindow* window;
+extern GLFWwindow *window;
 extern bool guiEnable;
 
-struct camera{
+struct camera {
   GLfloat x, y, z;
   GLfloat rotationX, rotationY;
 };
 
-
-
-struct scene_callbacks{
+struct scene_callbacks {
   void (*init_scene)();
   void (*leave_scene)();
   void (*draw_scene)();
-  void (*window_size_callback)(GLFWwindow* window, int width, int height);
+  void (*window_size_callback)(GLFWwindow *window, int width, int height);
   void (*draw_nuklear)(struct nk_context *ctx);
-
 };
 
 extern struct camera camera;
 
-void
-initGL();
+void initGL();
 
-void
-drawScene();
-
-
+void drawScene();
 
 END_C_DECLS
 #endif

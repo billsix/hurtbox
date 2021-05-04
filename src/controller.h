@@ -8,5 +8,4 @@
 
 extern int number_of_controllers;
 
-
 void init_controllers();

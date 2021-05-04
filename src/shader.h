@@ -6,10 +6,6 @@
  * Distributed under Apache 2.0
  */
 
+GLuint compile_shader(GLenum shaderType, const char *const path);
 
-GLuint
-compile_shader(GLenum shaderType, const char* const path);
-
-GLuint
-link_shaders(GLuint vertexShader, GLuint fragmentShader);
-
+GLuint link_shaders(GLuint vertexShader, GLuint fragmentShader);
